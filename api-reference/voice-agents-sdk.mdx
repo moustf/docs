@@ -1,0 +1,135 @@
+---
+title: 'Voice Agents SDK'
+description: 'Welcome to Voice Agents SDK documentation page!'
+icon: "laptop-code"
+iconType: "thin"
+mode: "wide"
+---
+
+# Hamsa Voice Agent Web SDK
+
+**Hamsa Voice Agents Web SDK** is a JavaScript library for integrating voice agents from https://dashboard.tryhamsa.com. This SDK provides a seamless way to incorporate voice interactions into your web applications.
+
+## Features
+
+- **Easy Integration**: Utilize WebSocket for real-time communication.
+- **Audio Support**: Record and playback audio effortlessly.
+- **Low Latency**: Optimized for quick voice interactions.
+- **Compatibility**: Works in both Node.js and browser environments.
+
+## Installation
+
+Install the SDK via npm:
+
+```bash
+npm i @hamsa-ai/voice-agents-sdk
+```
+
+## HamsaVoiceAgent Class And Functionality
+
+The core of the SDK is the `HamsaVoiceAgent` class, which extends the `EventEmitter` class from Node.js. This design allows the SDK to easily handle and emit events, enabling developers to respond to various states of the voice interaction process.
+
+
+## Usage
+
+First, import the package in your code:
+
+```javascript
+import { HamsaVoiceAgent } from 'hamsa-voice-agents';
+```
+
+Initialize the SDK with your API key. 
+To obtain your first API key, follow our tutorial page <a href="/create-api-keys">Here</a>:
+
+```javascript
+const agent = new HamsaVoiceAgent(API_KEY);
+```
+
+## Start a Conversation with an Existing Agent
+
+Start a conversation with an existing agent by calling the "start" function. You can create and manage agents in our Dashboard or using our API <a href="/api-reference/endpoint/initialize-conversation">here</a>:
+
+```javascript
+agent.start({
+    agentId: YOUR_AGENT_ID,
+    params: {
+        param1: "NAME",
+        param2: "NAME2"
+    }
+});
+```
+
+When creating an agent, you can add parameters to your pre-defined values. For example, you can set your Greeting Message to: `"Hello {{name}}, how can I help you today?"` and pass the `"name"` as a parameter to use the correct name of the user.
+
+
+## Pause/Resume a Conversation
+
+To pause the conversation, call the `"pause"` function. This will prevent the SDK from sending or receiving new data until you resume the conversation:
+
+```javascript
+agent.pause();
+```
+
+To resume the conversation:
+
+```javascript
+agent.resume();
+```
+
+
+## End a Conversation
+
+To end a conversation, simply call the `"end"` function:
+
+```javascript
+agent.end();
+```
+
+## Events
+
+During the conversation, the SDK emits events to update your application about the conversation status.
+
+### Conversation Status Events
+
+```javascript
+agent.on("callStarted", () => { console.log("Conversation has started!"); });
+agent.on("callEnded", () => { console.log("Conversation has ended!"); });
+agent.on("callPaused", () => { console.log("The conversation is paused"); });
+agent.on("callResumed", () => { console.log("Conversation has resumed"); });
+```
+
+### Agent Status Events
+
+```javascript
+agent.on("speaking", () => { console.log("The agent is speaking"); });
+agent.on("listening", () => { console.log("The agent is listening"); });
+```
+
+### Conversation Script Events
+
+```javascript
+agent.on("transcriptionReceived", (text) => { console.log("User speech transcription received", text); });
+agent.on("answerReceived", (text) => { console.log("Agent answer received", text); });
+```
+
+### Error Events
+
+```javascript
+agent.on("closed", () => { console.log("Conversation was closed"); });
+agent.on("error", (e) => { console.log("Error was received", e); });
+```
+
+### Usage Example
+
+To use the SDK effectively, developers should follow these steps:
+
+1. **Initialize the SDK**: Create an instance of `HamsaVoiceAgent` with the API key.
+2. **Set Up Event Listeners**: Listen for events like `callStarted`, `callEnded`, `callPaused`, and `callResumed` to manage the call lifecycle.
+3. **Start a Voice Call**: Invoke the `start()` method to begin the interaction.
+4. **Manage the Call**: Use `pause()`, `resume()`, and `end()` methods as needed to control the flow of the conversation.
+
+
+### Conclusion
+
+The Hamsa Voice Agent Web SDK simplifies the integration of voice capabilities into web applications, offering powerful features for real-time communication. By leveraging the functionalities of the `HamsaVoiceAgent` class, developers can create engaging voice-enabled experiences with ease.
+

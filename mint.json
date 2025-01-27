@@ -1,15 +1,15 @@
 {
   "$schema": "https://mintlify.com/schema.json",
-  "name": "Starter Kit",
+  "name": "Hamsa API",
   "logo": {
-    "dark": "/logo/dark.svg",
-    "light": "/logo/light.svg"
+    "dark": "/logo/hamsa_logo_dark.svg",
+    "light": "/logo/hamsa_logo_light.svg"
   },
   "favicon": "/favicon.svg",
   "colors": {
-    "primary": "#0D9373",
-    "light": "#07C983",
-    "dark": "#0D9373",
+    "primary": "#B4FD83",
+    "light": "#608e00",
+    "dark": "#284016",
     "anchors": {
       "from": "#0D9373",
       "to": "#07C983"
@@ -18,12 +18,12 @@
   "topbarLinks": [
     {
       "name": "Support",
-      "url": "mailto:hi@mintlify.com"
+      "url": "mailto:support@tryhamsa.com"
     }
   ],
   "topbarCtaButton": {
     "name": "Dashboard",
-    "url": "https://dashboard.mintlify.com"
+    "url": "https://dashboard.tryhamsa.com/"
   },
   "tabs": [
     {
@@ -31,41 +31,14 @@
       "url": "api-reference"
     }
   ],
-  "anchors": [
-    {
-      "name": "Documentation",
-      "icon": "book-open-cover",
-      "url": "https://mintlify.com/docs"
-    },
-    {
-      "name": "Community",
-      "icon": "slack",
-      "url": "https://mintlify.com/community"
-    },
-    {
-      "name": "Blog",
-      "icon": "newspaper",
-      "url": "https://mintlify.com/blog"
-    }
-  ],
+  "anchors": [],
   "navigation": [
     {
       "group": "Get Started",
       "pages": [
         "introduction",
-        "quickstart",
-        "development"
-      ]
-    },
-    {
-      "group": "Essentials",
-      "pages": [
-        "essentials/markdown",
-        "essentials/code",
-        "essentials/images",
-        "essentials/settings",
-        "essentials/navigation",
-        "essentials/reusable-snippets"
+        "auth",
+        "create-api-keys"
       ]
     },
     {
@@ -75,17 +48,75 @@
       ]
     },
     {
-      "group": "Endpoint Examples",
+      "group": "SDK Documentation",
       "pages": [
-        "api-reference/endpoint/get",
-        "api-reference/endpoint/create",
-        "api-reference/endpoint/delete"
+        "api-reference/voice-agents-sdk"
+      ]
+    },
+    {
+      "group": "Voice Enablement",
+      "pages": [
+        "api-reference/voice-enablement"
+      ]
+    },
+    {
+      "group": "Transcription Routes",
+      "pages": [
+        "api-reference/endpoint/transcribe"
+      ]
+    },
+    {
+      "group": "Voice Agents Routes",
+      "pages": [
+        "api-reference/endpoint/create-voice-agent",
+        "api-reference/endpoint/clone-voice-agent",
+        "api-reference/endpoint/update-voice-agent",
+        "api-reference/endpoint/get-all-voice-agents",
+        "api-reference/endpoint/get-voice-agent-by-id",
+        "api-reference/endpoint/get-voice-agent-templates"
+      ]
+    },
+    {
+      "group": "Voice Agents Conversations Routes",
+      "pages": [
+        "api-reference/endpoint/start-a-call"
+      ]
+    },
+    {
+      "group": "AI Content Routes",
+      "pages": [
+        "api-reference/endpoint/post-ai-content",
+        "api-reference/endpoint/get-ai-content",
+        "api-reference/endpoint/modify-ai-content-part",
+        "api-reference/endpoint/custom-ai-content",
+        "api-reference/endpoint/ai-content-estimate"
+      ]
+    },
+    {
+      "group": "Job Routes",
+      "pages": [
+        "api-reference/endpoint/get-jobs-list",
+        "api-reference/endpoint/get-job-by-id"
+      ]
+    },
+    {
+      "group": "Project Routes",
+      "pages": [
+        "api-reference/endpoint/get-project-by-api-key"
+      ]
+    },
+    {
+      "group": "API Statistics Routes",
+      "pages": [
+        "api-reference/endpoint/statistics-numbers",
+        "api-reference/endpoint/statistics-chart"
       ]
     }
   ],
   "footerSocials": {
-    "x": "https://x.com/mintlify",
-    "github": "https://github.com/mintlify",
-    "linkedin": "https://linkedin.com/company/mintlify"
-  }
+    "x": "https://x.com/",
+    "github": "https://github.com/hamsa-ai",
+    "linkedin": "https://www.linkedin.com/company/tryhamsa/"
+  },
+  "theme": "prism"
 }
