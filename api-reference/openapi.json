@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "Hamsa API",
+    "description": "Trying out our transcription and media-to-text APIs",
     "license": {
       "name": "MIT"
     },
@@ -10,185 +10,3723 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
-    }
-  ],
-  "security": [
-    {
-      "bearerAuth": []
+      "url": "https://api-dev.tryhamsa.com"
     }
   ],
   "paths": {
-    "/plants": {
+    "/v1/projects/statistics/numbers": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "summary": "Get project statistics with numbers",
         "parameters": [
           {
-            "name": "limit",
+            "name": "startPeriod",
             "in": "query",
-            "description": "The maximum number of results to return",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true
+          },
+          {
+            "name": "endPeriod",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NumbersStatisticsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/projects/statistics/chart": {
+      "get": {
+        "summary": "Get project statistics chart data",
+        "parameters": [
+          {
+            "name": "startPeriod",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true
+          },
+          {
+            "name": "endPeriod",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChartResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/jobs/transcribe": {
+      "post": {
+        "summary": "Transcribe media to text",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TranscriptRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TranscriptResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/jobs/ai-content": {
+      "post": {
+        "summary": "Create AI Content",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AiContentPayload"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiContentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "Get AI-generated content",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
+                  "$ref": "#/components/schemas/AiContentSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/jobs/all": {
+      "post": {
+        "summary": "Get a list of jobs",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/jobs": {
+      "get": {
+        "summary": "Retrieve job details",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "speaker",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful retrieval of job details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Job not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/projects/by-api-key": {
+      "get": {
+        "summary": "Get a project by API key",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/jobs/modify-options": {
+      "get": {
+        "summary": "Modify AI-generated content options",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "option",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "longer",
+                "shorter",
+                "casual",
+                "serious",
+                "original"
+              ]
+            }
+          },
+          {
+            "name": "aiPart",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "introduction",
+                "titles",
+                "summary",
+                "webArticleSEOFriendly",
+                "keyTopicsWithBullets",
+                "keyTopicsWithBullets",
+                "keywords",
+                "threadsByInstagram",
+                "faq",
+                "facebookPost",
+                "youtubeDescription",
+                "twitterThread",
+                "linkedInPost"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ModifyOptionsSuccessResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/jobs/ai-content/custom": {
+      "post": {
+        "summary": "Generate Customized AI Content",
+        "description": "Generates AI content based on the specified transcription job ID and parameters.",
+        "operationId": "generateCustomizedAIContent",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "aiParts": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "introduction",
+                        "titles",
+                        "summary",
+                        "webArticleSEOFriendly",
+                        "keyTopicsWithBullets",
+                        "keyTopicsWithBullets",
+                        "keywords",
+                        "threadsByInstagram",
+                        "faq",
+                        "facebookPost",
+                        "youtubeDescription",
+                        "twitterThread",
+                        "linkedInPost"
+                      ]
+                    }
+                  },
+                  "prompts": {
+                    "type": "object",
+                    "description": "Prompts are optional, you need to add a prompt for every AI part you select, and it must end with 'Diarization: {diarization}, Language: {language}'",
+                    "properties": {
+                      "introduction": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "titles": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "summary": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "keywords": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "keyTopicsWithBullets": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "faq": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "webArticleSEOFriendly": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "threadsByInstagram": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "youtubeDescription": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "facebookPost": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "twitterThread": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      },
+                      "linkedInPost": {
+                        "type": "string",
+                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      }
+                    },
+                    "additionalProperties": false
+                  },
+                  "webhookUrl": {
+                    "type": "string",
+                    "format": "uri",
+                    "nullable": true
+                  }
+                },
+                "required": [
+                  "aiParts"
+                ]
+              }
+            }
+          },
+          "description": "Parameters for generating AI content."
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiContentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/jobs/ai-content/estimate": {
+      "get": {
+        "summary": "Estimate AI Content Cost",
+        "description": "Returns the estimated cost for the specified AI content job.",
+        "operationId": "estimateAIContentCost",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Transcription job ID."
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cost estimate retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "number"
+                    }
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Unexpected error",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
                 }
               }
             }
           }
-        }
-      },
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents": {
       "post": {
-        "description": "Creates a new plant in the store",
+        "summary": "Create a new voice agent",
+        "description": "Create a new voice agent to start using our powerful and robust voice assistant feature. This route requires an API key for authentication.",
         "requestBody": {
-          "description": "Plant to add to the store",
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "$ref": "#/components/schemas/VoiceAgentRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "responses": {
           "200": {
-            "description": "plant response",
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "$ref": "#/components/schemas/VoiceAgentResponse"
                 }
               }
             }
           },
           "400": {
-            "description": "unexpected error",
+            "description": "Bad Request",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
                 }
               }
             }
           }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "Retrieve a list of voice agents",
         "parameters": [
           {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
+            "name": "skip",
+            "in": "query",
+            "required": false,
             "schema": {
               "type": "integer",
-              "format": "int64"
+              "default": 1
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
             }
           }
         ],
         "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
-          },
-          "400": {
-            "description": "unexpected error",
+          "200": {
+            "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Error"
+                  "$ref": "#/components/schemas/VoiceAgentsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
                 }
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/{voiceAgentId}": {
+      "patch": {
+        "summary": "Update an existing voice agent",
+        "parameters": [
+          {
+            "name": "voiceAgentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateVoiceAgentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceAgentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "get": {
+        "summary": "Retrieve a specific voice agent by ID",
+        "parameters": [
+          {
+            "name": "voiceAgentId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceAgentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/templates": {
+      "get": {
+        "summary": "Retrieve a specific voice agent by ID",
+        "description": "Use this route to get the voice agent templates created by our experts. You can take the template id and use clone voice agent route to create a new voice agent based on the template.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceAgentTemplatesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/call": {
+      "post": {
+        "summary": "Initiate a call with a voice agent",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CallRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful call initiation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/clone": {
+      "post": {
+        "summary": "Clone a voice agent",
+        "description": "Use this route to clone an existing agent. You can use it to clone one of the voice agents templates created by our experts!",
+        "parameters": [
+          {
+            "name": "voiceAgentId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "agentName": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful cloning of voice agent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloneResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Voice agent not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
       }
     }
   },
   "components": {
     "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
+      "ErrorSchema": {
         "type": "object",
         "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
+          "code": {
+            "type": "integer"
           },
           "message": {
             "type": "string"
           }
         }
+      },
+      "StatisticsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/StatisticsData"
+          }
+        }
+      },
+      "StatisticsData": {
+        "type": "object",
+        "properties": {
+          "requests": {
+            "$ref": "#/components/schemas/StatisticItem"
+          },
+          "transcription": {
+            "$ref": "#/components/schemas/StatisticItem"
+          },
+          "tokens": {
+            "$ref": "#/components/schemas/StatisticItem"
+          }
+        }
+      },
+      "StatisticItem": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "value": {
+            "type": "integer"
+          },
+          "isTimeValue": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ChartResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ChartData"
+          }
+        }
+      },
+      "ChartData": {
+        "type": "object",
+        "properties": {
+          "cost": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChartDataItem"
+            }
+          },
+          "requests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChartDataItem"
+            }
+          },
+          "transcription": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChartDataItem"
+            }
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChartDataItem"
+            }
+          }
+        }
+      },
+      "ChartDataItem": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "value": {
+            "type": "number"
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      },
+      "NumbersStatisticsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "tokens": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "integer"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                }
+              },
+              "transcription": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                }
+              },
+              "price": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "number"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                }
+              },
+              "requests": {
+                "type": "object",
+                "properties": {
+                  "value": {
+                    "type": "string"
+                  },
+                  "unit": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "TranscriptRequest": {
+        "type": "object",
+        "properties": {
+          "mediaUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "processingType": {
+            "type": "string",
+            "enum": [
+              "async"
+            ],
+            "default": "async"
+          },
+          "webhookUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string",
+            "enum": [
+              "hamsa-v1-general",
+              "Hamsa-V1.5-alpha"
+            ]
+          }
+        },
+        "required": [
+          "mediaUrl",
+          "model"
+        ]
+      },
+      "TranscriptResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "jobId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "jobId"
+            ]
+          }
+        }
+      },
+      "JobsRequest": {
+        "type": "object",
+        "properties": {
+          "sort": {
+            "$ref": "#/components/schemas/SortOptions"
+          },
+          "take": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "search": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "COMPLETED",
+              "FAILED"
+            ]
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "TRANSCRIPTION",
+              "TRANSLATION",
+              "TTS",
+              "AI_CONTENT"
+            ]
+          }
+        }
+      },
+      "SortOptions": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "enum": [
+              "createdAt",
+              "model",
+              "totalCost",
+              "usageTime",
+              "status"
+            ]
+          },
+          "direction": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          }
+        }
+      },
+      "JobsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/JobsData"
+          }
+        }
+      },
+      "JobsData": {
+        "type": "object",
+        "properties": {
+          "jobs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Job"
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "filtered": {
+            "type": "integer"
+          }
+        }
+      },
+      "Job": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "AI_CONTENT",
+              "TRANSCRIPTION",
+              "TTS",
+              "TRANSLATION"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "COMPLETED",
+              "FAILED"
+            ]
+          },
+          "cost": {
+            "type": "number"
+          },
+          "systemModelKey": {
+            "type": "string"
+          },
+          "relevantJobId": {
+            "type": "string"
+          },
+          "attributes": {
+            "type": "object",
+            "properties": {
+              "apiKey": {
+                "type": "string"
+              },
+              "mediaUrl": {
+                "type": "string",
+                "format": "uri"
+              },
+              "model": {
+                "type": "string"
+              },
+              "agentName": {
+                "type": "string"
+              },
+              "duration": {
+                "type": "number"
+              },
+              "voice": {
+                "type": "string"
+              },
+              "aiContentParts": {
+                "type": "array",
+                "enum": [
+                  "introduction",
+                  "titles",
+                  "summary",
+                  "webArticleSEOFriendly",
+                  "keyTopicsWithBullets",
+                  "keyTopicsWithBullets",
+                  "keywords",
+                  "threadsByInstagram",
+                  "faq",
+                  "facebookPost",
+                  "youtubeDescription",
+                  "twitterThread",
+                  "linkedInPost"
+                ]
+              },
+              "sourceJob": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "apiKey"
+            ]
+          },
+          "apiKey": {
+            "type": "string"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "type",
+          "url",
+          "status",
+          "cost",
+          "systemModelKey",
+          "relevantJobId",
+          "attributes",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ProjectResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Project"
+          }
+        }
+      },
+      "Project": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "deletedAt": {
+            "type": "string",
+            "nullable": true,
+            "format": "date-time"
+          },
+          "deletedBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updteAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AiContentResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "AI_CONTENT"
+                ]
+              },
+              "processingType": {
+                "type": "string"
+              },
+              "webhookUrl": {
+                "type": "string"
+              },
+              "totalCost": {
+                "type": "number"
+              },
+              "usageTime": {
+                "type": "string"
+              },
+              "mediaUrl": {
+                "type": "string",
+                "format": "uri"
+              },
+              "jobResponse": {
+                "type": "object",
+                "default": null
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "PENDING",
+                  "COMPLETED",
+                  "FAILED"
+                ]
+              },
+              "relevantJobId": {
+                "type": "string"
+              },
+              "apiKeyId": {
+                "type": "string"
+              },
+              "billingId": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "systemModelKey": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "AiContentPayload": {
+        "type": "object",
+        "properties": {
+          "aiParts": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "introduction",
+                "titles",
+                "summary",
+                "webArticleSEOFriendly",
+                "keyTopicsWithBullets",
+                "keyTopicsWithBullets",
+                "keywords",
+                "threadsByInstagram",
+                "faq",
+                "facebookPost",
+                "youtubeDescription",
+                "twitterThread",
+                "linkedInPost"
+              ]
+            }
+          }
+        }
+      },
+      "AiContentSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "processingType": {
+                "type": "string"
+              },
+              "webhookUrl": {
+                "type": "string"
+              },
+              "totalCost": {
+                "type": "number"
+              },
+              "usageTime": {
+                "type": "string"
+              },
+              "mediaUrl": {
+                "type": "string"
+              },
+              "jobResponse": {
+                "type": "object",
+                "properties": {
+                  "faq": {
+                    "type": "string"
+                  },
+                  "titles": {
+                    "type": "string"
+                  },
+                  "summary": {
+                    "type": "string"
+                  },
+                  "keywords": {
+                    "type": "string"
+                  },
+                  "facebookPost": {
+                    "type": "string"
+                  },
+                  "introduction": {
+                    "type": "string"
+                  },
+                  "linkedInPost": {
+                    "type": "string"
+                  },
+                  "twitterThread": {
+                    "type": "string"
+                  },
+                  "threadsByInstagram": {
+                    "type": "string"
+                  },
+                  "transcriptionJobId": {
+                    "type": "string"
+                  },
+                  "youtubeDescription": {
+                    "type": "string"
+                  },
+                  "keyTopicsWithBullets": {
+                    "type": "string"
+                  },
+                  "webArticleSEOFriendly": {
+                    "type": "string"
+                  }
+                }
+              },
+              "status": {
+                "type": "string"
+              },
+              "relevantJobId": {
+                "type": "string"
+              },
+              "apiKeyId": {
+                "type": "string"
+              },
+              "billingId": {
+                "type": "string"
+              },
+              "userId": {
+                "type": "string"
+              },
+              "systemModelKey": {
+                "type": "string"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "ModifyOptionsSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "modifiedText": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "freeSlotsDayArray": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "from": {
+              "type": "string",
+              "description": "'from' field should be hh:mm in 24-hour format",
+              "format": "time"
+            },
+            "to": {
+              "type": "string",
+              "description": "'to' field should be hh:mm in 24-hour format",
+              "format": "time"
+            }
+          }
+        }
+      },
+      "freeSlots": {
+        "type": "object",
+        "properties": {
+          "Monday": {
+            "$ref": "#/components/schemas/freeSlotsDayArray"
+          },
+          "Tuesday": {
+            "$ref": "#/components/schemas/freeSlotsDayArray"
+          },
+          "Wednesday": {
+            "$ref": "#/components/schemas/freeSlotsDayArray"
+          },
+          "Thursday": {
+            "$ref": "#/components/schemas/freeSlotsDayArray"
+          },
+          "Friday": {
+            "$ref": "#/components/schemas/freeSlotsDayArray"
+          },
+          "Saturday": {
+            "$ref": "#/components/schemas/freeSlotsDayArray"
+          },
+          "Sunday": {
+            "$ref": "#/components/schemas/freeSlotsDayArray"
+          }
+        }
+      },
+      "VoiceAgentRequest": {
+        "type": "object",
+        "properties": {
+          "agentName": {
+            "type": "string"
+          },
+          "greetingMessage": {
+            "description": "Greeting Message can be customized by adding params like: {{name}}, to make the message more personal!",
+            "type": "string",
+            "default": "Hello, how can I help you today?"
+          },
+          "preamble": {
+            "description": "Preamble can be customized by adding params like: {{agentName}}, to make the prompt more specific and context aware!",
+            "type": "string",
+            "default": "You are a helpful assistant that will answer users questions."
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ar",
+              "en"
+            ],
+            "default": "ar"
+          },
+          "pokeMessages": {
+            "description": "The messages to say to the user when he doesn't respond!",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "default": []
+          },
+          "realTime": {
+            "type": "boolean",
+            "default": false
+          },
+          "silenceThreshold": {
+            "type": "integer",
+            "default": 800
+          },
+          "interrupt": {
+            "type": "boolean",
+            "default": false
+          },
+          "outcome": {
+            "description": "A prompt to take the conversation and transform it to anything you like, like creating an article out of the conversation!",
+            "type": "string",
+            "default": null
+          },
+          "voiceId": {
+            "description": "You can find predefined voices in the voice agents dashboard, under the language tab",
+            "type": "string",
+            "enum": [
+              "1f3396aa-24e3-4523-b4ef-7dd4adb8fab9",
+              "29709a36-7703-497f-b6e5-0d39b873f77d",
+              "37665327-bfc7-4edf-a362-596a379865dc",
+              "60ef35b1-056a-47d9-8f8f-6571f2106560",
+              "8f14b3ee-beb6-4f9a-9819-02b45f7d48ff",
+              "a2404aca-2c6d-47c7-ae9c-5ea317a30e60",
+              "b1d24f8c-6d60-4fb5-8d06-708ba1bc89c2",
+              "d23c0832-a642-4a59-8e93-fd0924abc46e",
+              "d981c03a-2868-4de2-b097-e11ec231413c"
+            ]
+          },
+          "tools": {
+            "type": "object",
+            "properties": {
+              "googleCalendar": {
+                "type": "boolean",
+                "default": false
+              },
+              "genderDetection": {
+                "type": "boolean",
+                "default": false
+              },
+              "smartCallEnd": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "params": {
+            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value.",
+            "type": "object",
+            "default": {}
+          },
+          "googleCalendarSettings": {
+            "description": "Send it only if the tools.googleCalendar is true.",
+            "type": "object",
+            "properties": {
+              "calendarId": {
+                "description": "The calendar id from the Google Calendar integration response.",
+                "type": "string"
+              },
+              "eventTitle": {
+                "description": "A customized event title to be written to the booked meeting by the system.",
+                "type": "string",
+                "default": "New meeting by {agentName}"
+              },
+              "calendarName": {
+                "type": "string",
+                "description": "The calendar name from the Google Calendar integration response."
+              },
+              "accessToken": {
+                "description": "The access token from the Google Calendar integration response.",
+                "type": "string"
+              },
+              "refreshToken": {
+                "description": "The refresh token from the Google Calendar integration APIs.",
+                "type": "string"
+              },
+              "meetingDuration": {
+                "type": "number",
+                "description": "The meeting duration in minutes. Meeting duration should be less than the difference between the from and to times."
+              },
+              "timezone": {
+                "type": "string",
+                "enum": [
+                  "Pacific/Niue",
+                  "Pacific/Pago_Pago",
+                  "Pacific/Honolulu",
+                  "Pacific/Rarotonga",
+                  "Pacific/Tahiti",
+                  "Pacific/Marquesas",
+                  "America/Adak",
+                  "Pacific/Gambier",
+                  "America/Anchorage",
+                  "America/Juneau",
+                  "America/Metlakatla",
+                  "America/Nome",
+                  "America/Sitka",
+                  "America/Yakutat",
+                  "Pacific/Pitcairn",
+                  "America/Dawson",
+                  "America/Dawson_Creek",
+                  "America/Creston",
+                  "America/Whitehorse",
+                  "America/Phoenix",
+                  "America/Fort_Nelson",
+                  "America/Vancouver",
+                  "America/Los_Angeles",
+                  "America/Tijuana",
+                  "America/Hermosillo",
+                  "Pacific/Galapagos",
+                  "America/Boise",
+                  "America/Denver",
+                  "America/Inuvik",
+                  "America/Yellowknife",
+                  "America/Cambridge_Bay",
+                  "America/Ojinaga",
+                  "America/Edmonton",
+                  "Pacific/Easter",
+                  "America/Mazatlan",
+                  "America/Chihuahua",
+                  "America/Belize",
+                  "America/Guatemala",
+                  "America/Costa_Rica",
+                  "America/Managua",
+                  "America/Regina",
+                  "America/El_Salvador",
+                  "America/Swift_Current",
+                  "America/Tegucigalpa",
+                  "America/Rio_Branco",
+                  "America/Eirunepe",
+                  "America/Cancun",
+                  "America/Atikokan",
+                  "America/Panama",
+                  "America/Jamaica",
+                  "America/Bogota",
+                  "America/Lima",
+                  "America/Bahia_Banderas",
+                  "America/North_Dakota/Beulah",
+                  "America/Winnipeg",
+                  "America/Matamoros",
+                  "America/Menominee",
+                  "America/Merida",
+                  "America/Mexico_City",
+                  "America/Monterrey",
+                  "America/Indiana/Knox",
+                  "America/North_Dakota/New_Salem",
+                  "America/Rankin_Inlet",
+                  "America/Resolute",
+                  "America/Rainy_River",
+                  "America/Indiana/Tell_City",
+                  "America/North_Dakota/Center",
+                  "America/Chicago",
+                  "America/Guayaquil",
+                  "America/Boa_Vista",
+                  "America/Campo_Grande",
+                  "America/Cuiaba",
+                  "America/Manaus",
+                  "America/Porto_Velho",
+                  "America/Barbados",
+                  "America/Blanc-Sablon",
+                  "America/Curacao",
+                  "America/Martinique",
+                  "America/Port_of_Spain",
+                  "America/Puerto_Rico",
+                  "America/Santo_Doming",
+                  "America/La_Paz",
+                  "America/Caracas",
+                  "America/Indiana/Vevay",
+                  "America/Indiana/Vincennes",
+                  "America/Grand_Turk",
+                  "America/Detroit",
+                  "America/Iqaluit",
+                  "America/Indiana/Indianapolis",
+                  "America/Kentucky/Louisville",
+                  "America/Indiana/Marengo",
+                  "America/Kentucky/Monticello",
+                  "America/Nassau",
+                  "America/Nipigon",
+                  "America/New_York",
+                  "America/Pangnirtung",
+                  "America/Indiana/Petersburg",
+                  "America/Port-au-Prince",
+                  "America/Thunder_Bay",
+                  "America/Toronto",
+                  "America/Indiana/Winamac",
+                  "America/Guyana",
+                  "America/Havana",
+                  "America/Asuncion",
+                  "America/Santiago",
+                  "America/Argentina/Buenos_Aires",
+                  "America/Argentina/Jujuy",
+                  "America/Argentina/Catamarca",
+                  "America/Argentina/Cordoba",
+                  "America/Argentina/La_Rioja",
+                  "America/Argentina/Mendoza",
+                  "America/Argentina/Rio_Gallegos",
+                  "America/Argentina/Salta",
+                  "America/Argentina/San_Luis",
+                  "America/Argentina/San_Juan",
+                  "America/Argentina/Tucuman",
+                  "America/Argentina/Ushuaia",
+                  "Atlantic/Bermuda",
+                  "America/Halifax",
+                  "America/Glace_Bay",
+                  "America/Goose_Bay",
+                  "America/Moncton",
+                  "America/Thule",
+                  "America/Araguaina",
+                  "America/Bahia",
+                  "America/Belem",
+                  "America/Maceio",
+                  "America/Recife",
+                  "America/Sao_Paulo",
+                  "America/Santarem",
+                  "America/Fortaleza",
+                  "Antarctica/Palmer",
+                  "America/Punta_Arenas",
+                  "Antarctica/Rothera",
+                  "America/Paramaribo",
+                  "America/Montevideo",
+                  "Atlantic/Stanley",
+                  "America/Cayenne",
+                  "America/St_Johns",
+                  "America/Nuuk",
+                  "America/Miquelon",
+                  "America/Noronha",
+                  "Atlantic/South_Georgia",
+                  "Atlantic/Cape_Verde",
+                  "Atlantic/Azores",
+                  "America/Scoresbysund",
+                  "UTC",
+                  "Etc/GMT",
+                  "Africa/Abidjan",
+                  "Africa/Accra",
+                  "Africa/Bissau",
+                  "America/Danmarkshavn",
+                  "Africa/Monrovia",
+                  "Atlantic/Reykjavik",
+                  "Africa/Sao_Tome",
+                  "Europe/London",
+                  "Africa/Lagos",
+                  "Africa/Ndjamena",
+                  "Atlantic/Canary",
+                  "Europe/Lisbon",
+                  "Atlantic/Madeira",
+                  "Atlantic/Faroe",
+                  "Africa/El_Aaiun",
+                  "Europe/Dublin",
+                  "Africa/Casablanca",
+                  "Africa/Algiers",
+                  "Africa/Tunis",
+                  "Africa/Cairo",
+                  "Europe/Kaliningrad",
+                  "Africa/Tripoli",
+                  "Antarctica/Troll",
+                  "Africa/Windhoek",
+                  "Africa/Juba",
+                  "Africa/Maputo",
+                  "Africa/Khartoum",
+                  "Europe/Amsterdam",
+                  "Europe/Andorra",
+                  "Europe/Belgrade",
+                  "Europe/Berlin",
+                  "Europe/Brussels",
+                  "Europe/Budapest",
+                  "Europe/Warsaw",
+                  "Europe/Vienna",
+                  "Europe/Gibraltar",
+                  "Europe/Copenhagen",
+                  "Europe/Luxembourg",
+                  "Europe/Madrid",
+                  "Europe/Malta",
+                  "Europe/Monaco",
+                  "Europe/Oslo",
+                  "Europe/Paris",
+                  "Europe/Prague",
+                  "Europe/Rome",
+                  "Africa/Ceuta",
+                  "Europe/Stockholm",
+                  "Europe/Tirane",
+                  "Europe/Zurich",
+                  "Africa/Johannesburg",
+                  "Europe/Volgograd",
+                  "Africa/Nairobi",
+                  "Asia/Amman",
+                  "Europe/Athens",
+                  "Asia/Beirut",
+                  "Europe/Bucharest",
+                  "Europe/Vilnius",
+                  "Asia/Gaza",
+                  "Asia/Damascus",
+                  "Europe/Zaporozhye",
+                  "Europe/Kiev",
+                  "Europe/Chisinau",
+                  "Asia/Nicosia",
+                  "Europe/Riga",
+                  "Europe/Sofia",
+                  "Europe/Tallinn",
+                  "Europe/Uzhgorod",
+                  "Asia/Hebron",
+                  "Europe/Helsinki",
+                  "Asia/Jerusalem",
+                  "Europe/Kirov",
+                  "Europe/Minsk",
+                  "Europe/Moscow",
+                  "Europe/Simferopol",
+                  "Asia/Baghdad",
+                  "Asia/Qatar",
+                  "Asia/Riyadh",
+                  "Antarctica/Syowa",
+                  "Europe/Istanbul",
+                  "Asia/Famagusta",
+                  "Asia/Baku",
+                  "Asia/Yerevan",
+                  "Europe/Astrakhan",
+                  "Asia/Tbilisi",
+                  "Indian/Mauritius",
+                  "Asia/Dubai",
+                  "Indian/Reunion",
+                  "Europe/Samara",
+                  "Europe/Saratov",
+                  "Indian/Mahe",
+                  "Europe/Ulyanovsk",
+                  "Asia/Kabul",
+                  "Asia/Tehran",
+                  "Asia/Yekaterinburg",
+                  "Asia/Aqtau",
+                  "Asia/Aqtobe",
+                  "Asia/Atyrau",
+                  "Asia/Qyzylorda",
+                  "Asia/Oral",
+                  "Indian/Maldives",
+                  "Antarctica/Mawson",
+                  "Asia/Karachi",
+                  "Asia/Dushanbe",
+                  "Asia/Ashgabat",
+                  "Asia/Samarkand",
+                  "Asia/Tashkent",
+                  "Indian/Kerguelen",
+                  "Asia/Kolkata",
+                  "Asia/Colombo",
+                  "Asia/Kathmandu",
+                  "Asia/Dhaka",
+                  "Asia/Thimphu",
+                  "Antarctica/Vostok",
+                  "Asia/Almaty",
+                  "Asia/Qostanay",
+                  "Indian/Chagos",
+                  "Asia/Bishkek",
+                  "Asia/Omsk",
+                  "Asia/Urumqi",
+                  "Indian/Cocos",
+                  "Asia/Yangon",
+                  "Asia/Barnaul",
+                  "Antarctica/Davis",
+                  "Asia/Jakarta",
+                  "Asia/Pontianak",
+                  "Asia/Bangkok",
+                  "Asia/Ho_Chi_Minh",
+                  "Asia/Krasnoyarsk",
+                  "Asia/Novokuznetsk",
+                  "Asia/Novosibirsk",
+                  "Indian/Christmas",
+                  "Asia/Tomsk",
+                  "Asia/Hovd",
+                  "Asia/Brunei",
+                  "Asia/Hong_Kong",
+                  "Australia/Perth",
+                  "Asia/Irkutsk",
+                  "Asia/Macau",
+                  "Asia/Shanghai",
+                  "Asia/Kuala_Lumpur",
+                  "Asia/Kuching",
+                  "Asia/Singapore",
+                  "Asia/Taipei",
+                  "Asia/Ulaanbaatar",
+                  "Asia/Choibalsan",
+                  "Asia/Manila",
+                  "Asia/Makassar",
+                  "Australia/Eucla",
+                  "Asia/Jayapura",
+                  "Asia/Dili",
+                  "Asia/Pyongyang",
+                  "Asia/Seoul",
+                  "Pacific/Palau",
+                  "Asia/Khandyga",
+                  "Asia/Chita",
+                  "Asia/Yakutsk",
+                  "Asia/Tokyo",
+                  "Australia/Adelaide",
+                  "Australia/Broken_Hill",
+                  "Australia/Darwin",
+                  "Asia/Vladivostok",
+                  "Asia/Ust-Nera",
+                  "Antarctica/Macquarie",
+                  "Australia/Melbourne",
+                  "Australia/Sydney",
+                  "Australia/Hobart",
+                  "Australia/Brisbane",
+                  "Australia/Lindeman",
+                  "Antarctica/DumontDUrville",
+                  "Pacific/Port_Moresby",
+                  "Pacific/Chuuk",
+                  "Pacific/Guam",
+                  "Australia/Lord_Howe",
+                  "Pacific/Bougainville",
+                  "Pacific/Efate",
+                  "Antarctica/Casey",
+                  "Pacific/Kosrae",
+                  "Asia/Magadan",
+                  "Pacific/Noumea",
+                  "Pacific/Norfolk",
+                  "Pacific/Pohnpei",
+                  "Asia/Sakhalin",
+                  "Pacific/Guadalcanal",
+                  "Asia/Srednekolymsk",
+                  "Asia/Anadyr",
+                  "Pacific/Kwajalein",
+                  "Pacific/Majuro",
+                  "Pacific/Nauru",
+                  "Pacific/Auckland",
+                  "Pacific/Tarawa",
+                  "Asia/Kamchatka",
+                  "Pacific/Funafuti",
+                  "Pacific/Wallis",
+                  "Pacific/Wake",
+                  "Pacific/Fiji",
+                  "Pacific/Chatham",
+                  "Pacific/Apia",
+                  "Pacific/Enderbury",
+                  "Pacific/Fakaofo",
+                  "Pacific/Tongatapu"
+                ]
+              },
+              "freeSlots": {
+                "description": "Choose at least one day with time slots, you can choose what days to send and what days to leave!",
+                "$ref": "#/components/schemas/freeSlots"
+              }
+            }
+          }
+        },
+        "required": [
+          "agentName"
+        ]
+      },
+      "VoiceAgentResponseData": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "agentName": {
+            "type": "string"
+          },
+          "greetingMessage": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "preamble": {
+            "type": "string"
+          },
+          "lang": {
+            "type": "string"
+          },
+          "pokeMessages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "realTime": {
+            "type": "boolean"
+          },
+          "silenceThreshold": {
+            "type": "integer"
+          },
+          "interrupt": {
+            "type": "boolean"
+          },
+          "outcome": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "apiKeyId": {
+            "type": "string"
+          },
+          "voiceRecordId": {
+            "type": "string",
+            "nullable": true
+          },
+          "voiceRecord": {
+            "type": "object",
+            "description": "The voice record object which is connected to this agent.",
+            "nullable": true
+          },
+          "tools": {
+            "type": "object",
+            "description": "The tools that are created for this agent. This includes the Google Calendar Settings.",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "calendarName": {
+                "type": "string"
+              },
+              "accessToken": {
+                "type": "string",
+                "description": "The access token from the Google Calendar integration APIs."
+              },
+              "refreshToken": {
+                "type": "string",
+                "description": "The refresh token from the Google Calendar integration APIs."
+              },
+              "freeSlots": {
+                "type": "object",
+                "properties": {
+                  "Monday": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/freeSlotsDayArray"
+                    }
+                  },
+                  "Tuesday": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/freeSlotsDayArray"
+                    }
+                  },
+                  "Wednesday": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/freeSlotsDayArray"
+                    }
+                  },
+                  "Thursday": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/freeSlotsDayArray"
+                    }
+                  },
+                  "Friday": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/freeSlotsDayArray"
+                    }
+                  },
+                  "Saturday": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/freeSlotsDayArray"
+                    }
+                  },
+                  "Sunday": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/freeSlotsDayArray"
+                    }
+                  }
+                }
+              },
+              "meetingDuration": {
+                "type": "number"
+              },
+              "timezone": {
+                "type": "string"
+              },
+              "voiceAgentToolsId": {
+                "type": "string"
+              },
+              "calendarId": {
+                "type": "string"
+              },
+              "eventTitle": {
+                "type": "string"
+              }
+            }
+          },
+          "params": {
+            "type": "object",
+            "description": "The parameters that are created for this agent."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "VoiceAgentResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/VoiceAgentResponseData"
+          }
+        }
+      },
+      "UpdateVoiceAgentRequest": {
+        "type": "object",
+        "properties": {
+          "agentName": {
+            "type": "string"
+          },
+          "greetingMessage": {
+            "description": "Greeting Message can be customized by adding params like: {{name}}, to make the message more personal!",
+            "type": "string"
+          },
+          "preamble": {
+            "description": "Preamble can be customized by adding params like: {{agentName}}, to make the prompt more specific and context aware!"
+          },
+          "lang": {
+            "type": "string",
+            "enum": [
+              "ar",
+              "en"
+            ]
+          },
+          "pokeMessages": {
+            "description": "The messages to say to the user when he doesn't respond!",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "realTime": {
+            "type": "boolean"
+          },
+          "silenceThreshold": {
+            "type": "integer"
+          },
+          "interrupt": {
+            "type": "boolean"
+          },
+          "outcome": {
+            "description": "A prompt to take the conversation and transform it to anything you like, like creating an article out of the conversation!",
+            "type": "string"
+          },
+          "voiceId": {
+            "description": "You can find predefined voices in the voice agents dashboard, under the language tab",
+            "type": "string",
+            "enum": [
+              "1f3396aa-24e3-4523-b4ef-7dd4adb8fab9",
+              "29709a36-7703-497f-b6e5-0d39b873f77d",
+              "37665327-bfc7-4edf-a362-596a379865dc",
+              "60ef35b1-056a-47d9-8f8f-6571f2106560",
+              "8f14b3ee-beb6-4f9a-9819-02b45f7d48ff",
+              "a2404aca-2c6d-47c7-ae9c-5ea317a30e60",
+              "b1d24f8c-6d60-4fb5-8d06-708ba1bc89c2",
+              "d23c0832-a642-4a59-8e93-fd0924abc46e",
+              "d981c03a-2868-4de2-b097-e11ec231413c"
+            ]
+          },
+          "tools": {
+            "type": "object",
+            "properties": {
+              "googleCalendar": {
+                "type": "boolean",
+                "default": false
+              },
+              "genderDetection": {
+                "type": "boolean",
+                "default": false
+              },
+              "smartCallEnd": {
+                "type": "boolean",
+                "default": false
+              }
+            }
+          },
+          "params": {
+            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value.",
+            "type": "object"
+          },
+          "googleCalendarSettings": {
+            "description": "Send it only if the tools.googleCalendar is true.",
+            "type": "object",
+            "properties": {
+              "calendarId": {
+                "description": "The calendar id from the Google Calendar integration response.",
+                "type": "string"
+              },
+              "eventTitle": {
+                "description": "A customized event title to be written to the booked meeting by the system.",
+                "type": "string",
+                "default": "New meeting by {agentName}"
+              },
+              "calendarName": {
+                "type": "string",
+                "description": "The calendar name from the Google Calendar integration response."
+              },
+              "accessToken": {
+                "description": "The access token from the Google Calendar integration response.",
+                "type": "string"
+              },
+              "refreshToken": {
+                "description": "The refresh token from the Google Calendar integration APIs.",
+                "type": "string"
+              },
+              "meetingDuration": {
+                "type": "number",
+                "description": "The meeting duration in minutes. Meeting duration should be less than the difference between the from and to times."
+              },
+              "timezone": {
+                "type": "string",
+                "enum": [
+                  "Pacific/Niue",
+                  "Pacific/Pago_Pago",
+                  "Pacific/Honolulu",
+                  "Pacific/Rarotonga",
+                  "Pacific/Tahiti",
+                  "Pacific/Marquesas",
+                  "America/Adak",
+                  "Pacific/Gambier",
+                  "America/Anchorage",
+                  "America/Juneau",
+                  "America/Metlakatla",
+                  "America/Nome",
+                  "America/Sitka",
+                  "America/Yakutat",
+                  "Pacific/Pitcairn",
+                  "America/Dawson",
+                  "America/Dawson_Creek",
+                  "America/Creston",
+                  "America/Whitehorse",
+                  "America/Phoenix",
+                  "America/Fort_Nelson",
+                  "America/Vancouver",
+                  "America/Los_Angeles",
+                  "America/Tijuana",
+                  "America/Hermosillo",
+                  "Pacific/Galapagos",
+                  "America/Boise",
+                  "America/Denver",
+                  "America/Inuvik",
+                  "America/Yellowknife",
+                  "America/Cambridge_Bay",
+                  "America/Ojinaga",
+                  "America/Edmonton",
+                  "Pacific/Easter",
+                  "America/Mazatlan",
+                  "America/Chihuahua",
+                  "America/Belize",
+                  "America/Guatemala",
+                  "America/Costa_Rica",
+                  "America/Managua",
+                  "America/Regina",
+                  "America/El_Salvador",
+                  "America/Swift_Current",
+                  "America/Tegucigalpa",
+                  "America/Rio_Branco",
+                  "America/Eirunepe",
+                  "America/Cancun",
+                  "America/Atikokan",
+                  "America/Panama",
+                  "America/Jamaica",
+                  "America/Bogota",
+                  "America/Lima",
+                  "America/Bahia_Banderas",
+                  "America/North_Dakota/Beulah",
+                  "America/Winnipeg",
+                  "America/Matamoros",
+                  "America/Menominee",
+                  "America/Merida",
+                  "America/Mexico_City",
+                  "America/Monterrey",
+                  "America/Indiana/Knox",
+                  "America/North_Dakota/New_Salem",
+                  "America/Rankin_Inlet",
+                  "America/Resolute",
+                  "America/Rainy_River",
+                  "America/Indiana/Tell_City",
+                  "America/North_Dakota/Center",
+                  "America/Chicago",
+                  "America/Guayaquil",
+                  "America/Boa_Vista",
+                  "America/Campo_Grande",
+                  "America/Cuiaba",
+                  "America/Manaus",
+                  "America/Porto_Velho",
+                  "America/Barbados",
+                  "America/Blanc-Sablon",
+                  "America/Curacao",
+                  "America/Martinique",
+                  "America/Port_of_Spain",
+                  "America/Puerto_Rico",
+                  "America/Santo_Doming",
+                  "America/La_Paz",
+                  "America/Caracas",
+                  "America/Indiana/Vevay",
+                  "America/Indiana/Vincennes",
+                  "America/Grand_Turk",
+                  "America/Detroit",
+                  "America/Iqaluit",
+                  "America/Indiana/Indianapolis",
+                  "America/Kentucky/Louisville",
+                  "America/Indiana/Marengo",
+                  "America/Kentucky/Monticello",
+                  "America/Nassau",
+                  "America/Nipigon",
+                  "America/New_York",
+                  "America/Pangnirtung",
+                  "America/Indiana/Petersburg",
+                  "America/Port-au-Prince",
+                  "America/Thunder_Bay",
+                  "America/Toronto",
+                  "America/Indiana/Winamac",
+                  "America/Guyana",
+                  "America/Havana",
+                  "America/Asuncion",
+                  "America/Santiago",
+                  "America/Argentina/Buenos_Aires",
+                  "America/Argentina/Jujuy",
+                  "America/Argentina/Catamarca",
+                  "America/Argentina/Cordoba",
+                  "America/Argentina/La_Rioja",
+                  "America/Argentina/Mendoza",
+                  "America/Argentina/Rio_Gallegos",
+                  "America/Argentina/Salta",
+                  "America/Argentina/San_Luis",
+                  "America/Argentina/San_Juan",
+                  "America/Argentina/Tucuman",
+                  "America/Argentina/Ushuaia",
+                  "Atlantic/Bermuda",
+                  "America/Halifax",
+                  "America/Glace_Bay",
+                  "America/Goose_Bay",
+                  "America/Moncton",
+                  "America/Thule",
+                  "America/Araguaina",
+                  "America/Bahia",
+                  "America/Belem",
+                  "America/Maceio",
+                  "America/Recife",
+                  "America/Sao_Paulo",
+                  "America/Santarem",
+                  "America/Fortaleza",
+                  "Antarctica/Palmer",
+                  "America/Punta_Arenas",
+                  "Antarctica/Rothera",
+                  "America/Paramaribo",
+                  "America/Montevideo",
+                  "Atlantic/Stanley",
+                  "America/Cayenne",
+                  "America/St_Johns",
+                  "America/Nuuk",
+                  "America/Miquelon",
+                  "America/Noronha",
+                  "Atlantic/South_Georgia",
+                  "Atlantic/Cape_Verde",
+                  "Atlantic/Azores",
+                  "America/Scoresbysund",
+                  "UTC",
+                  "Etc/GMT",
+                  "Africa/Abidjan",
+                  "Africa/Accra",
+                  "Africa/Bissau",
+                  "America/Danmarkshavn",
+                  "Africa/Monrovia",
+                  "Atlantic/Reykjavik",
+                  "Africa/Sao_Tome",
+                  "Europe/London",
+                  "Africa/Lagos",
+                  "Africa/Ndjamena",
+                  "Atlantic/Canary",
+                  "Europe/Lisbon",
+                  "Atlantic/Madeira",
+                  "Atlantic/Faroe",
+                  "Africa/El_Aaiun",
+                  "Europe/Dublin",
+                  "Africa/Casablanca",
+                  "Africa/Algiers",
+                  "Africa/Tunis",
+                  "Africa/Cairo",
+                  "Europe/Kaliningrad",
+                  "Africa/Tripoli",
+                  "Antarctica/Troll",
+                  "Africa/Windhoek",
+                  "Africa/Juba",
+                  "Africa/Maputo",
+                  "Africa/Khartoum",
+                  "Europe/Amsterdam",
+                  "Europe/Andorra",
+                  "Europe/Belgrade",
+                  "Europe/Berlin",
+                  "Europe/Brussels",
+                  "Europe/Budapest",
+                  "Europe/Warsaw",
+                  "Europe/Vienna",
+                  "Europe/Gibraltar",
+                  "Europe/Copenhagen",
+                  "Europe/Luxembourg",
+                  "Europe/Madrid",
+                  "Europe/Malta",
+                  "Europe/Monaco",
+                  "Europe/Oslo",
+                  "Europe/Paris",
+                  "Europe/Prague",
+                  "Europe/Rome",
+                  "Africa/Ceuta",
+                  "Europe/Stockholm",
+                  "Europe/Tirane",
+                  "Europe/Zurich",
+                  "Africa/Johannesburg",
+                  "Europe/Volgograd",
+                  "Africa/Nairobi",
+                  "Asia/Amman",
+                  "Europe/Athens",
+                  "Asia/Beirut",
+                  "Europe/Bucharest",
+                  "Europe/Vilnius",
+                  "Asia/Gaza",
+                  "Asia/Damascus",
+                  "Europe/Zaporozhye",
+                  "Europe/Kiev",
+                  "Europe/Chisinau",
+                  "Asia/Nicosia",
+                  "Europe/Riga",
+                  "Europe/Sofia",
+                  "Europe/Tallinn",
+                  "Europe/Uzhgorod",
+                  "Asia/Hebron",
+                  "Europe/Helsinki",
+                  "Asia/Jerusalem",
+                  "Europe/Kirov",
+                  "Europe/Minsk",
+                  "Europe/Moscow",
+                  "Europe/Simferopol",
+                  "Asia/Baghdad",
+                  "Asia/Qatar",
+                  "Asia/Riyadh",
+                  "Antarctica/Syowa",
+                  "Europe/Istanbul",
+                  "Asia/Famagusta",
+                  "Asia/Baku",
+                  "Asia/Yerevan",
+                  "Europe/Astrakhan",
+                  "Asia/Tbilisi",
+                  "Indian/Mauritius",
+                  "Asia/Dubai",
+                  "Indian/Reunion",
+                  "Europe/Samara",
+                  "Europe/Saratov",
+                  "Indian/Mahe",
+                  "Europe/Ulyanovsk",
+                  "Asia/Kabul",
+                  "Asia/Tehran",
+                  "Asia/Yekaterinburg",
+                  "Asia/Aqtau",
+                  "Asia/Aqtobe",
+                  "Asia/Atyrau",
+                  "Asia/Qyzylorda",
+                  "Asia/Oral",
+                  "Indian/Maldives",
+                  "Antarctica/Mawson",
+                  "Asia/Karachi",
+                  "Asia/Dushanbe",
+                  "Asia/Ashgabat",
+                  "Asia/Samarkand",
+                  "Asia/Tashkent",
+                  "Indian/Kerguelen",
+                  "Asia/Kolkata",
+                  "Asia/Colombo",
+                  "Asia/Kathmandu",
+                  "Asia/Dhaka",
+                  "Asia/Thimphu",
+                  "Antarctica/Vostok",
+                  "Asia/Almaty",
+                  "Asia/Qostanay",
+                  "Indian/Chagos",
+                  "Asia/Bishkek",
+                  "Asia/Omsk",
+                  "Asia/Urumqi",
+                  "Indian/Cocos",
+                  "Asia/Yangon",
+                  "Asia/Barnaul",
+                  "Antarctica/Davis",
+                  "Asia/Jakarta",
+                  "Asia/Pontianak",
+                  "Asia/Bangkok",
+                  "Asia/Ho_Chi_Minh",
+                  "Asia/Krasnoyarsk",
+                  "Asia/Novokuznetsk",
+                  "Asia/Novosibirsk",
+                  "Indian/Christmas",
+                  "Asia/Tomsk",
+                  "Asia/Hovd",
+                  "Asia/Brunei",
+                  "Asia/Hong_Kong",
+                  "Australia/Perth",
+                  "Asia/Irkutsk",
+                  "Asia/Macau",
+                  "Asia/Shanghai",
+                  "Asia/Kuala_Lumpur",
+                  "Asia/Kuching",
+                  "Asia/Singapore",
+                  "Asia/Taipei",
+                  "Asia/Ulaanbaatar",
+                  "Asia/Choibalsan",
+                  "Asia/Manila",
+                  "Asia/Makassar",
+                  "Australia/Eucla",
+                  "Asia/Jayapura",
+                  "Asia/Dili",
+                  "Asia/Pyongyang",
+                  "Asia/Seoul",
+                  "Pacific/Palau",
+                  "Asia/Khandyga",
+                  "Asia/Chita",
+                  "Asia/Yakutsk",
+                  "Asia/Tokyo",
+                  "Australia/Adelaide",
+                  "Australia/Broken_Hill",
+                  "Australia/Darwin",
+                  "Asia/Vladivostok",
+                  "Asia/Ust-Nera",
+                  "Antarctica/Macquarie",
+                  "Australia/Melbourne",
+                  "Australia/Sydney",
+                  "Australia/Hobart",
+                  "Australia/Brisbane",
+                  "Australia/Lindeman",
+                  "Antarctica/DumontDUrville",
+                  "Pacific/Port_Moresby",
+                  "Pacific/Chuuk",
+                  "Pacific/Guam",
+                  "Australia/Lord_Howe",
+                  "Pacific/Bougainville",
+                  "Pacific/Efate",
+                  "Antarctica/Casey",
+                  "Pacific/Kosrae",
+                  "Asia/Magadan",
+                  "Pacific/Noumea",
+                  "Pacific/Norfolk",
+                  "Pacific/Pohnpei",
+                  "Asia/Sakhalin",
+                  "Pacific/Guadalcanal",
+                  "Asia/Srednekolymsk",
+                  "Asia/Anadyr",
+                  "Pacific/Kwajalein",
+                  "Pacific/Majuro",
+                  "Pacific/Nauru",
+                  "Pacific/Auckland",
+                  "Pacific/Tarawa",
+                  "Asia/Kamchatka",
+                  "Pacific/Funafuti",
+                  "Pacific/Wallis",
+                  "Pacific/Wake",
+                  "Pacific/Fiji",
+                  "Pacific/Chatham",
+                  "Pacific/Apia",
+                  "Pacific/Enderbury",
+                  "Pacific/Fakaofo",
+                  "Pacific/Tongatapu"
+                ]
+              },
+              "freeSlots": {
+                "description": "Choose at least one day with time slots, you can choose what days to send and what days to leave!",
+                "$ref": "#/components/schemas/freeSlots"
+              }
+            }
+          }
+        }
+      },
+      "VoiceAgentsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "filtered": {
+                "type": "integer"
+              },
+              "voiceAgents": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/VoiceAgentResponseData"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CallRequest": {
+        "type": "object",
+        "properties": {
+          "toNumber": {
+            "type": "string"
+          },
+          "fromNumber": {
+            "type": "string"
+          },
+          "agentDetails": {
+            "$ref": "#/components/schemas/VoiceAgentRequest",
+            "default": {}
+          },
+          "voiceAgentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "params": {
+            "type": "object",
+            "additionalProperties": true,
+            "default": {}
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "voiceAgentId",
+              "params",
+              "fromNumber",
+              "toNumber"
+            ],
+            "not": {
+              "required": [
+                "agentDetails",
+                "fromNumber",
+                "toNumber"
+              ]
+            }
+          },
+          {
+            "required": [
+              "agentDetails",
+              "fromNumber",
+              "toNumber"
+            ],
+            "not": {
+              "required": [
+                "voiceAgentId",
+                "params"
+              ]
+            }
+          }
+        ]
+      },
+      "CallResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string",
+                "nullable": true
+              },
+              "model": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "processingType": {
+                "type": "string"
+              },
+              "webhookUrl": {
+                "type": "string",
+                "nullable": true
+              },
+              "totalCost": {
+                "type": "number"
+              },
+              "usageTime": {
+                "type": "string",
+                "nullable": true
+              },
+              "fromLng": {
+                "type": "string",
+                "nullable": true
+              },
+              "toLng": {
+                "type": "string",
+                "nullable": true
+              },
+              "mediaUrl": {
+                "type": "string",
+                "nullable": true
+              },
+              "jobResponse": {
+                "type": "object",
+                "nullable": true
+              },
+              "fromScript": {
+                "type": "string",
+                "nullable": true
+              },
+              "toScript": {
+                "type": "string",
+                "nullable": true
+              },
+              "status": {
+                "type": "string"
+              },
+              "relevantJobId": {
+                "type": "string",
+                "nullable": true
+              },
+              "agentDetails": {
+                "$ref": "#/components/schemas/VoiceAgentResponseData"
+              },
+              "apiKeyId": {
+                "type": "string"
+              },
+              "billingId": {
+                "type": "string"
+              },
+              "systemModelKey": {
+                "type": "string",
+                "nullable": true
+              },
+              "voiceAgentId": {
+                "type": "string",
+                "nullable": true
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "VoiceAgentTemplatesResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "agentName": {
+                  "type": "string"
+                },
+                "greetingMessage": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "preamble": {
+                  "type": "string"
+                },
+                "lang": {
+                  "type": "string"
+                },
+                "voice": {
+                  "type": "string",
+                  "enum": [
+                    "ar-msa",
+                    "en-default",
+                    "ar-gulf"
+                  ]
+                },
+                "pokeMessages": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "realTime": {
+                  "type": "boolean"
+                },
+                "silenceThreshold": {
+                  "type": "integer"
+                },
+                "interrupt": {
+                  "type": "boolean"
+                },
+                "outcome": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "isTemplate": {
+                  "type": "boolean"
+                },
+                "icon": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "projectId": {
+                  "type": "string"
+                },
+                "apiKeyId": {
+                  "type": "string"
+                },
+                "voiceRecordId": {
+                  "type": "string",
+                  "nullable": true
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CloneResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/VoiceAgentResponseData"
+          }
+        }
+      },
+      "JobResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          },
+          "previewUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "model": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "processingType": {
+                "type": "string"
+              },
+              "webhookUrl": {
+                "type": "string",
+                "nullable": true
+              },
+              "totalCost": {
+                "type": "number"
+              },
+              "usageTime": {
+                "type": "string"
+              },
+              "fromLng": {
+                "type": "string",
+                "nullable": true
+              },
+              "toLng": {
+                "type": "string",
+                "nullable": true
+              },
+              "mediaUrl": {
+                "type": "string",
+                "format": "uri"
+              },
+              "jobResponse": {
+                "type": "object",
+                "nullable": true
+              },
+              "fromScript": {
+                "type": "string",
+                "nullable": true
+              },
+              "toScript": {
+                "type": "string",
+                "nullable": true
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "PENDING",
+                  "COMPLETED",
+                  "FAILED"
+                ]
+              },
+              "relevantJobId": {
+                "type": "string",
+                "nullable": true
+              },
+              "agentDetails": {
+                "type": "string",
+                "nullable": true
+              },
+              "apiKeyId": {
+                "type": "string"
+              },
+              "billingId": {
+                "type": "string"
+              },
+              "systemModelKey": {
+                "type": "string"
+              },
+              "voiceAgentId": {
+                "type": "string",
+                "nullable": true
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "model",
+              "type",
+              "processingType",
+              "totalCost",
+              "usageTime",
+              "status",
+              "apiKeyId",
+              "billingId",
+              "systemModelKey",
+              "createdAt",
+              "updatedAt"
+            ]
+          }
+        }
       }
     },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Pass the API key in the Authorization header, You need to put Token keyword before the API key. e.g. 'Authorization: Token <api-key>'"
       }
     }
   }
