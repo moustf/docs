@@ -2237,7 +2237,9 @@
           },
           "silenceThreshold": {
             "type": "integer",
-            "default": 800
+            "default": 800,
+            "minimum": 1,
+            "description": "The silence threshold in milliseconds. Minimum value is 1 millisecond."
           },
           "interrupt": {
             "type": "boolean",
