@@ -2283,7 +2283,7 @@
             }
           },
           "params": {
-            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value.",
+            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value. Press 'Add new property' below to set the param name then press enter, after that add the value.",
             "type": "object",
             "default": {}
           },
@@ -2919,7 +2919,7 @@
             }
           },
           "params": {
-            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value.",
+            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value. Press 'Add new property' below to set the param name then press enter, after that add the value.",
             "type": "object"
           },
           "googleCalendarSettings": {
