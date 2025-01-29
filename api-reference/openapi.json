@@ -3346,13 +3346,19 @@
         "type": "object",
         "properties": {
           "toNumber": {
-            "type": "string"
+            "type": "string",
+            "description": "The number that you want to call"
           },
           "fromNumber": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "+18449292835",
+              "+18558961879"
+            ]
           },
           "agentDetails": {
             "$ref": "#/components/schemas/VoiceAgentRequest",
+            "description": "Send agentDetails instead of voiceAgentId and params.",
             "default": {}
           },
           "voiceAgentId": {
@@ -3361,6 +3367,7 @@
           },
           "params": {
             "type": "object",
+            "description": "Params set in the voice agent's greeting message or preamble. Send when using voiceAgentId only.",
             "additionalProperties": true,
             "default": {}
           }
