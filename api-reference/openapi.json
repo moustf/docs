@@ -2283,7 +2283,7 @@
             }
           },
           "params": {
-            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value.",
+            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value. Press 'Add new property' below to set the param name then press enter, after that add the value.",
             "type": "object",
             "default": {}
           },
@@ -2919,7 +2919,7 @@
             }
           },
           "params": {
-            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value.",
+            "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value. Press 'Add new property' below to set the param name then press enter, after that add the value.",
             "type": "object"
           },
           "googleCalendarSettings": {
@@ -3346,13 +3346,19 @@
         "type": "object",
         "properties": {
           "toNumber": {
-            "type": "string"
+            "type": "string",
+            "description": "The number that you want to call"
           },
           "fromNumber": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "+18449292835",
+              "+18558961879"
+            ]
           },
           "agentDetails": {
             "$ref": "#/components/schemas/VoiceAgentRequest",
+            "description": "Send agentDetails instead of voiceAgentId and params.",
             "default": {}
           },
           "voiceAgentId": {
@@ -3361,6 +3367,7 @@
           },
           "params": {
             "type": "object",
+            "description": "Params set in the voice agent's greeting message or preamble. Send when using voiceAgentId only.",
             "additionalProperties": true,
             "default": {}
           }
