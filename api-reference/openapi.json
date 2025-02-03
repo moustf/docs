@@ -3370,6 +3370,12 @@
             "description": "Params set in the voice agent's greeting message or preamble. Send when using voiceAgentId only.",
             "additionalProperties": true,
             "default": {}
+          },
+          "webhookUrl": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "https://example.com/webhook"
           }
         },
         "anyOf": [
