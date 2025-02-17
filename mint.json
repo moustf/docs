@@ -66,6 +66,12 @@
       ]
     },
     {
+      "group": "Text to Speech Routes",
+      "pages": [
+        "api-reference/endpoint/generate-tts"
+      ]
+    },
+    {
       "group": "Voice Agents Routes",
       "pages": [
         "api-reference/endpoint/create-voice-agent",
