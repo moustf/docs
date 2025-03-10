@@ -1785,7 +1785,7 @@
           }
         }
       },
-      "ExternalWebhookAuthScheme" :{
+      "ExternalWebhookAuthScheme": {
         "type": "object",
         "description": "Authorization header to be sent in this format: `Authorization: [authKey] [authSecret]`",
         "properties": {
