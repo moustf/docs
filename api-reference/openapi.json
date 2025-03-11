@@ -1840,6 +1840,10 @@
           "returnSrtFormat": {
             "type": "boolean",
             "default": false
+          },
+          "denoise": {
+            "type": "boolean",
+            "default": false
           }
         },
         "required": [
@@ -3927,7 +3931,7 @@
                 "format": "date-time"
               },
               "updatedAt": {
-                "type": "string", 
+                "type": "string",
                 "format": "date-time"
               }
             },
