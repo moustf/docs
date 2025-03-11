@@ -1831,6 +1831,15 @@
               "hamsa-v1-general",
               "Hamsa-V1.5-alpha"
             ]
+          },
+          "language": {
+            "type": "string",
+            "enum": ["ar", "en"],
+            "default": "ar"
+          },
+          "returnSrtFormat": {
+            "type": "boolean",
+            "default": false
           }
         },
         "required": [
