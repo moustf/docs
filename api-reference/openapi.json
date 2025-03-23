@@ -1834,16 +1834,56 @@
           },
           "language": {
             "type": "string",
-            "enum": ["ar", "en"],
+            "enum": [
+              "ar",
+              "en"
+            ],
             "default": "ar"
           },
           "returnSrtFormat": {
             "type": "boolean",
             "default": false
           },
-          "denoise": {
-            "type": "boolean",
-            "default": false
+          "srtOptions": {
+            "type": "object",
+            "description": "You can override srtOptions default values and send the object only if returnSrtFormat is false.",
+            "properties": {
+              "maxLinesPerSubtitle": {
+                "type": "integer",
+                "example": 2,
+                "default": 2
+              },
+              "singleSpeakerPerSubtitle": {
+                "type": "boolean",
+                "default": true,
+                "example": true
+              },
+              "maxCharsPerLine": {
+                "type": "integer",
+                "example": 42,
+                "default": 42
+              },
+              "maxMergeableGap": {
+                "type": "number",
+                "example": 0.3,
+                "default": 0.3
+              },
+              "minDuration": {
+                "type": "number",
+                "example": 0.7,
+                "default": 0.7
+              },
+              "maxDuration": {
+                "type": "number",
+                "example": 7,
+                "default": 7
+              },
+              "minGap": {
+                "type": "number",
+                "example": 0.04,
+                "default": 0.04
+              }
+            }
           }
         },
         "required": [
