@@ -672,79 +672,28 @@
                 "properties": {
                   "aiParts": {
                     "type": "array",
+                    "description": "The AI parts to generate content for. AI parts array should have at least one AI part object, with an aiPart (title), the language to return the content for the part in, and the prompt to use.",
                     "items": {
-                      "type": "string",
-                      "enum": [
-                        "introduction",
-                        "titles",
-                        "summary",
-                        "webArticleSEOFriendly",
-                        "keyTopicsWithBullets",
-                        "keyTopicsWithBullets",
-                        "keywords",
-                        "threadsByInstagram",
-                        "faq",
-                        "facebookPost",
-                        "youtubeDescription",
-                        "twitterThread",
-                        "linkedInPost"
-                      ]
-                    }
-                  },
-                  "prompts": {
-                    "type": "object",
-                    "description": "Prompts are optional, you need to add a prompt for every AI part you select, and it must end with 'Diarization: {diarization}, Language: {language}'",
-                    "properties": {
-                      "introduction": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
+                      "type": "object",
+                      "properties": {
+                        "aiPart": {
+                          "type": "string",
+                          "description": "The AI part title for the content. The AI part title must be unique for the job.",
+                          "minLength": 1
+                        },
+                        "language": {
+                          "type": "string",
+                          "description": "The language to return the content for the part in. The language must be one either 'ar' or 'en'.",
+                          "enum": ["ar", "en"]
+                        },
+                        "prompt": {
+                          "type": "string",
+                          "description": "The prompt to use for generating the content of the AI part. Please make sure to use descriptive and appropriate instructions here to get the best content possible."
+                        }
                       },
-                      "titles": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "summary": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "keywords": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "keyTopicsWithBullets": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "faq": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "webArticleSEOFriendly": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "threadsByInstagram": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "youtubeDescription": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "facebookPost": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "twitterThread": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      },
-                      "linkedInPost": {
-                        "type": "string",
-                        "pattern": ".*Diarization: \\{diarization\\}, Language: \\{language\\}.*"
-                      }
+                      "required": ["aiPart", "language", "prompt"]
                     },
-                    "additionalProperties": false
+                    "minLength": 1
                   },
                   "webhookUrl": {
                     "type": "string",
