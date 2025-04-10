@@ -93,7 +93,6 @@
       "pages": [
         "api-reference/endpoint/post-ai-content",
         "api-reference/endpoint/get-ai-content",
-        "api-reference/endpoint/modify-ai-content-part",
         "api-reference/endpoint/custom-ai-content",
         "api-reference/endpoint/ai-content-estimate"
       ]
