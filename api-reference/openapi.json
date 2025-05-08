@@ -584,14 +584,21 @@
                         "language": {
                           "type": "string",
                           "description": "The language to return the content for the part in. The language must be one either 'ar' or 'en'.",
-                          "enum": ["ar", "en"]
+                          "enum": [
+                            "ar",
+                            "en"
+                          ]
                         },
                         "prompt": {
                           "type": "string",
                           "description": "The prompt to use for generating the content of the AI part. Please make sure to use descriptive and appropriate instructions here to get the best content possible."
                         }
                       },
-                      "required": ["aiPart", "language", "prompt"]
+                      "required": [
+                        "aiPart",
+                        "language",
+                        "prompt"
+                      ]
                     },
                     "minLength": 1
                   },
@@ -1305,6 +1312,147 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TTSResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/realtime/tts": {
+      "post": {
+        "summary": "Generates an audio file from a text string (not streamed).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RtTtsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "audio/wav": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/realtime/tts-stream": {
+      "post": {
+        "summary": "Generates a streamed audio file from a text string.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RtTtsRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Streamed Successful Response - Chunked",
+            "content": {
+              "audio/wav": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary",
+                  "x-streaming": true
+                }
+              }
+            },
+            "headers": {
+              "Transfer-Encoding": {
+                "description": "Indicates that the response uses chunked transfer encoding - streamed.",
+                "schema": {
+                  "type": "string",
+                  "example": "chunked"
+                }
+              },
+              "Connection": {
+                "description": "Indicates that the server will keep the connection open for streaming.",
+                "schema": {
+                  "type": "string",
+                  "example": "keep-alive"
                 }
               }
             }
@@ -3820,6 +3968,44 @@
             ]
           }
         }
+      },
+      "RtTtsRequest": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The text to be generated as an aduio file.",
+            "example": "مرحباً بكم في جميعاً في همسة!"
+          },
+          "speaker": {
+            "type": "string",
+            "description": "The speaker name, this field's value can be taken from the dashboard voice agents section.",
+            "example": "Majd"
+          },
+          "dialect": {
+            "type": "string",
+            "enum": [
+              "pls",
+              "leb",
+              "jor",
+              "syr",
+              "ksa",
+              "bah",
+              "uae",
+              "egy",
+              "irq"
+            ],
+            "description": "The dialect of each country by its country code.",
+            "example": "pls"
+          },
+          "mulaw": {
+            "type": "boolean",
+            "description": "Whether to use 'Mu-Law' algorithm in voice signal processing or not.",
+            "example": false,
+            "default": false
+          }
+        },
+        "required": ["text", "speaker"]
       }
     },
     "securitySchemes": {
