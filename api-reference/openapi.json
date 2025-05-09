@@ -1419,6 +1419,7 @@
     "/v1/realtime/tts-stream": {
       "post": {
         "summary": "Generates a streamed audio file from a text string.",
+        "description": "From the user's perspective, this is a standard request. In the response, we include specific headers: 'Transfer-Encoding' is set to 'chunked' to enable streaming, 'Connection' is set to 'keep-alive' to maintain the connection, and 'Content-Type' is set to 'audio/wav' to indicate the media type. These headers allow the client to stream audio data from the server in real time.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1432,10 +1433,11 @@
           "200": {
             "description": "Streamed Successful Response - Chunked",
             "content": {
-              "audio/wav": {
+              "stream": {
                 "schema": {
                   "type": "string",
                   "format": "binary",
+                  "example": "00000000: 52 49 46 46 FF FF FF FF 57 41 56 45 66 6D 74 20 ",
                   "x-streaming": true
                 }
               }
@@ -1491,6 +1493,13 @@
         "security": [
           {
             "ApiKeyAuth": []
+          }
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "JavaScript",
+            "label": "Stream and play audio chunks",
+            "source": "fetch('https://api-dev.tryhamsa.com/v1/realtime/tts-stream', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    'Authorization': 'Token YOUR_API_KEY'\n  },\n  body: JSON.stringify({ speaker: 'Ali', dialect: 'pls', text: 'Hello, world!', mulaw: false })\n})\n.then(response => {\n  const reader = response.body.getReader();\n  const audioContext = new (window.AudioContext || window.webkitAudioContext)();\n  const chunks = [];\n\n  function read() {\n    reader.read().then(({ done, value }) => {\n      if (done) {\n        // Optionally concatenate chunks and play entire stream\n        const blob = new Blob(chunks, { type: 'audio/wav' });\n        const url = URL.createObjectURL(blob);\n        const audio = new Audio(url);\n        audio.play();\n        return;\n      }\n\n      chunks.push(value);\n      read();\n    });\n  }\n\n  read();\n})\n.catch(console.error);"
           }
         ]
       }
@@ -4047,6 +4056,32 @@
           "speaker": {
             "type": "string",
             "description": "The speaker name, this field's value can be taken from the dashboard voice agents section.",
+            "enum": [
+              "Amjad",
+              "Layali",
+              "Salma",
+              "Mariam",
+              "Dalal",
+              "Lana",
+              "Jasem",
+              "Sameer",
+              "Carla",
+              "Nada",
+              "Mais",
+              "Fatma",
+              "Hiba",
+              "Ali",
+              "Layan",
+              "Khadija",
+              "Mazen",
+              "Dima",
+              "Majd",
+              "Talin",
+              "Ahmed",
+              "Rema",
+              "Fahd",
+              "Rami"
+            ],
             "example": "Majd"
           },
           "dialect": {
@@ -4062,7 +4097,7 @@
               "egy",
               "irq"
             ],
-            "description": "The dialect of each country by its country code.",
+            "description": "The dialect of each country by its country code. Recommended voices per dialect are: pls (Palestinian): Amjad, Layan, Talin, Rema, Ali; leb (Lebanese): Carla, Majd; jor (Jordanian): Lana, Jasem; syr (Syrian): Dalal, Mais; ksa (Saudi): Hiba, Khadija, Fahd, Jasem; bah (Bahraini): Mazen; uae (Emirati): Salma, Dima; egy (Egyptian): Mariam, Sameer, Nada, Ali, Ahmed; irq (Iraqi): Layali, Fatma.",
             "example": "pls"
           },
           "mulaw": {
