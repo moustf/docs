@@ -1494,6 +1494,73 @@
           }
         ]
       }
+    },
+    "/v1/realtime/stt": {
+      "post": {
+        "summary": "Generates an speech to text transcription (not streamed).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RtSttRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "description": "The generated text of the speech audio list."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -4005,7 +4072,41 @@
             "default": false
           }
         },
-        "required": ["text", "speaker"]
+        "required": [
+          "text",
+          "speaker"
+        ]
+      },
+      "RtSttRequest": {
+        "type": "object",
+        "properties": {
+          "audio": {
+            "type": "array",
+            "description": "The audio list that contains the audio data as numbers of type float.",
+            "items": {
+              "type": "number",
+              "description": "Float numbers which represents the audio data."
+            }
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "ar",
+              "en"
+            ],
+            "default": "ar"
+          },
+          "isEosEnabled": {
+            "type": "boolean",
+            "description": "Whether to enable End of Speech detection or not.",
+            "default": false
+          },
+          "eosThreshold": {
+            "type": "number",
+            "description": "The threshold value for End of Speech detection.",
+            "default": 0.3
+          }
+        }
       }
     },
     "securitySchemes": {

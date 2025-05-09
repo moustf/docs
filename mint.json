@@ -75,7 +75,8 @@
       "group": "Real Time Routes",
       "pages": [
         "api-reference/endpoint/rt-generate-tts",
-        "api-reference/endpoint/rt-generate-tts-stream"
+        "api-reference/endpoint/rt-generate-tts-stream",
+        "api-reference/endpoint/rt-generate-stt"
       ]
     },
     {
