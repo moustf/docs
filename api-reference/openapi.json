@@ -4115,13 +4115,18 @@
       "RtSttRequest": {
         "type": "object",
         "properties": {
-          "audio": {
+          "audioList": {
             "type": "array",
-            "description": "The audio list that contains the audio data as numbers of type float.",
+            "description": "The audio list that contains the audio data as numbers of type float. You can not send it with audioBase64!",
             "items": {
               "type": "number",
               "description": "Float numbers which represents the audio data."
             }
+          },
+          "audioBase64": {
+            "type": "string",
+            "description": "The audio base64 string that contains the audio data. You can not send it with audioList!",
+            "example": "GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQRChYECGFOAZwH ..."
           },
           "language": {
             "type": "string",
