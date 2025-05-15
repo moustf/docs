@@ -2557,6 +2557,23 @@
             "type": "string",
             "default": null
           },
+          "outcomeResponseShape": {
+            "type": "object",
+            "title": "Outcome Response Schema",
+            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information.",
+            "example": {
+              "type": "object",
+              "properties": {
+                "test": {
+                  "type": "number",
+                  "description": "Hello world from Hamsa AI!"
+                }
+              },
+              "required": [
+                "test"
+              ]
+            }
+          },
           "voiceId": {
             "description": "You can find predefined voices in the voice agents dashboard, under the language tab",
             "type": "string",
@@ -3026,6 +3043,21 @@
           "outcome": {
             "type": "string"
           },
+          "outcomeResponseShape": {
+            "type": "object",
+            "example": {
+              "type": "object",
+              "properties": {
+                "test": {
+                  "type": "number",
+                  "description": "Hello world from Hamsa AI!"
+                }
+              },
+              "required": [
+                "test"
+              ]
+            }
+          },
           "projectId": {
             "type": "string"
           },
@@ -3192,6 +3224,24 @@
           "outcome": {
             "description": "A prompt to take the conversation and transform it to anything you like, like creating an article out of the conversation!",
             "type": "string"
+          },
+          "outcomeResponseShape": {
+            "type": "object",
+            "title": "Outcome Response Schema",
+            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information.",
+            "example": {
+              "type": "object",
+              "properties": {
+                "test": {
+                  "type": "number",
+                  "description": "Hello world from Hamsa AI!"
+                }
+              },
+              "required": [
+                "test"
+              ]
+            },
+            "additionalProperties": true
           },
           "voiceId": {
             "description": "You can find predefined voices in the voice agents dashboard, under the language tab",

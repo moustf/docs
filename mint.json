@@ -60,6 +60,12 @@
       ]
     },
     {
+      "group": "VA Outcome Shape Documentation",
+      "pages": [
+        "api-reference/open-api-instructions"
+      ]
+    },
+    {
       "group": "Transcription Routes",
       "pages": [
         "api-reference/endpoint/transcribe"
