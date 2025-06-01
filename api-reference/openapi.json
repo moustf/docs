@@ -1570,6 +1570,283 @@
           }
         ]
       }
+    },
+    "/v1/voice-agents/twilio/phone-number": {
+      "post": {
+        "summary": "Add Twilio phone number to a user.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddTwilioNumberRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddTwilioNumberResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/twilio/assign-number": {
+      "post": {
+        "summary": "Assign Twilio phone number to a Voice Agent.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignTwilioNumberRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddTwilioNumberResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/twilio/phone-number/list": {
+      "get": {
+        "summary": "Return a list of Twilio phone numbers for a user.",
+        "parameters": [
+          {
+            "name": "voiceAgentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Optional UUID of the voice agent to filter associated Twilio numbers.",
+              "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+            },
+            "required": false
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Optional boolean-like string indicating whether to fetch active Twilio numbers. Defaults to 'true'.",
+              "example": "true"
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Page number for pagination. Defaults to '1'.",
+              "example": "1"
+            },
+            "required": false
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Number of items to take for pagination. Defaults to '10'.",
+              "example": "10"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListUserTwilioPhoneNumbersResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/twilio/call": {
+      "post": {
+        "summary": "Call Voice Agent using Twilio custom phone number.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CallTwilioNumberRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CallTwilioNumberResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -3748,9 +4025,7 @@
             ],
             "not": {
               "required": [
-                "agentDetails",
-                "fromNumber",
-                "toNumber"
+                "agentDetails"
               ]
             }
           },
@@ -4195,6 +4470,333 @@
             "type": "number",
             "description": "The threshold value for End of Speech detection.",
             "default": 0.3
+          }
+        }
+      },
+      "TwilioPhoneNumberRecord": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+          },
+          "number": {
+            "type": "string",
+            "example": "+9700000000"
+          },
+          "label": {
+            "type": "string",
+            "example": "My Twilio Number"
+          },
+          "numberSid": {
+            "type": "string",
+            "example": "PNXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true
+          },
+          "userId": {
+            "type": "string",
+            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+          },
+          "voiceAgentId": {
+            "type": "string",
+            "nullable": true,
+            "example": null
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2023-01-01T12:00:00Z"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2023-02-01T12:00:00Z"
+          }
+        }
+      },
+      "AddTwilioNumberRequest": {
+        "type": "object",
+        "properties": {
+          "phoneNumber": {
+            "type": "string",
+            "description": "The phone number to add to the Twilio numbers of a user.",
+            "example": "+9700000000",
+            "pattern": "^\\+[1-9]\\d{1,14}$"
+          },
+          "label": {
+            "type": "string",
+            "description": "A label to identify the phone number.",
+            "example": "Support Line"
+          },
+          "twilioNumberSid": {
+            "type": "string",
+            "description": "The Twilio Number SID associated with the phone number.",
+            "example": "PNXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          },
+          "twilioAccountSid": {
+            "type": "string",
+            "description": "The Twilio Account SID associated with the Twilio number.",
+            "example": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+          },
+          "twilioAuthToken": {
+            "type": "string",
+            "description": "The Twilio Auth Token for authenticating API requests.",
+            "example": "your_twilio_auth_token"
+          }
+        },
+        "required": [
+          "phoneNumber",
+          "label",
+          "twilioNumberSid",
+          "twilioAccountSid",
+          "twilioAuthToken"
+        ]
+      },
+      "AddTwilioNumberResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data": {
+            "type": "object",
+            "$ref": "#/components/schemas/TwilioPhoneNumberRecord"
+          }
+        }
+      },
+      "AssignTwilioNumberRequest": {
+        "type": "object",
+        "properties": {
+          "voiceAgentId": {
+            "type": "string",
+            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+          },
+          "twilioPhoneNumber": {
+            "type": "string",
+            "example": "+9700000000"
+          }
+        },
+        "required": [
+          "voiceAgentId",
+          "twilioPhoneNumber"
+        ]
+      },
+      "AssignTwilioNumberResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data": {
+            "type": "object",
+            "$ref": "#/components/schemas/TwilioPhoneNumberRecord"
+          }
+        }
+      },
+      "ListUserTwilioPhoneNumbersResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "message": {
+            "type": "string",
+            "example": "Success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TwilioPhoneNumberRecord"
+            }
+          }
+        }
+      },
+      "CallTwilioNumberRequest": {
+        "type": "object",
+        "properties": {
+          "toNumber": {
+            "type": "string",
+            "description": "The number that you want to call"
+          },
+          "twilioPhoneNumber": {
+            "type": "string",
+            "example": "+1234567890",
+            "pattern": "^\\+[1-9]\\d{1,14}$"
+          },
+          "agentDetails": {
+            "$ref": "#/components/schemas/VoiceAgentRequest",
+            "description": "Send agentDetails instead of voiceAgentId and params.",
+            "default": {
+              "agentName": ""
+            }
+          },
+          "voiceAgentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "params": {
+            "type": "object",
+            "description": "Params set in the voice agent's greeting message or preamble. Send when using voiceAgentId only.",
+            "additionalProperties": true,
+            "default": {}
+          },
+          "webhookUrl": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "https://example.com/webhook"
+          },
+          "webhookAuth": {
+            "$ref": "#/components/schemas/ExternalWebhookAuthScheme"
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "voiceAgentId",
+              "params",
+              "twilioPhoneNumber",
+              "toNumber"
+            ],
+            "not": {
+              "required": [
+                "agentDetails"
+              ]
+            }
+          },
+          {
+            "required": [
+              "agentDetails",
+              "twilioPhoneNumber",
+              "toNumber"
+            ],
+            "not": {
+              "required": [
+                "voiceAgentId",
+                "params"
+              ]
+            }
+          }
+        ]
+      },
+      "CallTwilioNumberResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string",
+                "nullable": true
+              },
+              "model": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "processingType": {
+                "type": "string"
+              },
+              "webhookUrl": {
+                "type": "string",
+                "nullable": true
+              },
+              "totalCost": {
+                "type": "number"
+              },
+              "usageTime": {
+                "type": "string",
+                "nullable": true
+              },
+              "fromLng": {
+                "type": "string",
+                "nullable": true
+              },
+              "toLng": {
+                "type": "string",
+                "nullable": true
+              },
+              "mediaUrl": {
+                "type": "string",
+                "nullable": true
+              },
+              "jobResponse": {
+                "type": "object",
+                "nullable": true
+              },
+              "fromScript": {
+                "type": "string",
+                "nullable": true
+              },
+              "toScript": {
+                "type": "string",
+                "nullable": true
+              },
+              "status": {
+                "type": "string"
+              },
+              "relevantJobId": {
+                "type": "string",
+                "nullable": true
+              },
+              "callParams": {
+                "type": "object",
+                "nullable": true,
+                "example": {
+                  "machineNumber": "+1234567890",
+                  "userNumber": "+1234567890"
+                }
+              },
+              "agentDetails": {
+                "$ref": "#/components/schemas/VoiceAgentResponseData"
+              },
+              "apiKeyId": {
+                "type": "string"
+              },
+              "billingId": {
+                "type": "string"
+              },
+              "systemModelKey": {
+                "type": "string",
+                "nullable": true
+              },
+              "voiceAgentId": {
+                "type": "string",
+                "nullable": true
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
           }
         }
       }
