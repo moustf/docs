@@ -86,6 +86,15 @@
       ]
     },
     {
+      "group": "Twilio Phone Numbers Routes",
+      "pages": [
+        "api-reference/endpoint/add-twilio-number",
+        "api-reference/endpoint/assign-twilio-number",
+        "api-reference/endpoint/list-twilio-phone-numbers",
+        "api-reference/endpoint/call-twilio-number"
+      ]
+    },
+    {
       "group": "Voice Agents Routes",
       "pages": [
         "api-reference/endpoint/create-voice-agent",
