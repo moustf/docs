@@ -4442,7 +4442,7 @@
         "properties": {
           "audioList": {
             "type": "array",
-            "description": "The audio list that contains the audio data as numbers of type float. You can not send it with audioBase64!",
+            "description": "The audio list that contains the audio data as numbers of type float. Audio data should be of type WAV. You can not send this field and audioBase64 together!",
             "items": {
               "type": "number",
               "description": "Float numbers which represents the audio data."
@@ -4450,7 +4450,7 @@
           },
           "audioBase64": {
             "type": "string",
-            "description": "The audio base64 string that contains the audio data. You can not send it with audioList!",
+            "description": "The audio base64 string that contains the audio data. Audio data should be of type WAV. You can not send this field and audioList together!",
             "example": "GkXfo59ChoEBQveBAULygQRC84EIQoKEd2VibUKHgQRChYECGFOAZwH ..."
           },
           "language": {
