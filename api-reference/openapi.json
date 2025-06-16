@@ -2834,6 +2834,15 @@
             "type": "string",
             "default": null
           },
+          "webhookUrl": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "https://example.com/webhook"
+          },
+          "webhookAuth": {
+            "$ref": "#/components/schemas/ExternalWebhookAuthScheme"
+          },
           "outcomeResponseShape": {
             "type": "object",
             "title": "Outcome Response Schema",
@@ -3350,6 +3359,15 @@
             "description": "The voice record object which is connected to this agent.",
             "nullable": true
           },
+          "webhookUrl": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "https://example.com/webhook"
+          },
+          "webhookAuth": {
+            "$ref": "#/components/schemas/ExternalWebhookAuthScheme"
+          },
           "tools": {
             "type": "object",
             "description": "The tools that are created for this agent. This includes the Google Calendar Settings.",
@@ -3519,6 +3537,15 @@
               ]
             },
             "additionalProperties": true
+          },
+          "webhookUrl": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "https://example.com/webhook"
+          },
+          "webhookAuth": {
+            "$ref": "#/components/schemas/ExternalWebhookAuthScheme"
           },
           "voiceId": {
             "description": "You can find predefined voices in the voice agents dashboard, under the language tab",
