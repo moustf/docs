@@ -3121,15 +3121,6 @@
             "description": "Params set in the voice agent's greeting message or preamble. Send when using voiceAgentId only.",
             "additionalProperties": true,
             "default": {}
-          },
-          "webhookUrl": {
-            "type": "string",
-            "nullable": true,
-            "format": "uri",
-            "example": "https://example.com/webhook"
-          },
-          "webhookAuth": {
-            "$ref": "#/components/schemas/ExternalWebhookAuthScheme"
           }
         },
         "anyOf": [
@@ -3190,10 +3181,6 @@
               },
               "processingType": {
                 "type": "string"
-              },
-              "webhookUrl": {
-                "type": "string",
-                "nullable": true
               },
               "totalCost": {
                 "type": "number"
