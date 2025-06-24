@@ -2783,7 +2783,7 @@
           },
           "interrupt": {
             "type": "boolean",
-            "default": false
+            "default": true
           },
           "outcome": {
             "description": "A prompt to take the conversation and transform it to anything you like, like creating an article out of the conversation!",
