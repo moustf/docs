@@ -1850,7 +1850,7 @@
     },
     "/v1/voice-agents/knowledge-base": {
       "post": {
-        "summary": "Add Twilio phone number to a user.",
+        "summary": "Create new knowledge base items.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2083,7 +2083,7 @@
     },
     "/v1/voice-agents/knowledge-base/list": {
       "get": {
-        "summary": "Return a list of Twilio phone numbers for a user.",
+        "summary": "Return a list of Knowledge Base Items.",
         "parameters": [
           {
             "name": "voiceAgentId",
@@ -2177,7 +2177,7 @@
     },
     "/v1/voice-agents/knowledge-base/toggle-activation": {
       "post": {
-        "summary": "Call Voice Agent using Twilio custom phone number.",
+        "summary": "Toggle activation of a knowledge base item for a voice agent.",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2203,6 +2203,405 @@
                       "type": "string",
                       "default": "success",
                       "example": "Item activated successfully!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/web-tool": {
+      "post": {
+        "summary": "Create a new web tool.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebToolRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateWebToolResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/web-tool/{id}": {
+      "patch": {
+        "summary": "Update a web tool by Id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateWebToolRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateWebToolResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a web tool by Id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteWebToolResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/web-tool/list": {
+      "get": {
+        "summary": "Return a list of Web Tools.",
+        "parameters": [
+          {
+            "name": "voiceAgentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Optional UUID of the voice agent to filter associated web tools.",
+              "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+            },
+            "required": false
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Optional boolean-like string indicating whether to fetch active web tools or not.",
+              "example": "true"
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Page number for pagination. Defaults to '1'.",
+              "example": "1"
+            },
+            "required": false
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Number of items to take for pagination. Defaults to '10'.",
+              "example": "10"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListWebToolsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/web-tool/toggle-activation": {
+      "post": {
+        "summary": "Toggle activation of a web tool for a voice agent.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToggleWebToolActivationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "success",
+                      "example": "Web tool activated successfully!"
                     }
                   }
                 }
@@ -4556,9 +4955,24 @@
             "default": "success"
           },
           "data": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/KnowledgeBaseItem"
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number",
+                "description": "The total number of knowledge base items over all pages.",
+                "example": 100
+              },
+              "filtered": {
+                "type": "number",
+                "description": "The filtered/returned number of knowledge base items.",
+                "example": 100
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/KnowledgeBaseItem"
+                }
+              }
             }
           }
         }
@@ -4581,7 +4995,465 @@
             "description": "The value of isActive to toggle the activation of the knowledge base item. True to activate, false to deactivate. Defaults to true.",
             "example": true
           }
+        },
+        "required": ["voiceAgentId", "knowledgeBaseItemId"]
+      },
+      "CreateWebToolRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of the web tool.",
+            "enum": [
+              "FUNCTION",
+              "MCP"
+            ],
+            "example": "FUNCTION"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the web tool.",
+            "minLength": 1,
+            "maxLength": 250,
+            "example": "Weather API Tool"
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of what the web tool does.",
+            "minLength": 1,
+            "maxLength": 1000,
+            "example": "A tool that fetches current weather information for a given location."
+          },
+          "async": {
+            "type": "boolean",
+            "description": "Whether the tool should run asynchronously. Required when type is FUNCTION, not allowed when type is MCP.",
+            "example": true
+          },
+          "toolSettings": {
+            "type": "object",
+            "description": "Server configuration settings for the web tool.",
+            "properties": {
+              "serverUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "The server URL for the web tool.",
+                "example": "https://api.example.com/webhook"
+              },
+              "authToken": {
+                "type": "string",
+                "description": "Authentication token for the server.",
+                "minLength": 1,
+                "example": "bearer_token_12345"
+              },
+              "timeOut": {
+                "type": "number",
+                "description": "Request timeout in milliseconds.",
+                "minimum": 1,
+                "example": 30000
+              },
+              "methodType": {
+                "type": "string",
+                "description": "HTTP method type for the request.",
+                "example": "POST"
+              },
+              "httpHeaders": {
+                "type": "object",
+                "description": "HTTP headers to include in the request.",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "example": {
+                  "Content-Type": "application/json",
+                  "Authorization": "Bearer token"
+                }
+              }
+            },
+            "required": [
+              "serverUrl",
+              "methodType"
+            ]
+          },
+          "messages": {
+            "type": "array",
+            "description": "Array of message configurations for the web tool. Each message type must be unique.",
+            "items": {
+              "type": "object",
+              "description": "Message configuration object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "The type of the message.",
+                  "example": "system"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "The content of the message.",
+                  "example": "system"
+                }
+              }
+            },
+            "example": [
+              {
+                "type": "system",
+                "content": "You are a helpful weather assistant."
+              }
+            ]
+          },
+          "params": {
+            "type": "object",
+            "description": "Parameter schema definition for the web tool. Not allowed when type is MCP. This field is a recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information.",
+            "example": {
+              "type": "object",
+              "properties": {
+                "test": {
+                  "type": "number",
+                  "description": "Hello world from Hamsa AI!"
+                }
+              },
+              "required": [
+                "test"
+              ]
+            }
+          }
+        },
+        "required": [
+          "type",
+          "name",
+          "toolSettings",
+          "messages"
+        ]
+      },
+      "WebToolSchema": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the web tool.",
+            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the web tool.",
+            "example": "Weather API Tool"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the web tool.",
+            "enum": [
+              "FUNCTION",
+              "MCP"
+            ],
+            "example": "FUNCTION"
+          },
+          "userId": {
+            "type": "string",
+            "description": "The user ID associated with the web tool.",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "projectId": {
+            "type": "string",
+            "description": "The project ID associated with the web tool.",
+            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Indicates whether the web tool is currently active in any voice agent.",
+            "example": true
+          },
+          "async": {
+            "type": "boolean",
+            "description": "Whether the tool runs asynchronously.",
+            "example": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "A description of what the web tool does.",
+            "example": "A tool that fetches current weather information for a given location."
+          },
+          "toolSettings": {
+            "type": "object",
+            "description": "Server configuration settings for the web tool.",
+            "properties": {
+              "httpHeaders": {
+                "type": "object",
+                "nullable": true,
+                "description": "HTTP headers to include in the request.",
+                "example": {
+                  "Content-Type": "application/json",
+                  "Authorization": "Bearer token"
+                }
+              },
+              "serverUrl": {
+                "type": "string",
+                "description": "The server URL for the web tool.",
+                "example": "https://api.example.com/webhook"
+              },
+              "timeout": {
+                "type": "number",
+                "nullable": true,
+                "description": "Request timeout in milliseconds.",
+                "example": 30000
+              },
+              "authToken": {
+                "type": "string",
+                "nullable": true,
+                "description": "Authentication token for the server.",
+                "example": "bearer_token_12345"
+              },
+              "methodType": {
+                "type": "string",
+                "nullable": true,
+                "description": "HTTP method type for the request.",
+                "example": "POST"
+              }
+            },
+            "required": [
+              "serverUrl"
+            ]
+          },
+          "params": {
+            "type": "object",
+            "description": "Parameter schema definition for the web tool.",
+            "nullable": true,
+            "example": {
+              "location": {
+                "type": "string",
+                "description": "The location to get weather for"
+              }
+            }
+          },
+          "messages": {
+            "type": "array",
+            "description": "Array of message configurations for the web tool.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "The type of the message.",
+                  "example": "system"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "The content of the message.",
+                  "example": "You are a helpful weather assistant."
+                }
+              },
+              "required": [
+                "type",
+                "content"
+              ]
+            },
+            "example": [
+              {
+                "type": "system",
+                "content": "You are a helpful weather assistant."
+              }
+            ]
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "type",
+          "userId",
+          "projectId",
+          "isActive",
+          "async",
+          "toolSettings",
+          "messages"
+        ]
+      },
+      "CreateWebToolResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/WebToolSchema"
+          }
         }
+      },
+      "UpdateWebToolRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "The type of the web tool.",
+            "enum": [
+              "FUNCTION",
+              "MCP"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the web tool.",
+            "minLength": 1,
+            "maxLength": 250
+          },
+          "description": {
+            "type": "string",
+            "description": "A description of what the web tool does.",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "async": {
+            "type": "boolean",
+            "description": "Whether the tool should run asynchronously. Required when type is FUNCTION, not allowed when type is MCP."
+          },
+          "toolSettings": {
+            "type": "object",
+            "description": "Server configuration settings for the web tool.",
+            "properties": {
+              "serverUrl": {
+                "type": "string",
+                "format": "uri",
+                "description": "The server URL for the web tool."
+              },
+              "authToken": {
+                "type": "string",
+                "description": "Authentication token for the server.",
+                "minLength": 1
+              },
+              "timeOut": {
+                "type": "number",
+                "description": "Request timeout in milliseconds.",
+                "minimum": 1
+              },
+              "methodType": {
+                "type": "string",
+                "description": "HTTP method type for the request."
+              },
+              "httpHeaders": {
+                "type": "object",
+                "description": "HTTP headers to include in the request.",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "serverUrl",
+              "methodType"
+            ]
+          },
+          "messages": {
+            "type": "array",
+            "description": "Array of message configurations for the web tool. Each message type must be unique.",
+            "items": {
+              "type": "object",
+              "description": "Message configuration object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "description": "The type of the message.",
+                  "example": "system"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "The content of the message.",
+                  "example": "system"
+                }
+              }
+            }
+          },
+          "params": {
+            "type": "object",
+            "description": "Parameter schema definition for the web tool. Not allowed when type is MCP. This field is a recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information."
+          }
+        }
+      },
+      "UpdateWebToolResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/WebToolSchema"
+          }
+        }
+      },
+      "DeleteWebToolResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success",
+            "example": "Web tool deleted successfully"
+          }
+        }
+      },
+      "ListWebToolsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "number",
+                "description": "The total number of web tools over all pages.",
+                "example": 100
+              },
+              "filtered": {
+                "type": "number",
+                "description": "The filtered/returned number of web tools.",
+                "example": 100
+              },
+              "items": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/WebToolSchema"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ToggleWebToolActivationRequest": {
+        "type": "object",
+        "properties": {
+          "voiceAgentId": {
+            "type": "string",
+            "description": "The voice agent ID to toggle the activation of the web tool on.",
+            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+          },
+          "webToolId": {
+            "type": "string",
+            "description": "The web tool ID to toggle the activation of.",
+            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "The value of isActive to toggle the activation of the web tool. True to activate, false to deactivate. Defaults to true.",
+            "example": true
+          }
+        },
+        "required": ["voiceAgentId", "webToolId"]
       }
     },
     "securitySchemes": {
