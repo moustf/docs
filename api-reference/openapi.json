@@ -1847,6 +1847,405 @@
           }
         ]
       }
+    },
+    "/v1/voice-agents/knowledge-base": {
+      "post": {
+        "summary": "Add Twilio phone number to a user.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateKnowledgeBaseRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KnowledgeBaseItemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/knowledge-base/{id}": {
+      "patch": {
+        "summary": "Update a knowledge base item by Id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateKnowledgeBaseItemRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateKnowledgeBaseItemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete a knowledge base item by Id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteKnowledgeBaseItemResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/knowledge-base/list": {
+      "get": {
+        "summary": "Return a list of Twilio phone numbers for a user.",
+        "parameters": [
+          {
+            "name": "voiceAgentId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Optional UUID of the voice agent to filter associated knowledge bases items.",
+              "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+            },
+            "required": false
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Optional boolean-like string indicating whether to fetch active knowledge base items.",
+              "example": "true"
+            },
+            "required": false
+          },
+          {
+            "name": "skip",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Page number for pagination. Defaults to '1'.",
+              "example": "1"
+            },
+            "required": false
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Number of items to take for pagination. Defaults to '10'.",
+              "example": "10"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListKnowledgeBaseItemsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/v1/voice-agents/knowledge-base/toggle-activation": {
+      "post": {
+        "summary": "Call Voice Agent using Twilio custom phone number.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ToggleKBItemActivationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": false
+                    },
+                    "message": {
+                      "type": "string",
+                      "default": "success",
+                      "example": "Item activated successfully!"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -3901,6 +4300,286 @@
                 "format": "date-time"
               }
             }
+          }
+        }
+      },
+      "CreateKnowledgeBaseRequest": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "description": "Array of knowledge base items to be created.",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "itemName": {
+                  "type": "string",
+                  "description": "The name of the knowledge base item.",
+                  "minLength": 1,
+                  "maxLength": 100,
+                  "example": "Product Documentation"
+                },
+                "itemUrl": {
+                  "type": "string",
+                  "description": "The URL of the item (required when type is URL or FILE).",
+                  "example": "https://example.com/document.pdf"
+                },
+                "content": {
+                  "type": "string",
+                  "description": "The text content of the item (required when type is TEXT).",
+                  "minLength": 1,
+                  "maxLength": 5000,
+                  "example": "This is the content of the knowledge base item..."
+                },
+                "type": {
+                  "type": "string",
+                  "description": "The type of the knowledge base item.",
+                  "enum": [
+                    "TEXT",
+                    "URL",
+                    "FILE"
+                  ],
+                  "example": "TEXT"
+                }
+              },
+              "required": [
+                "itemName",
+                "type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "KnowledgeBaseItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier of the knowledge base item.",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "userId": {
+            "type": "string",
+            "description": "The user ID associated with the knowledge base item.",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "projectId": {
+            "type": "string",
+            "description": "The project ID associated with the knowledge base item.",
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          },
+          "itemName": {
+            "type": "string",
+            "description": "The name of the knowledge base item.",
+            "example": "Product Documentation"
+          },
+          "fileSize": {
+            "type": "string",
+            "description": "The size of the file.",
+            "example": "2.5MB"
+          },
+          "type": {
+            "type": "string",
+            "description": "The type of the knowledge base item.",
+            "enum": [
+              "TEXT",
+              "URL",
+              "FILE"
+            ],
+            "example": "TEXT"
+          },
+          "status": {
+            "type": "string",
+            "description": "The current status of the knowledge base item.",
+            "example": "PROCESSED"
+          },
+          "failureReason": {
+            "type": "string",
+            "description": "The reason for failure if the item processing failed.",
+            "example": "File format not supported"
+          },
+          "content": {
+            "type": "string",
+            "description": "The text content of the knowledge base item.",
+            "example": "This is the content of the knowledge base item..."
+          },
+          "itemUrl": {
+            "type": "string",
+            "description": "The URL of the knowledge base item.",
+            "example": "https://example.com/document.pdf"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The timestamp when the knowledge base item was created.",
+            "example": "2024-01-15T10:30:00Z"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Indicates whether the knowledge base item is currently active in any voice agent.",
+            "example": true
+          }
+        }
+      },
+      "KnowledgeBaseItemResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/KnowledgeBaseItem"
+          }
+        }
+      },
+      "UpdateKnowledgeBaseItemRequest": {
+        "type": "object",
+        "properties": {
+          "itemName": {
+            "type": "string",
+            "description": "The name of the knowledge base item to update.",
+            "minLength": 1,
+            "maxLength": 250,
+            "example": "Updated Product Documentation"
+          }
+        },
+        "required": [
+          "itemName"
+        ]
+      },
+      "UpdateKnowledgeBaseItemResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The unique identifier of the knowledge base item.",
+                "example": "550e8400-e29b-41d4-a716-446655440000"
+              },
+              "userId": {
+                "type": "string",
+                "description": "The user ID associated with the knowledge base item.",
+                "example": "550e8400-e29b-41d4-a716-446655440000"
+              },
+              "projectId": {
+                "type": "string",
+                "description": "The project ID associated with the knowledge base item.",
+                "example": "550e8400-e29b-41d4-a716-446655440000"
+              },
+              "itemName": {
+                "type": "string",
+                "description": "The name of the knowledge base item.",
+                "example": "Updated Product Documentation"
+              },
+              "fileSize": {
+                "type": "string",
+                "description": "The size of the file.",
+                "example": "2.5MB"
+              },
+              "type": {
+                "type": "string",
+                "description": "The type of the knowledge base item.",
+                "enum": [
+                  "TEXT",
+                  "URL",
+                  "FILE"
+                ],
+                "example": "TEXT"
+              },
+              "content": {
+                "type": "string",
+                "description": "The text content of the knowledge base item.",
+                "example": "This is the updated content of the knowledge base item..."
+              },
+              "itemUrl": {
+                "type": "string",
+                "description": "The URL of the knowledge base item.",
+                "example": "https://example.com/updated-document.pdf"
+              },
+              "createdAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The timestamp when the knowledge base item was created.",
+                "example": "2024-01-15T10:30:00Z"
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The timestamp when the knowledge base item was last updated.",
+                "example": "2024-01-20T14:45:00Z"
+              }
+            }
+          }
+        }
+      },
+      "DeleteKnowledgeBaseItemResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          }
+        }
+      },
+      "ListKnowledgeBaseItemsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KnowledgeBaseItem"
+            }
+          }
+        }
+      },
+      "ToggleKBItemActivationRequest": {
+        "type": "object",
+        "properties": {
+          "voiceAgentId": {
+            "type": "string",
+            "description": "The voice agent ID to toggle the activation of the knowledge base item on.",
+            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+          },
+          "knowledgeBaseItemId": {
+            "type": "string",
+            "description": "The knowledge base item ID to toggle the activation of.",
+            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "The value of isActive to toggle the activation of the knowledge base item. True to activate, false to deactivate. Defaults to true.",
+            "example": true
           }
         }
       }

@@ -112,6 +112,16 @@
       ]
     },
     {
+      "group": "Knowledge Base Routes",
+      "pages": [
+        "api-reference/endpoint/create-knowledge-base",
+        "api-reference/endpoint/update-knowledge-base",
+        "api-reference/endpoint/delete-knowledge-base",
+        "api-reference/endpoint/list-knowledge-base-items",
+        "api-reference/endpoint/toggle-kb-item-activation"
+      ]
+    },
+    {
       "group": "AI Content Routes",
       "pages": [
         "api-reference/endpoint/post-ai-content",
