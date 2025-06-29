@@ -122,6 +122,16 @@
       ]
     },
     {
+      "group": "Web Tools Routes",
+      "pages": [
+        "api-reference/endpoint/create-web-tool",
+        "api-reference/endpoint/update-web-tool",
+        "api-reference/endpoint/delete-web-tool",
+        "api-reference/endpoint/list-web-tools",
+        "api-reference/endpoint/toggle-web-tool-activation"
+      ]
+    },
+    {
       "group": "AI Content Routes",
       "pages": [
         "api-reference/endpoint/post-ai-content",
