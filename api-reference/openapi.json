@@ -4390,10 +4390,6 @@
             "type": "string",
             "example": "My Twilio Number"
           },
-          "numberSid": {
-            "type": "string",
-            "example": "PNXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
-          },
           "isActive": {
             "type": "boolean",
             "example": true
@@ -4430,11 +4426,6 @@
             "type": "string",
             "description": "A label to identify the phone number.",
             "example": "Support Line"
-          },
-          "twilioNumberSid": {
-            "type": "string",
-            "description": "The Twilio Number SID associated with the phone number.",
-            "example": "PNXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
           },
           "twilioAccountSid": {
             "type": "string",
