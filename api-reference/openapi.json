@@ -1708,16 +1708,6 @@
             "required": false
           },
           {
-            "name": "isActive",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Optional boolean-like string indicating whether to fetch active Twilio numbers. Defaults to 'true'.",
-              "example": "true"
-            },
-            "required": false
-          },
-          {
             "name": "skip",
             "in": "query",
             "schema": {
@@ -4389,10 +4379,6 @@
           "label": {
             "type": "string",
             "example": "My Twilio Number"
-          },
-          "isActive": {
-            "type": "boolean",
-            "example": true
           },
           "userId": {
             "type": "string",
