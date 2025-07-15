@@ -2675,8 +2675,8 @@
           },
           "text": {
             "type": "string",
-            "example": "Minimum 5 words text to speech content!",
-            "description": "The text you want to convert to speech. Minimum 5 words text to speech content!"
+            "example": "أهلاً و سهلاً بكم في همسة!",
+            "description": "The text you want to convert to speech."
           },
           "webhookUrl": {
             "type": "string",
