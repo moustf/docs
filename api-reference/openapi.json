@@ -4297,7 +4297,19 @@
               "Ahmed",
               "Rema",
               "Fahd",
-              "Rami"
+              "Rami",
+              "Faiza",
+              "Hamdan",
+              "Alia",
+              "Maher",
+              "Noor",
+              "Majid",
+              "Mansour",
+              "Hind",
+              "Hasan",
+              "Safa",
+              "Somaya",
+              "Sayed"
             ],
             "example": "Majd"
           },
@@ -4305,14 +4317,16 @@
             "type": "string",
             "enum": [
               "pls",
-              "leb",
-              "jor",
-              "syr",
-              "ksa",
-              "bah",
-              "uae",
               "egy",
-              "irq"
+              "syr",
+              "irq",
+              "jor",
+              "leb",
+              "ksa",
+              "uae",
+              "bah",
+              "qat",
+              "msa"
             ],
             "description": "The dialect of each country by its country code. Recommended voices per dialect are: pls (Palestinian): Amjad, Layan, Talin, Rema, Ali; leb (Lebanese): Carla, Majd; jor (Jordanian): Lana, Jasem, Nada; syr (Syrian): Dalal, Mais; ksa (Saudi): Hiba, Khadija, Fahd, Jasem; bah (Bahraini): Mazen; uae (Emirati): Salma, Dima; egy (Egyptian): Mariam, Samir, Nada, Ali, Ahmed; irq (Iraqi): Lyali, Fatma.",
             "example": "pls"
