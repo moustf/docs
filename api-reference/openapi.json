@@ -4310,7 +4310,8 @@
               "Safa",
               "Somaya",
               "Sayed",
-              "Sarah"
+              "Sarah",
+              "Ruba"
             ],
             "example": "Majd"
           },
@@ -4329,7 +4330,7 @@
               "qat",
               "msa"
             ],
-            "description": "The dialect of each country by its country code. Recommended voices per dialect are: pls (Palestinian): Amjad, Layan, Talin, Rema, Ali; leb (Lebanese): Carla, Majd; jor (Jordanian): Lana, Jasem, Nada, Sarah; syr (Syrian): Dalal, Mais; ksa (Saudi): Hiba, Khadija, Fahd, Jasem; bah (Bahraini): Mazen; uae (Emirati): Salma, Dima; egy (Egyptian): Mariam, Samir, Nada, Ali, Ahmed; irq (Iraqi): Lyali, Fatma.",
+            "description": "The dialect of each country by its country code. Recommended voices per dialect are: pls (Palestinian): Amjad, Layan, Talin, Rema, Ali; leb (Lebanese): Carla, Majd; jor (Jordanian): Lana, Jasem, Nada, Sarah; syr (Syrian): Dalal, Mais; ksa (Saudi): Hiba, Khadija, Fahd, Jasem; bah (Bahraini): Mazen, Ruba; uae (Emirati): Salma, Dima; egy (Egyptian): Mariam, Samir, Nada, Ali, Ahmed; irq (Iraqi): Lyali, Fatma.",
             "example": "pls"
           },
           "mulaw": {
