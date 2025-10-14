@@ -86,12 +86,14 @@
       ]
     },
     {
-      "group": "Twilio Phone Numbers Routes",
+      "group": "Phone Numbers Routes",
       "pages": [
-        "api-reference/endpoint/add-twilio-number",
-        "api-reference/endpoint/assign-twilio-number",
-        "api-reference/endpoint/list-twilio-phone-numbers",
-        "api-reference/endpoint/call-twilio-number"
+        "api-reference/endpoint/add-phone-number",
+        "api-reference/endpoint/get-phone-number",
+        "api-reference/endpoint/assign-phone-number",
+        "api-reference/endpoint/unassign-phone-number",
+        "api-reference/endpoint/list-phone-numbers",
+        "api-reference/endpoint/call-phone-number"
       ]
     },
     {
