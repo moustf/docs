@@ -2230,6 +2230,16 @@
             "required": false
           },
           {
+            "name": "used",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "Optional boolean-like string indicating whether to fetch used knowledge base items in any voice agent.",
+              "example": "true"
+            },
+            "required": false
+          },
+          {
             "name": "skip",
             "in": "query",
             "schema": {
@@ -2246,6 +2256,105 @@
               "type": "string",
               "description": "Number of items to take for pagination. Defaults to '10'.",
               "example": "10"
+            },
+            "required": false
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "A search query to filter knowledge base items' names.",
+              "example": "Product Catalog"
+            },
+            "required": false
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "TEXT",
+                  "URL",
+                  "FILE"
+                ]
+              },
+              "description": "An array of knowledge base item type to filter by.",
+              "example": ["TEXT", "URL"]
+            },
+            "required": false
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "PROCESSED",
+                  "UPLOAD_FAILURE",
+                  "READING_FAILURE",
+                  "INGESTION_FAILURE"
+                ]
+              },
+              "description": "An array of knowledge base item status to filter by.",
+              "example": ["INGESTION_FAILURE", "PROCESSED"]
+            },
+            "required": false
+          },
+          {
+            "name": "extensions",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "pdf",
+                  "docx",
+                  "txt",
+                  "html",
+                  "epub"
+                ]
+              },
+              "description": "An array of knowledge base item extensions to filter by when the type is FILE.",
+              "example": ["pdf", "txt", "html"]
+            },
+            "required": false
+          },
+          {
+            "name": "sortField",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "words",
+                  "createdAt",
+                  "fileSize"
+                ]
+              },
+              "description": "An array of filed names that you can sort the results by them",
+              "example": ["words", "fileSize"]
+            },
+            "required": false
+          },
+          {
+            "name": "sortOrder",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "description": "Sort order. Can be 'asc' or 'desc'.",
+              "example": "asc"
             },
             "required": false
           }
@@ -2441,7 +2550,9 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid",
+              "example": "8e8e9b4b-4d4b-4b4b-4b4b-4b4b4b4b4b4b"
             }
           }
         ],
@@ -2531,7 +2642,9 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "uuid",
+              "example": "8e8e9b4b-4d4b-4b4b-4b4b-4b4b4b4b4b4b"
             }
           }
         ],
@@ -2602,6 +2715,68 @@
             "ApiKeyAuth": []
           }
         ]
+      },
+      "get": {
+        "summary": "Get a web tool by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "example": "d949f13f-40d2-4e48-ac86-b66633070603"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWebToolResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Side Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorSchema"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ]
       }
     },
     "/v1/voice-agents/web-tool/list": {
@@ -2624,6 +2799,7 @@
             "schema": {
               "type": "string",
               "description": "Optional boolean-like string indicating whether to fetch active web tools or not.",
+              "enum": ["true", "false"],
               "example": "true"
             },
             "required": false
@@ -2645,6 +2821,27 @@
               "type": "string",
               "description": "Number of items to take for pagination. Defaults to '10'.",
               "example": "10"
+            },
+            "required": false
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "The type of the web tool to filter.",
+              "enum": ["MCP", "FUNCTION"],
+              "example": "MCP"
+            },
+            "required": false
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "description": "A search query to filter web tools.",
+              "example": "Get callee info"
             },
             "required": false
           }
@@ -2725,6 +2922,7 @@
                     "message": {
                       "type": "string",
                       "default": "success",
+                      "enum": ["Web tool activated successfully!", "Web tool deactivated successfully!"],
                       "example": "Web tool activated successfully!"
                     }
                   }
@@ -3724,7 +3922,7 @@
           "outcomeResponseShape": {
             "type": "object",
             "title": "Outcome Response Schema",
-            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information.",
+            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the [OpenAPI specification](https://swagger.io/specification/) for more information.",
             "example": {
               "type": "object",
               "properties": {
@@ -3927,7 +4125,7 @@
           "outcomeResponseShape": {
             "type": "object",
             "title": "Outcome Response Schema",
-            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information.",
+            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the [OpenAPI specification](https://swagger.io/specification/) for more information.",
             "example": {
               "type": "object",
               "properties": {
@@ -3981,7 +4179,8 @@
           },
           "params": {
             "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value. Press 'Add new property' below to set the param name then press enter, after that add the value.",
-            "type": "object"
+            "type": "object",
+            "additionalProperties": true
           }
         }
       },
@@ -4955,9 +5154,21 @@
                   "example": "TEXT"
                 }
               },
-              "required": [
-                "itemName",
-                "type"
+              "oneOf": [
+                {
+                  "required": [
+                    "itemName",
+                    "itemUrl",
+                    "type"
+                  ]
+                },
+                {
+                  "required": [
+                    "itemName",
+                    "content",
+                    "type"
+                  ]
+                }
               ]
             }
           }
@@ -5024,6 +5235,16 @@
             "description": "The URL of the knowledge base item.",
             "example": "https://example.com/document.pdf"
           },
+          "wordsCount": {
+            "type": "number",
+            "description": "The words count in the knowledge base item.",
+            "example": 1298
+          },
+          "extension": {
+            "type": "string",
+            "description": "The extension of the knowledge base item in case it was a file.",
+            "example": 1298
+          },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -5033,6 +5254,11 @@
           "isActive": {
             "type": "boolean",
             "description": "Indicates whether the knowledge base item is currently active in any voice agent.",
+            "example": true
+          },
+          "used": {
+            "type": "boolean",
+            "description": "Indicates whether the knowledge base item is currently used in any voice agent. Can be used in filtering.",
             "example": true
           }
         }
@@ -5127,6 +5353,16 @@
                 "description": "The URL of the knowledge base item.",
                 "example": "https://example.com/updated-document.pdf"
               },
+              "wordsCount": {
+                "type": "number",
+                "description": "The words count in the knowledge base item.",
+                "example": 1298
+              },
+              "extension": {
+                "type": "string",
+                "description": "The extension of the knowledge base item in case it was a file.",
+                "example": 1298
+              },
               "createdAt": {
                 "type": "string",
                 "format": "date-time",
@@ -5152,7 +5388,7 @@
           },
           "message": {
             "type": "string",
-            "default": "success"
+            "default": "item deleted successfully"
           }
         }
       },
@@ -5249,7 +5485,7 @@
               "serverUrl": {
                 "type": "string",
                 "format": "uri",
-                "description": "The server URL for the web tool.",
+                "description": "The server URL for the web tool. You can define path parameters using a colon, example: /users/:userId/profile",
                 "example": "https://api.example.com/webhook"
               },
               "authToken": {
@@ -5278,6 +5514,16 @@
                 "example": {
                   "Content-Type": "application/json",
                   "Authorization": "Bearer token"
+                }
+              },
+              "pathParameters": {
+                "type": "object",
+                "description": "Path parameters you want to include in the request's URL.",
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "example": {
+                  "userId": "12345"
                 }
               }
             },
@@ -5314,7 +5560,7 @@
           },
           "params": {
             "type": "object",
-            "description": "Parameter schema definition for the web tool. Not allowed when type is MCP. This field is a recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information.",
+            "description": "Parameter schema definition for the web tool. Not allowed when type is MCP. This field is a recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the [OpenAPI specification](https://swagger.io/specification/) for more information.",
             "example": {
               "type": "object",
               "properties": {
@@ -5332,8 +5578,7 @@
         "required": [
           "type",
           "name",
-          "toolSettings",
-          "messages"
+          "toolSettings"
         ]
       },
       "WebToolSchema": {
@@ -5397,6 +5642,14 @@
                   "Authorization": "Bearer token"
                 }
               },
+              "pathParameters": {
+                "type": "object",
+                "nullable": true,
+                "description": "Path parameters you've included in the request's URL.",
+                "example": {
+                  "userId": "12345"
+                }
+              },
               "serverUrl": {
                 "type": "string",
                 "description": "The server URL for the web tool.",
@@ -5406,7 +5659,7 @@
                 "type": "number",
                 "nullable": true,
                 "description": "Request timeout in milliseconds.",
-                "example": 30000
+                "example": 5000
               },
               "authToken": {
                 "type": "string",
@@ -5494,6 +5747,22 @@
           }
         }
       },
+      "GetWebToolResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "default": false
+          },
+          "message": {
+            "type": "string",
+            "default": "success"
+          },
+          "data": {
+            "$ref": "#/components/schemas/WebToolSchema"
+          }
+        }
+      },
       "UpdateWebToolRequest": {
         "type": "object",
         "properties": {
@@ -5550,6 +5819,13 @@
                 "additionalProperties": {
                   "type": "string"
                 }
+              },
+              "pathParameters": {
+                "type": "object",
+                "description": "The path parameters you've included in the request's URL.",
+                "additionalProperties": {
+                  "type": "string"
+                }
               }
             },
             "required": [
@@ -5579,7 +5855,8 @@
           },
           "params": {
             "type": "object",
-            "description": "Parameter schema definition for the web tool. Not allowed when type is MCP. This field is a recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information."
+            "description": "Parameter schema definition for the web tool. Not allowed when type is MCP. This field is a recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the [OpenAPI specification](https://swagger.io/specification/) for more information.",
+            "additionalProperties": true
           }
         }
       },
@@ -5663,7 +5940,8 @@
           "isActive": {
             "type": "boolean",
             "description": "The value of isActive to toggle the activation of the web tool. True to activate, false to deactivate. Defaults to true.",
-            "example": true
+            "example": true,
+            "default": true
           }
         },
         "required": ["voiceAgentId", "webToolId"]

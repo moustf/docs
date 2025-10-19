@@ -127,6 +127,7 @@
       "group": "Web Tools Routes",
       "pages": [
         "api-reference/endpoint/create-web-tool",
+        "api-reference/endpoint/get-web-tool",
         "api-reference/endpoint/update-web-tool",
         "api-reference/endpoint/delete-web-tool",
         "api-reference/endpoint/list-web-tools",
