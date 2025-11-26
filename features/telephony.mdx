@@ -1,0 +1,654 @@
+---
+title: 'Phone Numbers & Telephony'
+description: 'Buy phone numbers, bring your own numbers, and manage telephony for your AI agents'
+---
+
+## Overview
+
+The Phone Numbers feature enables your AI agents to make and receive calls through various telephony providers. You can purchase new numbers, bring your own existing numbers, or connect via SIP trunking to power your conversational AI experiences.
+
+<Info>
+**Supported Providers:**
+- **Twilio** - Buy numbers or bring your own Twilio numbers
+- **Telnyx** - Bring your own Telnyx numbers
+- **Maqsam** - Regional provider for Middle East numbers
+- **SIP Trunk** - Connect your existing telephony infrastructure
+</Info>
+
+## How It Works
+
+Phone numbers connect your AI agents to the telephone network:
+
+1. **Add Number** - Purchase, import, or configure a phone number
+2. **Assign to Agent** - Link the number to a specific AI agent
+3. **Configure Calls** - Set up inbound and outbound call behavior
+4. **Start Calling** - Make outbound calls or receive inbound calls
+5. **Monitor Usage** - Track call history and performance
+
+<Note>
+Each phone number can only be assigned to one agent at a time. To use the same number with multiple agents, you'll need to unassign and reassign it.
+</Note>
+
+## Adding Phone Numbers
+
+### Buy New Number (Twilio)
+
+Purchase a phone number directly through the platform:
+
+1. Navigate to **Phone Numbers** page
+2. Click **Add Number**
+3. Select **Twilio** as the provider
+4. Enter your **Twilio Account SID** (starts with `AC`)
+5. Enter your **Twilio Auth Token** (minimum 32 characters)
+6. Enter the **phone number** in international format (e.g., `+1234567890`)
+7. Add a **label** to identify the number
+8. Click **Save**
+
+<CodeGroup>
+```json Phone Number Format
+{
+  "phoneNumber": "+14155552671",
+  "label": "Customer Support Line",
+  "twilioAccountSid": "ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "twilioAuthToken": "your_auth_token_here",
+  "projectId": "your-project-id"
+}
+```
+
+```bash Twilio Credentials Location
+# Find your Twilio credentials at:
+# https://console.twilio.com/
+
+Account SID: AC********************************
+Auth Token: ********************************
+```
+
+</CodeGroup>
+
+**Requirements:**
+
+- **Account SID**: Must start with `AC` followed by 32 characters
+- **Auth Token**: Minimum 32 characters
+- **Phone Number**: Valid international format with country code
+- **Label**: Descriptive name (1-100 characters)
+
+### Bring Your Own Number (Telnyx)
+
+Connect an existing Telnyx phone number:
+
+1. Click **Add Number**
+2. Select **Telnyx** as the provider
+3. Enter your **Telnyx API Key** (starts with `KEY`)
+4. Enter the **phone number** you own
+5. Add a **label** for identification
+6. Click **Save**
+
+<CodeGroup>
+```json Telnyx Configuration
+{
+  "phoneNumber": "+14155552671",
+  "label": "Sales Hotline",
+  "telnyxApiKey": "KEYxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "projectId": "your-project-id"
+}
+```
+
+```bash Finding Your Telnyx API Key
+# Get your API key from Telnyx Portal:
+# https://portal.telnyx.com/#/app/api-keys
+
+# Make sure the key has permissions for:
+# - Call Control
+# - Messaging (if using SMS)
+```
+
+</CodeGroup>
+
+### Regional Provider (Maqsam)
+
+For Middle East phone numbers:
+
+1. Click **Add Number**
+2. Select **Maqsam** as the provider
+3. Enter the **phone number** in international format
+4. Add a **label** to identify the number
+5. Click **Save**
+
+```json Maqsam Configuration
+{
+  "phoneNumber": "+966501234567",
+  "label": "Saudi Arabia Support",
+  "projectId": "your-project-id"
+}
+```
+
+### SIP Trunk Integration
+
+Connect your existing telephony infrastructure via SIP:
+
+1. Click **Add Number**
+2. Select **SIP Trunk** as the provider
+3. Enter the **phone number** (for display purposes)
+4. Add a **label** to identify the connection
+
+**Inbound Configuration:**
+
+- **Origination URI**: `sip:sip.eu.tryhamsa.com:5060;transport=tcp`
+  - This is where you'll send inbound calls
+  - Use this URI in your SIP trunk configuration
+
+**Outbound Configuration:**
+
+- **SIP Address**: Your SIP server address (e.g., `sip.yourprovider.com`)
+- **Transport Type**: TCP or UDP
+- **SIP Trunk Username**: Authentication username
+- **SIP Trunk Password**: Authentication password
+- **Custom Headers** (optional): Add custom SIP headers for routing
+
+<CodeGroup>
+```json SIP Configuration
+{
+  "phoneNumber": "+14155552671",
+  "label": "Enterprise SIP Line",
+  "projectId": "your-project-id",
+  "sipInboundConfigs": {
+    "originationUri": "sip:sip.eu.tryhamsa.com:5060;transport=tcp"
+  },
+  "sipOutboundConfigs": {
+    "address": "sip.yourprovider.com",
+    "transportType": "TCP",
+    "sipTrunkUsername": "your_username",
+    "sipTrunkPassword": "your_password",
+    "customHeaders": [
+      {
+        "name": "X-Custom-Header",
+        "value": "custom-value"
+      }
+    ]
+  }
+}
+```
+
+```bash SIP Header Format
+# Header names must:
+# - Contain only letters, numbers, and hyphens
+# - Not contain spaces or special characters
+
+# Valid examples:
+X-Customer-ID: 12345
+X-Account-Type: premium
+X-Route-Tag: sales
+
+# Invalid examples:
+X Customer ID: 12345  ❌ (contains spaces)
+X_Custom_Header: test ❌ (contains underscore)
+```
+
+</CodeGroup>
+
+**Transport Types:**
+
+- **TCP**: Reliable, connection-oriented transport
+- **UDP**: Lightweight, connectionless transport (faster but less reliable)
+
+<Warning>
+When configuring SIP trunks, ensure your firewall allows traffic to/from `sip.eu.tryhamsa.com:5060` for both TCP and UDP protocols.
+</Warning>
+
+## Managing Phone Numbers
+
+### Assigning Numbers to Agents
+
+Link a phone number to an AI agent:
+
+1. Open the **Phone Numbers** page
+2. Click on a phone number to view details
+3. Under **Usage with Agents**, select an agent from the dropdown
+4. Click **Save**
+
+If the number is already assigned to another agent, you'll see a confirmation dialog:
+
+<Warning>
+**Reassignment Confirmation:**
+"This phone number is currently assigned to [Agent Name]. By proceeding, you will remove this number from [Agent Name] and assign it to the selected agent."
+</Warning>
+
+```json Assignment API Structure
+{
+  "voiceAgentId": "agent-uuid",
+  "phoneNumber": "+14155552671",
+  "type": "TWILIO",
+  "projectId": "your-project-id"
+}
+```
+
+### Unassigning Numbers
+
+Remove a phone number from an agent:
+
+1. Open the phone number details
+2. Under **Usage with Agents**, click **Unassign**
+3. Confirm the action
+
+The number remains in your account but won't handle calls until reassigned.
+
+### Editing Number Details
+
+Update a phone number's configuration:
+
+1. Click on the phone number to view details
+2. Modify the **label** or provider credentials
+3. For SIP numbers, update inbound/outbound configurations
+4. Click **Save**
+
+<Note>
+You cannot change the phone number itself or the provider type after creation. To use a different number, add a new one and delete the old one.
+</Note>
+
+### Deleting Numbers
+
+Remove a phone number from your account:
+
+1. Select the phone number
+2. Click the delete icon or option
+3. Confirm the deletion
+
+<Warning>
+Deleting a number is permanent. The number will be released and may be reassigned to other customers by your provider. Make sure to download any important call history first.
+</Warning>
+
+## Inbound Calls
+
+Configure how your agent handles incoming calls:
+
+### Agent Assignment
+
+**Required**: Phone numbers must be assigned to an agent to receive inbound calls.
+
+1. Navigate to phone number details
+2. Select an agent under **Inbound Calls**
+3. The agent will answer all incoming calls to this number
+
+### Inbound Webhooks (Optional)
+
+Get notified when inbound calls are received:
+
+1. In the agent configuration, enable **Call Webhook**
+2. Enter your webhook URL (must be HTTPS)
+3. Configure authentication (Bearer token or no auth)
+4. Save the configuration
+
+Your webhook will receive real-time call events including:
+
+- Call started
+- Call answered
+- Call ended
+- Transcription updates
+- Outcome results
+
+See the [Webhooks documentation](/features/webhooks) for complete event payloads.
+
+### Disabling Inbound Calls
+
+To temporarily disable inbound calls:
+
+1. Unassign the phone number from the agent
+2. Or delete the phone number entirely
+
+## Outbound Calls
+
+Make outbound calls from your AI agents:
+
+### Prerequisites
+
+Before making outbound calls, ensure:
+
+1. **Phone number is saved** (not just created)
+2. **Agent is assigned** to the phone number
+3. **API key exists** for authentication
+4. **Provider supports outbound** (Maqsam requires special configuration)
+
+### Making a Call
+
+Initiate an outbound call:
+
+1. Open the phone number details
+2. Navigate to **Outbound Calls** section
+3. Enter the destination phone number (international format)
+4. Click **Make Call**
+
+<CodeGroup>
+```json Outbound Call API Request
+{
+  "projectId": "your-project-id",
+  "apiKey": "sk_your_api_key",
+  "phoneNumber": "+14155552671",
+  "toNumber": "+19175551234",
+  "voiceAgentId": "agent-uuid",
+  "params": {
+    "customer_name": "John Doe",
+    "account_id": "ACC-12345"
+  },
+  "webhookUrl": "https://your-server.com/webhook",
+  "webhookAuth": {
+    "authKey": "bearer",
+    "authSecret": "Bearer your_token_here"
+  }
+}
+```
+
+```bash cURL Example
+curl -X POST https://api.tryhamsa.com/v1/voice-agents/phone-number/call \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -d '{
+    "projectId": "your-project-id",
+    "phoneNumber": "+14155552671",
+    "toNumber": "+19175551234",
+    "voiceAgentId": "agent-uuid",
+    "params": {
+      "customer_name": "John Doe"
+    }
+  }'
+```
+
+</CodeGroup>
+
+**Parameters:**
+
+- `phoneNumber` - Your phone number (caller ID)
+- `toNumber` - Recipient's phone number
+- `voiceAgentId` - Agent to handle the call
+- `params` - Custom variables to pass to the agent
+- `webhookUrl` - Optional webhook for call events
+- `webhookAuth` - Optional authentication for webhook
+
+### Call Parameters
+
+Pass dynamic data to your agent during outbound calls:
+
+```json Example Parameters
+{
+  "params": {
+    "customer_name": "Jane Smith",
+    "appointment_time": "2:00 PM",
+    "appointment_date": "January 15, 2025",
+    "account_balance": "$125.50",
+    "order_number": "ORD-789"
+  }
+}
+```
+
+Access these in your agent's prompt using variable syntax:
+
+```
+Hello {{customer_name}}, this is a reminder about your appointment on {{appointment_date}} at {{appointment_time}}.
+```
+
+## Number Management Best Practices
+
+### Labeling Strategy
+
+Use clear, descriptive labels:
+
+```
+✅ Good Labels:
+- "Customer Support - US East"
+- "Sales Team - Main Line"
+- "After Hours Support"
+- "Spanish Language Line"
+
+❌ Bad Labels:
+- "Number 1"
+- "Test"
+- "tmp"
+```
+
+### Provider Selection
+
+Choose the right provider for your needs:
+
+| Provider   | Best For                 | Regions           | Pricing Model               |
+| ---------- | ------------------------ | ----------------- | --------------------------- |
+| **Twilio** | Most regions, easy setup | Global            | Pay-as-you-go + monthly fee |
+| **Telnyx** | Cost-effective at scale  | Global            | Pay-as-you-go + monthly fee |
+| **Maqsam** | Middle East coverage     | MENA              | Regional pricing            |
+| **SIP**    | Existing infrastructure  | Your SIP provider | Your existing contract      |
+
+### Security Considerations
+
+<Warning>
+**Protect Your Credentials:**
+- Never share Twilio Auth Tokens or Telnyx API Keys
+- Use environment variables in your integrations
+- Rotate credentials regularly
+- Enable two-factor authentication on provider accounts
+</Warning>
+
+**Best Practices:**
+
+- Store credentials in secure vaults (AWS Secrets Manager, HashiCorp Vault)
+- Use read-only API keys when possible
+- Monitor unusual call patterns
+- Set up billing alerts to detect fraud
+
+### Monitoring and Maintenance
+
+Regular maintenance tasks:
+
+1. **Review Call Logs**: Check for failed calls or issues
+2. **Update Labels**: Keep number descriptions current
+3. **Audit Assignments**: Ensure numbers are assigned correctly
+4. **Check Credentials**: Verify provider credentials are valid
+5. **Monitor Costs**: Track usage and billing
+
+## Troubleshooting
+
+### Common Issues
+
+**"Phone number already assigned to another agent"**
+
+This number is currently linked to a different agent. You need to either:
+
+- Unassign from the current agent first
+- Choose a different phone number
+- Confirm the reassignment (will remove from other agent)
+
+**Solution:**
+
+```bash
+1. Navigate to the phone number
+2. Click "Unassign" under current agent
+3. Wait for confirmation
+4. Assign to new agent
+```
+
+---
+
+**"Invalid Account SID" or "Invalid Auth Token"**
+
+Your Twilio credentials are incorrectly formatted.
+
+**Requirements:**
+
+- Account SID must start with `AC` and be 34 characters total
+- Auth Token must be at least 32 characters
+
+**Solution:**
+
+1. Go to [Twilio Console](https://console.twilio.com/)
+2. Copy Account SID from dashboard (starts with `AC`)
+3. Click "Show" on Auth Token and copy the full value
+4. Paste both values exactly as shown
+
+---
+
+**"Invalid phone number format"**
+
+Phone numbers must be in international E.164 format.
+
+**Examples:**
+
+```
+✅ Correct:
++14155552671 (US)
++442071234567 (UK)
++966501234567 (Saudi Arabia)
+
+❌ Incorrect:
+4155552671 (missing country code)
++1-415-555-2671 (contains hyphens)
+(415) 555-2671 (contains formatting)
+```
+
+---
+
+**"Cannot make outbound call - number not saved"**
+
+You must save the phone number configuration before making calls.
+
+**Solution:**
+
+1. Complete all required fields
+2. Click **Save** button
+3. Wait for success confirmation
+4. Try making the outbound call again
+
+---
+
+**"SIP connection failed"**
+
+Check your SIP trunk configuration:
+
+**Verification Steps:**
+
+1. Confirm SIP address is correct (e.g., `sip.provider.com`)
+2. Verify username and password
+3. Check transport type (TCP vs UDP)
+4. Ensure firewall allows traffic on port 5060
+5. Test connectivity: `ping sip.provider.com`
+
+**Firewall Rules:**
+
+```bash
+# Allow outbound SIP traffic
+Port: 5060 (TCP/UDP)
+Destination: Your SIP provider
+Protocol: SIP
+
+# Allow RTP media streams
+Ports: 10000-20000 (UDP)
+Protocol: RTP
+```
+
+---
+
+**"Outbound calls not working with Maqsam"**
+
+Some providers require special configuration for outbound calls.
+
+**Solution:**
+
+- Contact Hamsa support to enable outbound for Maqsam numbers
+- Verify your Maqsam account supports outbound calling
+- Check that the destination number is in a supported region
+
+## API Reference
+
+### Get Phone Numbers
+
+```http
+GET /v1/voice-agents/phone-number/list
+```
+
+**Query Parameters:**
+
+- `projectId` (required) - Your project ID
+- `skip` (optional) - Pagination offset (default: 1)
+- `take` (optional) - Number of results (default: 10)
+- `voiceAgentId` (optional) - Filter by agent
+
+**Response:**
+
+```json
+{
+  "data": [
+    {
+      "id": "phone-uuid",
+      "number": "+14155552671",
+      "label": "Customer Support",
+      "type": "TWILIO",
+      "voiceAgentId": "agent-uuid",
+      "voiceAgent": {
+        "id": "agent-uuid",
+        "name": "Support Agent"
+      },
+      "createdAt": "2024-01-15T10:30:00Z",
+      "updatedAt": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "nextPage": 2
+}
+```
+
+### Create Phone Number
+
+```http
+POST /v1/voice-agents/phone-number
+```
+
+**Request Body:**
+
+```json
+{
+  "phoneNumber": "+14155552671",
+  "type": "TWILIO",
+  "label": "Support Line",
+  "twilioAccountSid": "ACxxxxxxxx",
+  "twilioAuthToken": "your_token",
+  "projectId": "your-project-id"
+}
+```
+
+### Assign Phone Number
+
+```http
+POST /v1/voice-agents/assign-number
+```
+
+**Request Body:**
+
+```json
+{
+  "voiceAgentId": "agent-uuid",
+  "phoneNumber": "+14155552671",
+  "type": "TWILIO",
+  "projectId": "your-project-id"
+}
+```
+
+### Make Outbound Call
+
+```http
+POST /v1/voice-agents/phone-number/call
+```
+
+See [Outbound Calls](#outbound-calls) section for complete request format.
+
+## Related Features
+
+- [Webhooks](/features/webhooks) - Receive real-time call events
+- [Outcomes](/features/outcomes) - Extract structured data from calls
+- [Call History](/dashboard/call-history) - Review past conversations
+- [Agents](/agents/introduction) - Configure AI behavior
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Contact Support" icon="headset" href="mailto:support@tryhamsa.com">
+    Get help from our team
+  </Card>
+  <Card title="Community" icon="users" href="https://community.tryhamsa.com">
+    Join the discussion
+  </Card>
+</CardGroup>

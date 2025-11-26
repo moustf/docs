@@ -1,0 +1,578 @@
+---
+title: 'Web Tool Node'
+description: 'Execute browser-based tools for SDK-deployed agents with interactive forms'
+---
+
+## Overview
+
+Web Tool Nodes execute tools in the user's browser when your agent is deployed via the Hamsa Web SDK. Instead of making server-side API calls during phone conversations, Web Tool Nodes render interactive forms in the web chat interface, allowing users to input data directly before submission.
+
+<Info>
+**Web Tool Node vs Tool Node:**
+- **Web Tool Node** (`web_tool`): Browser-based execution with forms (SDK deployments only)
+- **Tool Node** (`tool`): Server-side API execution (phone calls and all deployments)
+</Info>
+
+## How Web Tool Nodes Work
+
+**Traditional Tool Node Flow** (Phone Calls):
+
+```
+User speaks → Agent triggers tool → Server executes API → Response to user
+```
+
+**Web Tool Node Flow** (SDK Deployment):
+
+```
+User types/speaks → Agent triggers tool → Form appears in browser → User fills form →
+Browser executes request → Data sent to agent → Agent responds
+```
+
+<Note>
+Web Tool Nodes only function when the agent is deployed via the Hamsa Web SDK. For phone calls, use regular Tool Nodes instead.
+</Note>
+
+## Key Features
+
+### Browser-Based Forms
+
+- Tools render as interactive forms in web chat
+- Users input data through form fields
+- Real-time client-side validation
+- Better UX for complex data entry (dates, selections, multi-field inputs)
+
+### Client-Side Execution
+
+- Executes in user's browser context
+- Access to browser APIs if needed
+- Reduced server load
+- Near-instant response for local operations
+
+### Tool Configuration
+
+- Uses tool templates from your Tools library
+- Configured in `agentSettings.tools` with `toolType: 'WEB_TOOL'`
+- Tools matched to nodes via `nodeId` field
+- Limited override capabilities (name, description, URL, method, params, timeout, authToken, authType)
+
+## When to Use Web Tool Nodes
+
+### ✅ Use Web Tool Nodes When:
+
+- **SDK Deployment**: Agent is deployed on web/mobile via SDK
+- **Complex Forms**: Multiple fields need user input
+- **Data Input**: Addresses, credit cards, dates, selections
+- **File Uploads**: Users need to upload files from their device
+- **Real-time Validation**: Client-side validation provides instant feedback
+- **User Confirmation**: Operations requiring explicit user confirmation
+
+### ❌ Use Tool Nodes Instead When:
+
+- **Phone Calls**: Voice-only interactions require server-side execution
+- **No SDK**: Agent not deployed via Web SDK
+- **Server-Only Operations**: Backend authentication, database access
+- **API Lookups**: Real-time data fetching during conversation
+- **MCP Tools**: Model Context Protocol tools are always server-side
+
+## Tool Configuration
+
+### Creating Web Tools
+
+Web Tools are created in the Tools library with `toolType: 'WEB_TOOL'`:
+
+```typescript
+{
+  toolType: 'WEB_TOOL',
+  toolId: 'uuid-of-tool-template',
+  persistentId: 'unique-id',
+  version: 1,
+  nodeId: 'web_tool_node_id', // Links to specific Web Tool Node
+  overrides: {
+    name: 'Customer Registration',
+    description: 'Register new customer account',
+    url: 'https://api.acme.com/customers',
+    method: 'POST',
+    params: {
+      source: 'web_sdk'
+    },
+    timeout: 10000,
+    authToken: 'Bearer {{apiToken}}',
+    authType: 'jwtAuth'
+  }
+}
+```
+
+### Tool Parameters as Form Fields
+
+Tool parameters automatically map to form fields:
+
+**String Parameter** → Text Input
+
+```json
+{
+  "first_name": {
+    "type": "string",
+    "description": "First name"
+  }
+}
+```
+
+Renders as: `<input type="text" placeholder="First name" />`
+
+**Number Parameter** → Number Input
+
+```json
+{
+  "age": {
+    "type": "number",
+    "minimum": 18,
+    "maximum": 120
+  }
+}
+```
+
+Renders as: `<input type="number" min="18" max="120" />`
+
+**Boolean Parameter** → Checkbox
+
+```json
+{
+  "newsletter": {
+    "type": "boolean",
+    "description": "Subscribe to newsletter"
+  }
+}
+```
+
+Renders as: `<input type="checkbox" />`
+
+**Enum Parameter** → Select Dropdown
+
+```json
+{
+  "country": {
+    "type": "string",
+    "enum": ["US", "CA", "UK", "AU"]
+  }
+}
+```
+
+Renders as: `<select><option>US</option>...</select>`
+
+## Adding Web Tool Nodes to Flows
+
+### Step 1: Add Node
+
+1. Open your Flow Agent
+2. Click **Add Node** in the canvas
+3. Select **Web Tool Node**
+4. Position the node in your flow
+
+### Step 2: Configure Tool
+
+1. Select the Web Tool Node
+2. In the right panel, click **Select Tool**
+3. Choose a WEB_TOOL type tool from your library
+4. Tool is linked via `nodeId` in `agentSettings.tools`
+
+<Tip>
+Create the WEB_TOOL in your Tools library first, then link it to the Web Tool Node.
+</Tip>
+
+### Step 3: Configure Processing Message
+
+**Static Message:**
+
+```
+"Please fill out the registration form."
+```
+
+**Prompt-Based Message:**
+
+```
+"To complete your {{service_type}} registration, please provide your details in the form."
+```
+
+### Step 4: Add Transitions
+
+Web Tool Nodes support all transition types:
+
+**Always Transition:**
+
+```yaml
+Web Tool Node: Register_Customer
+  ↓ (Always)
+Conversation Node: 'Thank you! Your registration is complete.'
+```
+
+**Natural Language Transition:**
+
+```yaml
+Web Tool Node: Collect_Feedback
+  ↓ (Natural Language: positive feedback)
+End Call Node: "Thank you for your positive feedback!"
+  ↓ (Natural Language: negative feedback)
+Transfer Agent Node: Support_Specialist
+```
+
+**Equation Transition:**
+Use output mapping to extract values, then route based on results:
+
+```yaml
+Web Tool Node: Submit_Order
+  Output Mapping:
+    order_status: $.status
+    order_id: $.id
+  ↓ (Equation: {{order_status}} == "success")
+Conversation Node: "Order {{order_id}} confirmed!"
+  ↓ (Equation: {{order_status}} == "failed")
+Conversation Node: "There was an issue processing your order."
+```
+
+## Configuration Options
+
+### Processing Message
+
+Message displayed while the tool loads:
+
+**Static:**
+
+```
+"Loading registration form..."
+```
+
+**Prompt:**
+
+```
+"One moment while I prepare your {{service_type}} form..."
+```
+
+### Tool Overrides
+
+Web Tool Nodes support limited overrides in `agentSettings.tools`:
+
+**Available Overrides:**
+
+- `name` - Tool display name
+- `description` - Tool purpose description
+- `url` - API endpoint URL
+- `method` - HTTP method (GET, POST, PUT, PATCH, DELETE)
+- `params` - Request parameters
+- `timeout` - Request timeout (milliseconds)
+- `authToken` - Authentication token
+- `authType` - Authentication type (none, jwtAuth)
+
+**Not Overridable:**
+
+- HTTP headers (security constraint for browser execution)
+- Path parameters (simplified for web tools)
+- Async mode (not applicable to browser execution)
+
+## Use Cases & Examples
+
+### Example 1: Customer Registration
+
+**Scenario:** Collect customer information via form.
+
+```yaml
+Conversation Node: Welcome
+  message: "I can help you create an account."
+  transitions:
+    - Natural Language: wants to register → Register_Form
+
+Web Tool Node: Register_Form
+  tool: Customer_Registration_Tool (WEB_TOOL)
+  processingMessage: "Loading registration form..."
+  transitions:
+    - Always → Confirmation
+
+Conversation Node: Confirmation
+  message: "Your account has been created! Check your email for confirmation."
+```
+
+**Tool Configuration:**
+
+```typescript
+{
+  toolType: 'WEB_TOOL',
+  nodeId: 'Register_Form',
+  overrides: {
+    name: 'Customer Registration',
+    url: 'https://api.acme.com/v1/customers',
+    method: 'POST',
+    params: {
+      source: 'web_chat',
+      referral: '{{utm_campaign}}'
+    }
+  }
+}
+```
+
+**Form Parameters:**
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "first_name": { "type": "string", "description": "First name" },
+    "last_name": { "type": "string", "description": "Last name" },
+    "email": { "type": "string", "format": "email" },
+    "phone": { "type": "string", "pattern": "^\\+?[1-9]\\d{1,14}$" },
+    "company": { "type": "string" },
+    "newsletter": { "type": "boolean", "default": false }
+  },
+  "required": ["first_name", "last_name", "email"]
+}
+```
+
+### Example 2: Feedback Collection
+
+**Scenario:** Gather structured feedback with ratings.
+
+```yaml
+Conversation Node: Ask_Feedback
+  message: "Would you like to provide feedback about your experience?"
+  transitions:
+    - Natural Language: yes, sure → Feedback_Form
+    - Natural Language: no → End_Call
+
+Web Tool Node: Feedback_Form
+  tool: Feedback_Survey_Tool (WEB_TOOL)
+  processingMessage: "Loading survey..."
+  transitions:
+    - Always → Thank_You
+
+Conversation Node: Thank_You
+  message: "Thank you for your feedback! It helps us improve."
+```
+
+**Tool Parameters:**
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "rating": {
+      "type": "number",
+      "enum": [1, 2, 3, 4, 5],
+      "description": "Overall rating"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["Product", "Service", "Support", "Website"],
+      "description": "Feedback category"
+    },
+    "comments": {
+      "type": "string",
+      "description": "Additional comments"
+    },
+    "contact_ok": {
+      "type": "boolean",
+      "description": "May we contact you about this feedback?"
+    }
+  },
+  "required": ["rating", "category"]
+}
+```
+
+### Example 3: File Upload
+
+**Scenario:** User uploads a document.
+
+```yaml
+Conversation Node: Request_Document
+  message: "Please upload your resume or CV."
+  transitions:
+    - Always → Upload_Form
+
+Web Tool Node: Upload_Form
+  tool: Document_Upload_Tool (WEB_TOOL)
+  processingMessage: "Preparing upload form..."
+  transitions:
+    - Always → Process_Upload
+
+Conversation Node: Process_Upload
+  message: "Thank you! Your document has been uploaded successfully."
+```
+
+**Tool Parameters:**
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "file": {
+      "type": "string",
+      "format": "data-url",
+      "description": "Document file"
+    },
+    "file_type": {
+      "type": "string",
+      "enum": ["pdf", "docx", "txt"],
+      "description": "Document type"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes"
+    }
+  },
+  "required": ["file", "file_type"]
+}
+```
+
+## Web Tool Node vs Tool Node
+
+| Feature        | Web Tool Node               | Tool Node                    |
+| -------------- | --------------------------- | ---------------------------- |
+| **Node Type**  | `web_tool`                  | `tool`                       |
+| **Tool Type**  | `WEB_TOOL`                  | `FUNCTION` or `MCP`          |
+| **Execution**  | Browser (client-side)       | Server-side                  |
+| **Use Case**   | SDK deployments, web chat   | Phone calls, all deployments |
+| **User Input** | Interactive forms           | Voice/conversational         |
+| **Latency**    | Near-instant (local)        | Network dependent            |
+| **Validation** | Client + Server             | Server-side                  |
+| **Access**     | Browser APIs                | Backend APIs                 |
+| **Overrides**  | Limited (no headers)        | Full (all fields)            |
+| **Testing**    | No testResult field         | testResult available         |
+| **Best For**   | Complex forms, file uploads | API integrations, MCP tools  |
+
+## Best Practices
+
+### Design for Web Context
+
+**Keep forms concise:**
+
+- 3-7 fields ideal
+- Break complex forms into multiple steps
+- Use clear field labels and placeholders
+
+**Provide inline validation:**
+
+- Use JSON schema validation rules
+- Show error messages next to fields
+- Real-time validation feedback
+
+**Consider mobile users:**
+
+- Touch-friendly form controls
+- Appropriate input types (email, tel, number)
+- Responsive form layout
+
+### Security Considerations
+
+**Don't expose sensitive tokens:**
+
+```typescript
+// ❌ Bad - hardcoded in browser
+authToken: 'sk_live_actual_secret_here';
+
+// ✅ Good - use environment variables
+authToken: '{{env.API_TOKEN}}';
+```
+
+**Validate on both sides:**
+
+- Client-side validation for UX
+- Server-side validation for security
+- Never trust client-only validation
+
+**Use HTTPS only:**
+
+- All tool URLs must use HTTPS
+- Protects data in transit
+
+### Testing
+
+**Test in Web SDK:**
+
+- Deploy agent to test environment
+- Verify form rendering
+- Check field validation
+- Test submission and response handling
+
+**Test Fallbacks:**
+
+- What happens if form fails to load?
+- How are API errors displayed?
+- Is there a cancel/back option?
+
+## Troubleshooting
+
+### Form Not Appearing
+
+**Possible Causes:**
+
+- Tool not linked to node (`nodeId` doesn't match)
+- Tool type is not `WEB_TOOL`
+- SDK integration issue
+- Tool parameters not properly defined
+
+**Solutions:**
+
+- Verify `nodeId` in `agentSettings.tools` matches node ID
+- Check tool type is `WEB_TOOL`, not `FUNCTION`
+- Test SDK integration
+- Validate tool parameter schema
+
+### Validation Errors
+
+**Possible Causes:**
+
+- Parameter schema constraints too strict
+- Required fields not marked correctly
+- Regex patterns invalid
+- Type mismatches
+
+**Solutions:**
+
+- Review parameter schema
+- Test with valid sample data
+- Check regex patterns online
+- Ensure types match expected format
+
+### Submission Failures
+
+**Possible Causes:**
+
+- API endpoint not accessible from browser
+- CORS settings on target API
+- Authentication failure
+- Network issues
+
+**Solutions:**
+
+- Verify API endpoint is publicly accessible
+- Configure CORS on target API
+- Check authentication tokens
+- Review browser network console
+
+### Tool Not Executing
+
+**Possible Causes:**
+
+- Agent not deployed via SDK
+- Phone call instead of web chat
+- Tool configuration error
+
+**Solutions:**
+
+- Use Web Tool Nodes only for SDK deployments
+- For phone calls, use regular Tool Nodes
+- Verify tool configuration in Tools library
+
+## Related Documentation
+
+<CardGroup cols={2}>
+  <Card title="Tool Node" href="./tool-node">
+    Server-side tool execution for phone calls
+  </Card>
+  <Card title="Tools" href="/features/tools">
+    Create and manage tool templates
+  </Card>
+  <Card title="Variables" href="../variables">
+    Use variables in tool parameters
+  </Card>
+  <Card title="Transitions" href="../transitions">
+    Control flow after tool execution
+  </Card>
+</CardGroup>

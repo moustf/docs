@@ -1,0 +1,897 @@
+---
+title: 'Data Collection Guide'
+description: 'Collect information with DTMF input capture, variables, and natural language extraction'
+---
+
+## Overview
+
+Effective data collection is essential for voice agents that need to gather information from callers. Hamsa provides multiple methods to collect, validate, and use data throughout conversations, from simple name collection to complex multi-field forms.
+
+<Info>
+**Data Collection Methods:**
+- **Natural Language Extraction** - AI extracts data from spoken conversation
+- **DTMF Input Capture** - Collect digits via keypad
+- **Structured Prompting** - Guide users to provide specific information
+- **Variables** - Store and reference collected data
+</Info>
+
+## Collection Methods
+
+### 1. Natural Language Extraction
+
+The most natural method - AI extracts information from conversation.
+
+**How It Works:**
+
+1. User speaks naturally
+2. AI identifies and extracts specific data
+3. Data stored in variables
+4. Available for use throughout the flow
+
+**Example: Collecting Customer Information**
+
+```yaml
+Conversation Node: Collect_Info
+  Message: "I'll need a few details to help you.
+           What's your name and phone number?"
+
+  Variable Extraction:
+    - Variable: customer_name
+      Instructions: "Extract the customer's full name"
+
+    - Variable: phone_number
+      Instructions: "Extract phone number in format XXX-XXX-XXXX"
+
+User Response: "My name is John Smith and my number is 555-123-4567"
+
+Extracted:
+  customer_name: "John Smith"
+  phone_number: "555-123-4567"
+```
+
+**Best For:**
+
+- Names, addresses, email addresses
+- Dates and times (flexible formats)
+- Free-form descriptions
+- Complex multi-field responses
+- Natural conversation flow
+
+**Advantages:**
+
+- Natural user experience
+- Flexible input formats
+- Handles variations well
+- No learning curve for users
+
+**Disadvantages:**
+
+- Potential transcription errors
+- Format inconsistencies
+- Requires validation
+- May need clarification
+
+### 2. DTMF Input Capture
+
+Collect precise numeric data via keypad.
+
+**How It Works:**
+
+1. Agent prompts for numeric input
+2. User enters digits on keypad
+3. System captures key presses
+4. Stores in variable
+
+**Example: Account Number Collection**
+
+```yaml
+Conversation Node: Get_Account
+  Message: "Please enter your 10-digit account number,
+           followed by the pound key."
+
+  DTMF Input Capture:
+    Enabled: true
+    Variable: account_number
+    Digit Limit: 10
+    Termination Key: #
+    Timeout: 15 seconds
+
+User Input: 1-2-3-4-5-6-7-8-9-0-#
+
+Result:
+  account_number: "1234567890"
+```
+
+**Best For:**
+
+- Account numbers
+- Phone numbers
+- ZIP codes
+- PINs and passwords
+- Social security numbers (last 4 digits)
+- Confirmation codes
+- Numeric IDs
+
+**Advantages:**
+
+- 100% accurate (no transcription errors)
+- Works in noisy environments
+- Familiar to users
+- Secure for sensitive data
+
+**Disadvantages:**
+
+- Numbers only (0-9)
+- Slower than speaking
+- Requires hands-free device awareness
+- Not accessible to all users
+
+### 3. Guided Prompting
+
+Ask specific questions to collect structured data.
+
+**How It Works:**
+
+1. Ask focused, single questions
+2. Extract one piece of information
+3. Confirm understanding
+4. Move to next question
+
+**Example: Appointment Scheduling**
+
+```yaml
+Node 1: Get_Date
+  Message: "What date would you like to schedule?
+           For example, January 15th."
+
+  Extract: appointment_date
+
+Node 2: Confirm_Date
+  Message: "Got it, {{appointment_date}}.
+           And what time works best for you?"
+
+  Extract: appointment_time
+
+Node 3: Verify_All
+  Message: "Perfect! I have you scheduled for {{appointment_date}}
+           at {{appointment_time}}. Is that correct?"
+
+  Extract: confirmation (yes/no)
+```
+
+**Best For:**
+
+- Multi-step forms
+- Complex data collection
+- Situations requiring validation
+- When precision matters
+
+**Advantages:**
+
+- Clear expectations
+- Easy to validate
+- Reduces errors
+- Good user experience
+
+**Disadvantages:**
+
+- Takes more time
+- Multiple conversational turns
+- Can feel rigid
+- Requires good flow design
+
+## Variable System
+
+### Defining Variables
+
+<Steps>
+  <Step title="Choose Variable Type">
+    **Extracted Variables**: Collected during conversation
+    **Custom Variables**: Passed via API when call starts
+    **System Variables**: Built-in (time, caller ID, etc.)
+  </Step>
+  <Step title="Name Your Variable">
+    Use snake_case format:
+    - `customer_name`
+    - `phone_number`
+    - `appointment_date`
+    - `order_number`
+  </Step>
+  <Step title="Configure Extraction">
+    Provide clear extraction instructions:
+    - What to extract
+    - Expected format
+    - Examples if helpful
+  </Step>
+  <Step title="Use Throughout Flow">
+    Reference variable anywhere:
+    - Prompts: `{{customer_name}}`
+    - Tool parameters
+    - Routing conditions
+  </Step>
+</Steps>
+
+### Variable Naming Best Practices
+
+**Good Names:**
+
+```yaml
+✓ customer_name
+✓ email_address
+✓ appointment_date
+✓ order_number
+✓ shipping_address
+✓ phone_number
+✓ account_balance
+```
+
+**Bad Names:**
+
+```yaml
+✗ name              (too vague)
+✗ customerName      (use snake_case, not camelCase)
+✗ customer-name     (no hyphens)
+✗ Customer Name     (no spaces or capitals)
+✗ var1              (not descriptive)
+✗ temp              (unclear purpose)
+```
+
+### Extraction Instructions
+
+**Clear Instructions:**
+
+```yaml
+✓ "Extract the customer's full name"
+✓ "Extract email address in format user@domain.com"
+✓ "Extract appointment date in MM/DD/YYYY format"
+✓ "Extract order number (starts with ORD-)"
+
+✗ "Get the name"
+✗ "Extract email"
+✗ "Get the date"
+```
+
+**With Examples:**
+
+```yaml
+Variable: phone_number
+Instructions: "Extract 10-digit phone number.
+              Examples: 555-123-4567, (555) 123-4567, 5551234567.
+              Store in format: XXX-XXX-XXXX"
+
+Variable: appointment_date
+Instructions: "Extract date mentioned by caller.
+              Examples: 'next Tuesday', 'January 15th', '1/15/2024'.
+              Convert to YYYY-MM-DD format."
+```
+
+## Complete Collection Workflows
+
+### Example 1: Customer Registration
+
+Collect comprehensive customer information.
+
+```yaml
+Node 1: Welcome
+  Message: "I'll help you create an account. This will just take a minute."
+
+Node 2: Collect_Name
+  Message: "First, what's your full name?"
+
+  Extract Variables:
+    - customer_name: "Extract full name (first and last)"
+
+Node 3: Confirm_Name
+  Message: "Thank you, {{customer_name}}. What's the best email
+           address to reach you?"
+
+  Extract Variables:
+    - email_address: "Extract email in format user@domain.com"
+
+Node 4: Collect_Phone
+  Message: "Great. And what's your phone number?"
+
+  Extract Variables:
+    - phone_number: "Extract 10-digit phone number"
+
+Node 5: Verify_Information
+  Message: "Let me confirm your information:
+           Name: {{customer_name}}
+           Email: {{email_address}}
+           Phone: {{phone_number}}
+
+           Is everything correct?"
+
+  Extract Variables:
+    - confirmation: "Extract yes/no confirmation"
+
+  Transitions:
+    - confirmation == "yes" → Create_Account_Tool
+    - confirmation == "no" → What_To_Change
+
+Node 6: Create_Account (Tool)
+  Tool: create_customer_account
+  Parameters:
+    name: {{customer_name}}
+    email: {{email_address}}
+    phone: {{phone_number}}
+    source: "phone"
+    timestamp: {{current_datetime}}
+
+Node 7: Success
+  Message: "Your account is all set, {{customer_name}}!
+           You'll receive a confirmation email at {{email_address}}."
+```
+
+### Example 2: Secure Authentication
+
+Collect sensitive information securely.
+
+```yaml
+Node 1: Request_Account
+  Message: "For security, I'll need to verify your account.
+           Please enter your account number using your keypad,
+           followed by the pound key."
+
+  DTMF Input Capture:
+    Variable: account_number
+    Digit Limit: 10
+    Termination Key: #
+
+Node 2: Request_PIN
+  Message: "Thank you. Now please enter your 4-digit PIN."
+
+  DTMF Input Capture:
+    Variable: pin_code
+    Digit Limit: 4
+    Timeout: 15s
+
+Node 3: Verify_Credentials (Tool)
+  Tool: verify_account
+  Parameters:
+    account: {{account_number}}
+    pin: {{pin_code}}
+    call_id: {{call_id}}
+
+  Transitions:
+    - API returns success → Authenticated_Menu
+    - API returns failure → Retry_Authentication
+    - After 3 failures → Transfer_Security
+
+Node 4: Retry_Authentication
+  Message: "I couldn't verify those credentials.
+           Let's try again. Please enter your account number."
+
+Node 5: Authenticated_Menu
+  Message: "Thank you for verifying your identity, {{customer_name}}.
+           How can I help you today?"
+```
+
+### Example 3: Hybrid Collection (DTMF + NL)
+
+Combine DTMF and natural language for optimal UX.
+
+```yaml
+Node 1: Collect_ZIP
+  Message: "What's your ZIP code? You can say it or enter it
+           on your keypad, followed by pound."
+
+  DTMF Input Capture:
+    Variable: zip_code
+    Digit Limit: 5
+    Termination Key: #
+
+  Extract Variables:
+    - zip_code: "Extract 5-digit ZIP code if spoken"
+
+  # Either method populates zip_code variable
+
+Node 2: Collect_Date
+  Message: "What date would you like? You can say something like
+           'next Tuesday' or 'January 15th'."
+
+  Extract Variables:
+    - appointment_date: "Extract date, convert to YYYY-MM-DD"
+
+Node 3: Confirm_Details
+  Message: "I have ZIP code {{zip_code}} and date {{appointment_date}}.
+           Is that right?"
+```
+
+### Example 4: Survey Data Collection
+
+Structured survey with validation.
+
+```yaml
+Survey Flow:
+
+Node 1: Introduction
+  Message: "This quick survey takes about 2 minutes.
+           Your feedback helps us improve."
+
+Node 2: Question_1
+  Message: "On a scale of 1 to 5, with 5 being very satisfied,
+           how satisfied are you with our service?
+           You can say the number or press it on your keypad."
+
+  DTMF Input Capture:
+    Variable: satisfaction_score
+    Digit Limit: 1
+
+  Extract Variables:
+    - satisfaction_score: "Extract number 1-5"
+
+  Validation:
+    - satisfaction_score must be 1-5
+
+Node 3: Question_2
+  Message: "Would you recommend us to a friend? Yes or no?"
+
+  Extract Variables:
+    - would_recommend: "Extract yes or no"
+
+Node 4: Question_3 (Conditional)
+  Condition: satisfaction_score < 3
+
+  Message: "I'm sorry to hear that. Can you tell me what we could
+           improve?"
+
+  Extract Variables:
+    - improvement_feedback: "Extract detailed feedback"
+
+Node 5: Submit_Survey (Tool)
+  Tool: submit_survey_results
+  Parameters:
+    satisfaction: {{satisfaction_score}}
+    recommend: {{would_recommend}}
+    feedback: {{improvement_feedback}}
+    caller: {{user_number}}
+    date: {{current_date}}
+
+Node 6: Thank_You
+  Message: "Thank you for your feedback, we really appreciate it!"
+```
+
+## Validation Strategies
+
+### Format Validation
+
+Ensure data meets expected format.
+
+**Email Validation:**
+
+```yaml
+Node: Collect_Email
+  Message: "What's your email address?"
+
+  Extract Variables:
+    - email_address: "Extract email in format user@domain.com"
+
+Validation Node:
+  Condition: email_address contains "@" AND email_address contains "."
+
+  If valid → Continue
+  If invalid → "That doesn't look like a valid email. Could you
+                spell it out for me? For example, john at example dot com."
+```
+
+**Phone Number Validation:**
+
+```yaml
+Validation Logic:
+  - Length: Must be 10 digits
+  - Format: (XXX) XXX-XXXX or XXX-XXX-XXXX or XXXXXXXXXX
+  - Area code: First digit cannot be 0 or 1
+
+Error Message: "I need a 10-digit phone number. For example, 555-123-4567.
+  What's your phone number?"
+```
+
+**Date Validation:**
+
+```yaml
+Validation Logic:
+  - Must be future date (for appointments)
+  - Must be valid calendar date
+  - Must be within acceptable range
+
+Error Message:
+  "That date doesn't work. I can schedule appointments up to 6 months
+  out. What date would you like?"
+```
+
+### Range Validation
+
+Ensure values fall within acceptable ranges.
+
+```yaml
+Node: Collect_Age
+  Message: "For verification, how old are you?"
+
+  Extract Variables:
+    - age: "Extract age as number"
+
+Validation:
+  - age >= 18 AND age <= 120 → Valid
+  - age < 18 → "I'm sorry, you must be 18 or older."
+  - age > 120 → "That doesn't seem right. What's your age?"
+
+Node: Collect_Quantity
+  Message: "How many would you like to order?"
+
+  Extract Variables:
+    - quantity: "Extract number"
+
+Validation:
+  - quantity >= 1 AND quantity <= 100 → Valid
+  - quantity < 1 → "I need at least 1 item."
+  - quantity > 100 → "For orders over 100, please contact our
+                       sales team directly."
+```
+
+### Existence Validation
+
+Verify data exists in system.
+
+```yaml
+Node: Collect_Order_Number
+  Message: "What's your order number?"
+
+  Extract Variables:
+    - order_number: "Extract order number (format ORD-XXXXX)"
+
+Validation Tool:
+  Tool: check_order_exists
+  Parameters:
+    order_number: {{order_number}}
+
+  Transitions:
+    - Order found → Display_Order_Info
+    - Order not found → "I couldn't find that order number.
+                         Can you double-check and try again?"
+    - After 3 attempts → "Let me transfer you to customer service."
+```
+
+## Handling Collection Errors
+
+### Transcription Errors
+
+Speech recognition isn't perfect.
+
+**Strategy: Confirmation**
+
+```yaml
+Node: Collect_Email
+  Message: "What's your email address?"
+
+  Extract: email_address
+
+Node: Confirm_Email
+  Message: "I heard {{email_address}}. Is that correct?"
+
+  Extract: confirmation
+
+  Transitions:
+    - "yes" → Continue
+    - "no" → "Let's try again. Can you spell it out?
+               For example, J-O-H-N at G-M-A-I-L dot com."
+```
+
+**Strategy: Phonetic Spelling**
+
+```yaml
+After Error: "I'm having trouble hearing that. Let me try a different way.
+  Can you spell your email letter by letter?
+  For example, J for John, O for Oscar, H for Hotel..."
+
+Extract as: Phonetic sequence
+Convert to: email_address
+```
+
+### Ambiguous Input
+
+User provides unclear information.
+
+```yaml
+Node: Collect_Date
+  Message: "What date would you like?"
+
+User: "Soon"
+
+Problem: Too vague
+
+Response: "I can schedule appointments starting tomorrow through the
+          next 6 months. What specific date works for you?
+          For example, next Monday, or January 15th?"
+
+User: "Monday"
+
+Problem: Which Monday?
+
+Response: "Did you mean Monday, January 15th, or Monday, January 22nd?"
+```
+
+### Incomplete Information
+
+User doesn't provide all needed data.
+
+```yaml
+Node: Collect_Address
+  Message: "What's your street address?"
+
+User: "123 Main Street"
+
+Problem: No city, state, ZIP
+
+Solution: Follow-up questions
+  "And what city is that in?"
+  "What's the ZIP code?"
+
+Or: Structured prompting
+  "I'll need your complete address. What's the street address?"
+  [collect]
+  "And the city?"
+  [collect]
+  "State?"
+  [collect]
+  "ZIP code?"
+```
+
+## Advanced Techniques
+
+### Multi-Slot Extraction
+
+Extract multiple fields from one response.
+
+```yaml
+Node: Collect_All_At_Once
+  Message: "To send you a quote, I'll need your email and phone number."
+
+  Extract Variables:
+    - email_address: "Extract email address"
+    - phone_number: "Extract phone number"
+
+User: "My email is john@example.com and you can reach me at 555-1234"
+
+Extracted:
+  email_address: "john@example.com"
+  phone_number: "555-1234"
+
+Validation Node:
+  Check both variables:
+    - If email exists AND phone exists → Continue
+    - If only email → "Great! And your phone number?"
+    - If only phone → "Got it. And your email address?"
+    - If neither → "Let me ask separately. What's your email?"
+```
+
+### Conditional Collection
+
+Collect different data based on context.
+
+```yaml
+Router: Account_Type_Check
+  Condition: {{account_type}} == "business"
+  → Collect business-specific info (EIN, company name)
+
+  Condition: {{account_type}} == "personal"
+  → Collect personal info (SSN last 4, DOB)
+
+Business Info Collection:
+  - company_name
+  - ein_number
+  - business_address
+
+Personal Info Collection:
+  - ssn_last_four
+  - date_of_birth
+  - home_address
+```
+
+### Progressive Profiling
+
+Collect more data over multiple interactions.
+
+```yaml
+First Call:
+  - Collect: name, phone, email
+  - Create basic profile
+
+Second Call:
+  - Already have: name, phone, email
+  - Collect: preferences, interests
+
+Third Call:
+  - Already have: basic info, preferences
+  - Collect: detailed requirements
+```
+
+### Context-Aware Collection
+
+Use available context to skip collection.
+
+```yaml
+Router: Check_Existing_Data
+
+Condition: {{user_number}} in customer_database
+  → Lookup customer data
+  → "Welcome back, {{customer_name}}! I have your email as
+      {{email_address}}. Is that still correct?"
+
+Condition: {{user_number}} NOT in customer_database
+  → "I don't have your information yet. What's your name?"
+  → Full collection flow
+```
+
+## Data Storage & Usage
+
+### Storing Collected Data
+
+**During Call:**
+
+```yaml
+Variables stored in call context:
+  - Available throughout conversation
+  - Passed between nodes
+  - Used in tools and routing
+  - Included in call logs
+```
+
+**After Call:**
+
+```yaml
+Method 1: Webhooks
+  - Send data to your server
+  - Store in your database
+  - Trigger workflows
+
+Method 2: Outcomes
+  - Define outcome schema
+  - Automatically extract at call end
+  - Retrieve via API
+
+Method 3: Tools
+  - Call your API during conversation
+  - Store data real-time
+  - Return confirmation
+```
+
+### Using Collected Data
+
+**In Prompts:**
+
+```yaml
+'Thank you, {{customer_name}}! Your order {{order_number}}
+will be shipped to {{shipping_address}}.'
+```
+
+**In Tools:**
+
+```yaml
+Tool: create_customer
+Parameters:
+  name: { { customer_name } }
+  email: { { email_address } }
+  phone: { { phone_number } }
+  source: 'phone_call'
+  collected_at: { { current_datetime } }
+```
+
+**In Routing:**
+
+```yaml
+Router: Priority_Check
+  Condition: {{customer_tier}} == "VIP"
+  → VIP_Fast_Track
+
+  Condition: {{issue_severity}} == "high"
+  → Urgent_Support
+
+  Default → Standard_Support
+```
+
+**In Webhooks:**
+
+```json
+{
+  "event": "call.ended",
+  "data": {
+    "customer_name": "{{customer_name}}",
+    "email_address": "{{email_address}}",
+    "phone_number": "{{phone_number}}",
+    "issue_type": "{{issue_type}}",
+    "resolution": "{{resolution_status}}"
+  }
+}
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Ask One Question at a Time" icon="1">
+    Don't overwhelm users with multiple questions
+  </Card>
+  <Card title="Confirm Critical Data" icon="check">
+    Always confirm important information like emails, addresses
+  </Card>
+  <Card title="Use Appropriate Method" icon="toggle-on">
+    DTMF for numbers, NL for text, prompting for precision
+  </Card>
+  <Card title="Validate Early" icon="shield-check">
+    Check format and validity immediately after collection
+  </Card>
+  <Card title="Provide Examples" icon="lightbulb">
+    Show users what format you expect
+  </Card>
+  <Card title="Handle Errors Gracefully" icon="rotate">
+    Give clear guidance when collection fails
+  </Card>
+  <Card title="Skip When Possible" icon="forward">
+    Don't ask for data you already have
+  </Card>
+  <Card title="Explain Why" icon="circle-question">
+    Tell users why you need their information
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Variable Not Extracting">
+    **Check:**
+    - Extraction instructions are clear
+    - User actually provided the information
+    - Variable name is correct (snake_case)
+    - Extraction is enabled on the node
+
+    **Solutions:**
+    - Make instructions more specific
+    - Add examples to instructions
+    - Ask more directly for the information
+
+  </Accordion>
+
+  <Accordion title="Wrong Data Extracted">
+    **Check:**
+    - Transcription accuracy
+    - Extraction instructions specificity
+    - User response clarity
+
+    **Solutions:**
+    - Add format specifications to instructions
+    - Confirm what was heard
+    - Use DTMF for critical data
+
+  </Accordion>
+
+  <Accordion title="DTMF Not Capturing">
+    **Check:**
+    - DTMF Input Capture is enabled
+    - Variable name is set
+    - At least one completion condition configured
+    - Testing with actual phone (not browser)
+
+    **Solutions:**
+    - Enable DTMF Input Capture toggle
+    - Set variable name
+    - Add termination key or digit limit
+
+  </Accordion>
+</AccordionGroup>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Variables System" href="/agents/flow-agent/variables">
+    Learn more about the variable system
+  </Card>
+  <Card title="DTMF Features" href="/agents/flow-agent/dtmf">
+    Deep dive into DTMF input capture
+  </Card>
+  <Card title="API Integration" href="/guides/api-integration">
+    Send collected data to your systems
+  </Card>
+  <Card title="Call Routing" href="/guides/call-routing">
+    Route calls based on collected data
+  </Card>
+</CardGroup>

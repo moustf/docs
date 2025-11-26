@@ -1,0 +1,1152 @@
+---
+title: 'API Integration Guide'
+description: 'Integrate with external APIs and systems via tools'
+---
+
+## Overview
+
+API integration allows your voice agents to interact with external systems, fetch data, and perform actions beyond conversation. Hamsa's tool system makes it easy to connect to any HTTP API, enabling powerful workflows like looking up customer data, creating tickets, sending notifications, and more.
+
+<Info>
+**What You Can Do with API Integration:**
+- Look up customer information from your CRM
+- Create and update tickets in your helpdesk
+- Check inventory and availability
+- Process orders and payments
+- Send emails, SMS, and notifications
+- Update databases and systems
+- Verify account credentials
+- Access any HTTP/REST API
+</Info>
+
+## Tool System Basics
+
+### What Are Tools?
+
+Tools are reusable API configurations that your agents can call during conversations. Think of them as functions your agent can execute.
+
+**Tool Components:**
+
+- **Name & Description** - What the tool does
+- **HTTP Method** - GET, POST, PUT, DELETE, PATCH
+- **URL** - API endpoint (supports path parameters)
+- **Authentication** - API keys, bearer tokens
+- **Headers** - Custom HTTP headers
+- **Parameters** - JSON schema defining inputs
+- **Messages** - What agent says during execution
+
+### Creating Your First Tool
+
+Let's create a tool to look up customer information.
+
+<Steps>
+  <Step title="Navigate to Tools">
+    Go to **Tools** in the sidebar and click **Add New Tool**
+  </Step>
+  <Step title="Configure Basic Info">
+    ```yaml
+    Name: "Lookup Customer by Phone"
+    Description: "Retrieves customer account information by phone number.
+                 Returns name, account number, tier, and recent orders.
+                 Use when caller asks about their account or needs verification."
+    ```
+  </Step>
+  <Step title="Configure Tool Settings">
+    ```yaml
+    Method Type: POST
+    URL: https://api.yourcrm.com/customers/lookup
+    Auth Type: JWT Bearer Token
+    Auth Token: Bearer sk_live_abc123xyz789
+    Timeout: 10 seconds
+    ```
+  </Step>
+  <Step title="Define Parameters">
+    ```json
+    {
+      "type": "object",
+      "properties": {
+        "phone_number": {
+          "type": "string",
+          "description": "Customer's phone number in E.164 format"
+        }
+      },
+      "required": ["phone_number"]
+    }
+    ```
+  </Step>
+  <Step title="Set Messages (Optional)">
+    ```yaml
+    Request Start: "Let me look that up for you..."
+    Request Complete: "I found your account information."
+    ```
+  </Step>
+  <Step title="Save Tool">
+    Click **Save Tool** to create the reusable tool template
+  </Step>
+</Steps>
+
+## Using Tools in Agents
+
+### In Flow Agents
+
+Add tools to your conversation flow using Tool Nodes.
+
+**Example: Customer Lookup Flow**
+
+```yaml
+Node 1: Collect_Phone
+  Message: "Can I get your phone number to look up your account?"
+
+  Extract Variables:
+    - phone_number: "Extract 10-digit phone number"
+
+Node 2: Lookup_Customer (Tool Node)
+  Tool: "Lookup Customer by Phone"
+
+  Parameters:
+    phone_number: {{phone_number}}
+
+  # Tool executes API call
+  # Returns: customer_name, account_number, tier, last_order_date
+
+Node 3: Greet_Customer
+  Message: "Welcome back, {{customer_name}}! I see you're a
+           {{tier}} member. How can I help you today?"
+
+  Transitions:
+    Based on conversation intent
+```
+
+**Tool Node Configuration:**
+
+```yaml
+Tool Node Settings:
+  Tool Template: Select from tool library
+  Parameters: Map variables to tool inputs
+  Path Parameters: Override URL path variables
+  Headers: Override HTTP headers (optional)
+  Messages: Custom messages for this use (optional)
+```
+
+### In Single Prompt Agents
+
+Add tools to configuration, agent decides when to call them.
+
+<Steps>
+  <Step title="Open Agent Configuration">
+    Navigate to your Single Prompt Agent settings
+  </Step>
+  <Step title="Add Tools">
+    Go to **Configuration** → **Tools** → **Add Tool**
+  </Step>
+  <Step title="Select Tools">
+    Choose tools from your library
+  </Step>
+  <Step title="Configure Overrides (Optional)">
+    Override parameters or headers for this specific agent
+  </Step>
+  <Step title="Update Prompt">
+    Mention tools in your preamble:
+    ```
+    ## Available Tools
+
+    You have access to these tools:
+    - lookup_customer: Look up customer info by phone number
+    - create_ticket: Create support tickets
+    - check_order: Get order status
+
+    Use these tools when appropriate to help the caller.
+    ```
+
+  </Step>
+</Steps>
+
+## API Patterns
+
+### GET Requests - Retrieving Data
+
+Fetch information from your systems.
+
+**Example: Get Order Status**
+
+```json
+{
+  "name": "Get Order Status",
+  "description": "Retrieves order status, tracking info, and estimated delivery.
+                 Use when caller asks about their order or delivery.",
+  "methodType": "GET",
+  "url": "https://api.yourstore.com/orders/:orderId",
+  "authType": "jwtAuth",
+  "authToken": "Bearer sk_live_123",
+  "pathParameters": [
+    {
+      "name": "orderId",
+      "defaultValue": "ORD-12345"
+    }
+  ],
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "orderId": {
+        "type": "string",
+        "description": "Order ID (format: ORD-XXXXX)"
+      }
+    },
+    "required": ["orderId"]
+  }
+}
+```
+
+**Response Handling:**
+
+```yaml
+Tool returns:
+  {
+    'order_id': 'ORD-12345',
+    'status': 'shipped',
+    'tracking_number': '1Z999AA10123456784',
+    'estimated_delivery': '2024-01-18',
+    'items': [...],
+  }
+
+Agent can use in response: "Your order {{order_id}} has been {{status}}.
+  It's tracking number is {{tracking_number}} and should arrive
+  by {{estimated_delivery}}."
+```
+
+### POST Requests - Creating Data
+
+Create new records in your systems.
+
+**Example: Create Support Ticket**
+
+```json
+{
+  "name": "Create Support Ticket",
+  "description": "Creates a new support ticket in helpdesk system.
+                 Use when caller reports an issue that needs follow-up.",
+  "methodType": "POST",
+  "url": "https://api.yourdesk.com/v1/tickets",
+  "authType": "jwtAuth",
+  "authToken": "Bearer sk_live_xyz",
+  "headers": [
+    {
+      "name": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "customer_email": {
+        "type": "string",
+        "format": "email",
+        "description": "Customer's email address"
+      },
+      "subject": {
+        "type": "string",
+        "description": "Ticket subject/title"
+      },
+      "description": {
+        "type": "string",
+        "description": "Detailed issue description"
+      },
+      "priority": {
+        "type": "string",
+        "enum": ["low", "medium", "high", "urgent"],
+        "default": "medium",
+        "description": "Ticket priority level"
+      }
+    },
+    "required": ["customer_email", "subject", "description"]
+  }
+}
+```
+
+**Usage in Flow:**
+
+```yaml
+Node: Create_Ticket (Tool)
+  Tool: "Create Support Ticket"
+
+  Parameters:
+    customer_email: {{email_address}}
+    subject: "Issue reported on phone call"
+    description: {{issue_description}}
+    priority: {{urgency_level}}
+
+Response Node:
+  Message: "I've created ticket {{ticket_id}} for you.
+           You'll receive updates at {{customer_email}}."
+```
+
+### PUT/PATCH Requests - Updating Data
+
+Modify existing records.
+
+**Example: Update Customer Preferences**
+
+```json
+{
+  "name": "Update Customer Preferences",
+  "description": "Updates customer communication preferences and settings.",
+  "methodType": "PATCH",
+  "url": "https://api.yourcrm.com/customers/:customerId",
+  "authType": "jwtAuth",
+  "authToken": "Bearer sk_live_abc",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "customerId": {
+        "type": "string",
+        "description": "Customer ID"
+      },
+      "email_notifications": {
+        "type": "boolean",
+        "description": "Enable email notifications"
+      },
+      "sms_notifications": {
+        "type": "boolean",
+        "description": "Enable SMS notifications"
+      },
+      "preferred_contact_time": {
+        "type": "string",
+        "enum": ["morning", "afternoon", "evening"],
+        "description": "Preferred time to be contacted"
+      }
+    },
+    "required": ["customerId"]
+  }
+}
+```
+
+### DELETE Requests - Removing Data
+
+Delete records (use with caution).
+
+**Example: Cancel Appointment**
+
+```json
+{
+  "name": "Cancel Appointment",
+  "description": "Cancels a scheduled appointment. Use only after confirming
+                 the caller wants to cancel.",
+  "methodType": "DELETE",
+  "url": "https://api.scheduler.com/appointments/:appointmentId",
+  "authType": "jwtAuth",
+  "authToken": "Bearer sk_live_def",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "appointmentId": {
+        "type": "string",
+        "description": "Appointment ID to cancel"
+      },
+      "cancellation_reason": {
+        "type": "string",
+        "description": "Reason for cancellation"
+      }
+    },
+    "required": ["appointmentId"]
+  }
+}
+```
+
+## Advanced Patterns
+
+### Chained API Calls
+
+Call multiple APIs in sequence.
+
+**Example: Order Fulfillment Chain**
+
+```yaml
+Flow: Complete_Order
+
+Step 1: Verify_Inventory (Tool)
+  Tool: Check Product Availability
+  Parameters:
+    product_id: {{product_id}}
+    quantity: {{quantity}}
+
+  Returns: in_stock, available_quantity
+
+Step 2: Router - Check Stock
+  Conditions:
+    - {{in_stock}} == true → Create_Order
+    - {{in_stock}} == false → Out_Of_Stock_Message
+
+Step 3: Create_Order (Tool)
+  Tool: Create Order
+  Parameters:
+    customer_id: {{customer_id}}
+    product_id: {{product_id}}
+    quantity: {{quantity}}
+    shipping_address: {{shipping_address}}
+
+  Returns: order_id, total_amount, estimated_delivery
+
+Step 4: Process_Payment (Tool)
+  Tool: Charge Payment Method
+  Parameters:
+    customer_id: {{customer_id}}
+    amount: {{total_amount}}
+    order_id: {{order_id}}
+
+  Returns: payment_status, transaction_id
+
+Step 5: Send_Confirmation (Tool)
+  Tool: Send Order Confirmation Email
+  Parameters:
+    email: {{customer_email}}
+    order_id: {{order_id}}
+    amount: {{total_amount}}
+
+Step 6: Confirmation_Message
+  Message: "Perfect! Your order {{order_id}} is confirmed.
+           Total was {{total_amount}} and it should arrive by
+           {{estimated_delivery}}. You'll receive a confirmation
+           email at {{customer_email}}."
+```
+
+### Conditional Tool Execution
+
+Execute tools based on conditions.
+
+```yaml
+Router: Should_Create_Ticket
+  Conditions:
+    # Issue resolved immediately
+    - {{issue_resolved}} == true →
+      Thank_And_Close
+
+    # Simple issue, offer self-service
+    - {{issue_complexity}} == "low" AND
+      {{customer_wants_self_service}} == true →
+      Send_Help_Article
+
+    # Complex issue, create ticket
+    - {{issue_complexity}} == "high" OR
+      {{customer_wants_agent}} == true →
+      Create_Ticket_Tool
+
+Create_Ticket_Tool:
+  Tool: Create Support Ticket
+  Parameters:
+    subject: {{issue_summary}}
+    description: {{issue_details}}
+    priority: {{urgency}}
+```
+
+### Error Handling & Retries
+
+Handle API failures gracefully.
+
+```yaml
+Node: Call_API (Tool)
+  Tool: Lookup Customer
+  Parameters:
+    phone: {{phone_number}}
+
+  Transitions:
+    # Success path
+    - API returns 200 → Success_Node
+
+    # Error paths
+    - API returns 404 → Customer_Not_Found
+    - API returns 500 → Retry_Or_Fallback
+    - Timeout → Retry_Or_Fallback
+
+Customer_Not_Found:
+  Message: "I couldn't find an account with that phone number.
+           Would you like to create a new account?"
+
+Retry_Or_Fallback:
+  Type: Router
+
+  Conditions:
+    - {{retry_count}} < 2 →
+      Retry_API_Call
+
+    - {{retry_count}} >= 2 →
+      "I'm having trouble accessing the system right now.
+       Let me transfer you to someone who can help."
+      → Transfer_To_Agent
+```
+
+### Async Tool Execution
+
+For long-running operations.
+
+```json
+{
+  "name": "Generate Report",
+  "description": "Generates detailed account report (may take 30-60 seconds).",
+  "methodType": "POST",
+  "url": "https://api.yourservice.com/reports/generate",
+  "async": true,
+  "timeoutSeconds": 60,
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "account_id": {
+        "type": "string"
+      },
+      "report_type": {
+        "type": "string",
+        "enum": ["summary", "detailed", "transactions"]
+      }
+    }
+  }
+}
+```
+
+**With async enabled:**
+
+```yaml
+Agent behavior:
+  "I'm generating your report now. This usually takes about a minute.
+   Feel free to ask me anything else while we wait."
+
+  [Agent can continue conversation]
+  [Tool completes in background]
+
+  "Your report is ready! I'm sending it to {{email_address}} now."
+```
+
+## Authentication Methods
+
+### Bearer Token (JWT)
+
+Most common for modern APIs.
+
+```json
+{
+  "authType": "jwtAuth",
+  "authToken": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Headers sent:**
+
+```
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### API Key in Header
+
+Common for older APIs.
+
+```json
+{
+  "authType": "none",
+  "headers": [
+    {
+      "name": "X-API-Key",
+      "value": "sk_live_abc123xyz789"
+    }
+  ]
+}
+```
+
+### No Authentication
+
+For public APIs.
+
+```json
+{
+  "authType": "none"
+}
+```
+
+### Custom Authentication
+
+Use headers for custom schemes.
+
+```json
+{
+  "authType": "none",
+  "headers": [
+    {
+      "name": "X-Custom-Auth",
+      "value": "custom_token_here"
+    },
+    {
+      "name": "X-Client-ID",
+      "value": "client_123"
+    }
+  ]
+}
+```
+
+## Parameter Schemas
+
+### Basic Types
+
+**String Parameter:**
+
+```json
+{
+  "email": {
+    "type": "string",
+    "format": "email",
+    "description": "Customer email address"
+  }
+}
+```
+
+**Number Parameter:**
+
+```json
+{
+  "quantity": {
+    "type": "number",
+    "minimum": 1,
+    "maximum": 100,
+    "description": "Number of items to order"
+  }
+}
+```
+
+**Boolean Parameter:**
+
+```json
+{
+  "send_confirmation": {
+    "type": "boolean",
+    "default": true,
+    "description": "Send confirmation email"
+  }
+}
+```
+
+**Enum Parameter:**
+
+```json
+{
+  "priority": {
+    "type": "string",
+    "enum": ["low", "medium", "high", "urgent"],
+    "default": "medium",
+    "description": "Ticket priority level"
+  }
+}
+```
+
+### Complex Types
+
+**Object Parameter:**
+
+```json
+{
+  "shipping_address": {
+    "type": "object",
+    "properties": {
+      "street": { "type": "string" },
+      "city": { "type": "string" },
+      "state": { "type": "string" },
+      "zip": { "type": "string" }
+    },
+    "required": ["street", "city", "state", "zip"]
+  }
+}
+```
+
+**Array Parameter:**
+
+```json
+{
+  "product_ids": {
+    "type": "array",
+    "items": {
+      "type": "string"
+    },
+    "description": "List of product IDs to order"
+  }
+}
+```
+
+### Using Variables in Parameters
+
+Map conversation variables to API parameters.
+
+```yaml
+Tool Configuration:
+  Parameters:
+    customer_id: { { account_number } } # From DTMF input
+    customer_name: { { customer_name } } # From extraction
+    call_timestamp: { { current_datetime } } # System variable
+    caller_phone: { { user_number } } # System variable
+    issue_description: { { issue_details } } # From extraction
+```
+
+## Path Parameters
+
+Use dynamic URL segments.
+
+**URL Template:**
+
+```
+https://api.yourservice.com/customers/:customerId/orders/:orderId
+```
+
+**Configuration:**
+
+```json
+{
+  "url": "https://api.yourservice.com/customers/:customerId/orders/:orderId",
+  "pathParameters": [
+    {
+      "name": "customerId",
+      "defaultValue": "CUST-12345"
+    },
+    {
+      "name": "orderId",
+      "defaultValue": "ORD-67890"
+    }
+  ]
+}
+```
+
+**Usage in Flow:**
+
+```yaml
+Tool Node:
+  Tool: Get Order Details
+
+  Path Parameters:
+    customerId: { { customer_id } }
+    orderId: { { order_number } }
+
+Actual URL called: https://api.yourservice.com/customers/CUST-98765/orders/ORD-11111
+```
+
+## Response Handling
+
+### Using API Responses
+
+Tool responses become available as variables.
+
+**API Response:**
+
+```json
+{
+  "customer": {
+    "id": "CUST-12345",
+    "name": "John Smith",
+    "email": "john@example.com",
+    "tier": "gold",
+    "balance": 1250.5
+  },
+  "orders": [
+    {
+      "id": "ORD-11111",
+      "status": "shipped",
+      "total": 99.99
+    }
+  ]
+}
+```
+
+**Available Variables:**
+
+```yaml
+Variables auto-created:
+  {{customer.id}}
+  {{customer.name}}
+  {{customer.email}}
+  {{customer.tier}}
+  {{customer.balance}}
+  {{orders[0].id}}
+  {{orders[0].status}}
+  {{orders[0].total}}
+```
+
+**Using in Conversation:**
+
+```yaml
+Node: Greet_Customer
+  Message: "Welcome back, {{customer.name}}! I see you're a
+           {{customer.tier}} member with an account balance of
+           ${{customer.balance}}."
+
+Node: Order_Status
+  Message: "Your most recent order {{orders[0].id}} is
+           {{orders[0].status}}."
+```
+
+### Response Validation
+
+Check API responses before using.
+
+```yaml
+Tool Node: Lookup_Customer
+  Tool: Get Customer Info
+
+  # Returns customer data or error
+
+Validation Router:
+  Conditions:
+    # Success case
+    - {{api_response_status}} == 200 →
+      Use_Customer_Data
+
+    # Customer not found
+    - {{api_response_status}} == 404 →
+      "I couldn't find an account with that information.
+       Would you like to create a new account?"
+
+    # Server error
+    - {{api_response_status}} >= 500 →
+      "I'm having trouble accessing the system right now.
+       Let me try again."
+      → Retry_Or_Transfer
+
+    # Any other error
+    - Always →
+      "Something went wrong. Let me connect you with someone
+       who can help."
+      → Transfer_To_Agent
+```
+
+## Complete Integration Examples
+
+### Example 1: CRM Customer Lookup & Update
+
+```yaml
+Flow: Customer_Service_Call
+
+Node 1: Collect_Phone
+  Message: "Can I get your phone number?"
+
+  DTMF Input Capture:
+    Variable: phone_number
+    Digit Limit: 10
+    Termination Key: #
+
+Node 2: Lookup_Customer (Tool)
+  Tool: CRM Customer Lookup
+
+  Tool Config:
+    Method: POST
+    URL: https://api.crm.com/v1/customers/search
+    Auth: Bearer {{CRM_API_KEY}}
+
+  Parameters:
+    phone: {{phone_number}}
+
+  Returns:
+    - customer_id
+    - customer_name
+    - email
+    - tier
+    - last_contact_date
+
+Node 3: Greet_Customer
+  Message: "Hi {{customer_name}}! How can I help you today?"
+
+  Extract: request_type
+
+Node 4: Handle_Request
+  [Process customer request]
+
+Node 5: Update_Contact_Log (Tool)
+  Tool: Update Customer Record
+
+  Tool Config:
+    Method: PATCH
+    URL: https://api.crm.com/v1/customers/{{customer_id}}
+    Auth: Bearer {{CRM_API_KEY}}
+
+  Parameters:
+    customer_id: {{customer_id}}
+    last_contact_date: {{current_datetime}}
+    last_contact_reason: {{request_type}}
+    contact_notes: {{conversation_summary}}
+
+Node 6: Thank_You
+  Message: "Thanks for calling, {{customer_name}}!"
+```
+
+### Example 2: E-commerce Order Management
+
+```yaml
+Flow: Order_Inquiry
+
+Node 1: Get_Order_Number
+  Message: "What's your order number?"
+
+  Extract: order_number
+    Instructions: "Extract order number (format ORD-XXXXX)"
+
+Node 2: Fetch_Order (Tool)
+  Tool: Get Order Details
+
+  Tool Config:
+    Method: GET
+    URL: https://api.shop.com/orders/:orderId
+    Auth: Bearer {{SHOP_API_KEY}}
+
+  Path Parameters:
+    orderId: {{order_number}}
+
+  Returns:
+    - status
+    - tracking_number
+    - items
+    - total
+    - estimated_delivery
+
+Node 3: Order_Status_Router
+  Conditions:
+    - {{status}} == "delivered" → Already_Delivered
+    - {{status}} == "shipped" → In_Transit
+    - {{status}} == "processing" → Being_Processed
+    - {{status}} == "cancelled" → Cancelled_Info
+
+In_Transit:
+  Message: "Your order is on the way! Tracking number is
+           {{tracking_number}} and it should arrive by
+           {{estimated_delivery}}."
+
+  Extract: needs_help
+    "Does the caller need anything else?"
+
+  Conditions:
+    - {{needs_help}} contains "change address" → Cannot_Change_Shipped
+    - {{needs_help}} contains "cancel" → Cannot_Cancel_Shipped
+    - {{needs_help}} == "no" → Thank_You
+
+Already_Delivered:
+  Message: "Our records show this order was delivered on
+           {{delivery_date}}."
+
+  Extract: issue_type
+
+  Router:
+    - {{issue_type}} contains "didn't receive" → File_Missing_Claim
+    - {{issue_type}} contains "damaged" → File_Damage_Claim
+    - {{issue_type}} contains "return" → Start_Return_Process
+
+File_Damage_Claim (Tool):
+  Tool: Create Claim
+
+  Tool Config:
+    Method: POST
+    URL: https://api.shop.com/claims
+    Auth: Bearer {{SHOP_API_KEY}}
+
+  Parameters:
+    order_id: {{order_number}}
+    claim_type: "damaged"
+    description: {{damage_description}}
+
+  Returns: claim_id
+
+Node: Claim_Confirmation
+  Message: "I've created claim {{claim_id}} for you. Our team will
+           review it and contact you within 24 hours at {{customer_email}}."
+```
+
+### Example 3: Appointment Scheduling System
+
+```yaml
+Flow: Schedule_Appointment
+
+Node 1: Identify_Customer
+  Message: "What's your phone number?"
+
+  Extract: phone_number
+
+Node 2: Get_Available_Slots (Tool)
+  Tool: Check Availability
+
+  Tool Config:
+    Method: GET
+    URL: https://api.scheduler.com/slots/available
+    Auth: Bearer {{SCHEDULER_API_KEY}}
+
+  Parameters:
+    service_type: {{service_type}}
+    start_date: {{current_date}}
+    days_ahead: 14
+
+  Returns: available_slots (array)
+
+Node 3: Present_Options
+  Message: "I have availability on:
+           - {{available_slots[0].date}} at {{available_slots[0].time}}
+           - {{available_slots[1].date}} at {{available_slots[1].time}}
+           - {{available_slots[2].date}} at {{available_slots[2].time}}
+
+           Which works best for you?"
+
+  Extract: preferred_slot
+
+Node 4: Book_Appointment (Tool)
+  Tool: Create Appointment
+
+  Tool Config:
+    Method: POST
+    URL: https://api.scheduler.com/appointments
+    Auth: Bearer {{SCHEDULER_API_KEY}}
+
+  Parameters:
+    customer_phone: {{phone_number}}
+    slot_id: {{selected_slot_id}}
+    service_type: {{service_type}}
+    notes: {{appointment_notes}}
+
+  Returns:
+    - appointment_id
+    - confirmation_code
+
+Node 5: Send_Confirmation (Tool)
+  Tool: Send SMS Confirmation
+
+  Tool Config:
+    Method: POST
+    URL: https://api.sms.com/send
+    Auth: Bearer {{SMS_API_KEY}}
+
+  Parameters:
+    to: {{phone_number}}
+    message: "Your appointment is confirmed for {{appointment_date}}
+              at {{appointment_time}}. Confirmation code: {{confirmation_code}}"
+
+Node 6: Verbal_Confirmation
+  Message: "Perfect! You're all set for {{appointment_date}} at
+           {{appointment_time}}. I've sent a confirmation to your phone.
+           Is there anything else I can help with?"
+```
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Clear Descriptions" icon="file-lines">
+    Write detailed tool descriptions so LLM knows when to use them
+  </Card>
+  <Card title="Set Appropriate Timeouts" icon="clock">
+    Fast APIs: 5-10s, Slow APIs: 15-30s, Use async for 30s+
+  </Card>
+  <Card title="Handle Errors Gracefully" icon="shield-exclamation">
+    Plan for API failures, timeouts, and unexpected responses
+  </Card>
+  <Card title="Validate Inputs" icon="check-circle">
+    Use parameter schemas to ensure correct data types
+  </Card>
+  <Card title="Secure Credentials" icon="lock">
+    Never hardcode API keys, use environment variables
+  </Card>
+  <Card title="Use Path Parameters" icon="route">
+    For RESTful URLs like /customers/:id/orders/:orderId
+  </Card>
+  <Card title="Test Thoroughly" icon="vial">
+    Test with real API calls, not just mock data
+  </Card>
+  <Card title="Monitor Usage" icon="chart-mixed">
+    Track API call success rates and latencies
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Tool Not Being Called">
+    **Check:**
+    - Tool description is clear about when to use it
+    - Tool is added to agent configuration
+    - Agent prompt mentions the tool
+    - Conversation provides context for tool use
+
+    **Solutions:**
+    - Improve tool description
+    - Add explicit examples to prompt
+    - Mention tool capabilities in greeting
+
+  </Accordion>
+
+  <Accordion title="API Call Failing">
+    **Check:**
+    - URL is correct and accessible
+    - Authentication credentials are valid
+    - Required parameters are provided
+    - Headers are correctly formatted
+    - Firewall/network allows requests
+
+    **Debug:**
+    - Test API with curl or Postman
+    - Check API response in call logs
+    - Verify parameter values in logs
+    - Check for CORS issues
+
+  </Accordion>
+
+  <Accordion title="Wrong Parameters Passed">
+    **Check:**
+    - Variable names match exactly
+    - Variables are populated before tool call
+    - Parameter schema is correct
+    - Data types match expectations
+
+    **Solutions:**
+    - Verify variable extraction works
+    - Check variable values in call logs
+    - Add validation before tool call
+    - Use correct variable syntax: {{variable_name}}
+
+  </Accordion>
+
+  <Accordion title="Timeout Issues">
+    **Check:**
+    - API response time
+    - Timeout setting in tool config
+    - Network latency
+
+    **Solutions:**
+    - Increase timeout value
+    - Optimize API performance
+    - Use async mode for slow operations
+    - Add retry logic
+
+  </Accordion>
+</AccordionGroup>
+
+## Security Best Practices
+
+<Warning>
+**Never Hardcode Secrets:**
+- Don't put API keys directly in tool configs
+- Use environment variables or secret managers
+- Rotate credentials regularly
+- Use least-privilege API keys
+</Warning>
+
+**Secure Integration Checklist:**
+
+- [ ] Use HTTPS for all API endpoints
+- [ ] Store credentials in secure vault
+- [ ] Use API keys with minimal required permissions
+- [ ] Implement rate limiting
+- [ ] Validate all inputs
+- [ ] Sanitize outputs before speaking
+- [ ] Log API calls for auditing
+- [ ] Monitor for unusual patterns
+- [ ] Set up alerts for failures
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Tools Documentation" href="/features/tools">
+    Complete guide to the tool system
+  </Card>
+  <Card title="Data Collection" href="/guides/data-collection">
+    Collect data to pass to APIs
+  </Card>
+  <Card title="Webhooks" href="/features/webhooks">
+    Receive events from Hamsa
+  </Card>
+  <Card title="Variables" href="/agents/flow-agent/variables">
+    Use variables in tool parameters
+  </Card>
+</CardGroup>

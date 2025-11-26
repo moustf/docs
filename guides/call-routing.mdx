@@ -1,0 +1,899 @@
+---
+title: 'Call Routing Guide'
+description: 'Advanced routing patterns with router nodes, conditions, and intelligent call distribution'
+---
+
+## Overview
+
+Call routing determines where conversations flow based on context, user input, and business logic. Effective routing ensures callers reach the right destination quickly, improving satisfaction and reducing handling time.
+
+<Info>
+**Routing Methods in Hamsa:**
+- **Router Nodes** - Conditional logic-based routing
+- **Transition Conditions** - Flow between nodes based on rules
+- **Natural Language** - AI-powered intent routing
+- **DTMF** - Keypad-based menu navigation
+- **Time-Based** - Route by time, day, or date
+- **Data-Driven** - Route based on caller data or API responses
+</Info>
+
+## Routing Fundamentals
+
+### Router Nodes
+
+Router nodes evaluate conditions and direct calls to appropriate destinations.
+
+**How Router Nodes Work:**
+
+1. Evaluate conditions in order (top to bottom)
+2. First matching condition wins
+3. Route call to connected node
+4. If no conditions match, use fallback (Always)
+
+**Basic Structure:**
+
+```yaml
+Router Node: Customer_Type_Router
+  Conditions:
+    - {{customer_tier}} == "platinum" → Platinum_Support
+    - {{customer_tier}} == "gold" → Gold_Support
+    - {{customer_tier}} == "silver" → Silver_Support
+    - Always → Standard_Support
+```
+
+### Transition Types
+
+Different ways to move between nodes:
+
+**1. Always Transition**
+
+- Unconditional, always fires
+- Used for sequential flow
+- No conditions needed
+
+**2. Natural Language Transition**
+
+- AI determines if condition met
+- Based on conversation context
+- Flexible, conversational
+
+**3. DTMF Transition**
+
+- Triggered by keypad press
+- Exact, predictable
+- Good for menus
+
+**4. Conditional Transition**
+
+- Based on variable values
+- Logical expressions
+- Data-driven routing
+
+## Basic Routing Patterns
+
+### Intent-Based Routing
+
+Route based on what the caller wants.
+
+<Steps>
+  <Step title="Collect Intent">
+    ```yaml
+    Start Node:
+      Message: "Thank you for calling. How can I help you today?"
+
+      Extract Variables:
+        - caller_intent: "Identify what the caller needs"
+    ```
+
+  </Step>
+  <Step title="Route by Intent">
+    ```yaml
+    Router: Intent_Router
+      Conditions:
+        - {{caller_intent}} contains "sales" → Sales_Department
+        - {{caller_intent}} contains "support" → Support_Department
+        - {{caller_intent}} contains "billing" → Billing_Department
+        - Always → General_Help
+    ```
+  </Step>
+</Steps>
+
+**Example Flow:**
+
+```
+Caller: "I want to buy your product"
+→ Intent: "sales"
+→ Routes to: Sales_Department
+
+Caller: "My account isn't working"
+→ Intent: "support"
+→ Routes to: Support_Department
+
+Caller: "I have a question about my bill"
+→ Intent: "billing"
+→ Routes to: Billing_Department
+```
+
+### Priority-Based Routing
+
+Route urgent or VIP calls differently.
+
+```yaml
+Router: Priority_Router
+  Conditions:
+    # Emergency calls first
+    - {{emergency_keyword}} == true → Emergency_Transfer
+
+    # VIP customers second
+    - {{customer_tier}} == "VIP" → VIP_Fast_Track
+
+    # High-value issues third
+    - {{issue_value}} > 10000 → Senior_Support
+
+    # Everyone else
+    - Always → Standard_Queue
+
+Emergency_Transfer:
+  Type: Transfer Call
+  Number: +1-800-EMERGENCY
+  Message: "Transferring you immediately..."
+
+VIP_Fast_Track:
+  Type: Conversation
+  Message: "Welcome back, {{customer_name}}. A specialist will
+           be with you in just a moment."
+
+Standard_Queue:
+  Type: Conversation
+  Message: "All representatives are currently assisting others.
+           Please hold."
+```
+
+### Skill-Based Routing
+
+Route to agents with specific skills.
+
+```yaml
+Router: Skill_Router
+  Conditions:
+    # Technical issues → Technical team
+    - {{issue_type}} == "technical" AND
+      {{product_category}} == "enterprise" →
+      Enterprise_Tech_Support
+
+    # Billing issues → Finance team
+    - {{issue_type}} == "billing" OR
+      {{issue_type}} == "refund" →
+      Finance_Team
+
+    # Product questions → Product specialists
+    - {{issue_type}} == "product_info" →
+      Product_Specialists
+
+    # Account management → Account team
+    - {{issue_type}} == "account" →
+      Account_Management
+
+    # Default
+    - Always → General_Support
+```
+
+## Advanced Routing Patterns
+
+### Time-Based Routing
+
+Route differently based on time, day, or date.
+
+**Business Hours Routing:**
+
+```yaml
+Router: Hours_Router
+  Conditions:
+    # Weekend
+    - {{current_weekday}} IN ["Saturday", "Sunday"] →
+      Weekend_Message
+
+    # Before business hours
+    - {{current_time}} < "09:00" →
+      After_Hours_Message
+
+    # After business hours
+    - {{current_time}} > "17:00" →
+      After_Hours_Message
+
+    # Lunch time (reduced staff)
+    - {{current_time}} >= "12:00" AND
+      {{current_time}} < "13:00" →
+      Lunch_Queue
+
+    # Business hours
+    - Always →
+      Business_Hours_Team
+
+Weekend_Message:
+  Message: "Our offices are closed on weekends.
+           Press 1 to leave a voicemail.
+           Press 2 for emergency support, which may incur additional charges.
+           Press 3 to hear our business hours."
+
+  Transitions:
+    - DTMF: 1 → Voicemail
+    - DTMF: 2 → Emergency_Support
+    - DTMF: 3 → Business_Hours_Info → Weekend_Message
+```
+
+**Holiday Routing:**
+
+```yaml
+Router: Holiday_Check
+  Conditions:
+    # Check if current date is a holiday
+    - {{current_date}} == "2024-01-01" → Holiday_Message  # New Year's
+    - {{current_date}} == "2024-07-04" → Holiday_Message  # July 4th
+    - {{current_date}} == "2024-12-25" → Holiday_Message  # Christmas
+
+    # Normal day
+    - Always → Hours_Router
+
+Holiday_Message:
+  Message: "We're closed today for the holiday. Our offices will
+           reopen on {{next_business_day}}. For emergencies,
+           press 1 now."
+```
+
+**Timezone-Aware Routing:**
+
+```yaml
+Custom Variables:
+  - caller_timezone: string
+
+Router: Timezone_Router
+  Conditions:
+    # East Coast hours (9 AM - 5 PM ET)
+    - {{caller_timezone}} == "ET" AND
+      {{current_time}} >= "09:00" AND
+      {{current_time}} < "17:00" →
+      East_Coast_Team
+
+    # West Coast hours (9 AM - 5 PM PT)
+    - {{caller_timezone}} == "PT" AND
+      {{current_time}} >= "09:00" AND
+      {{current_time}} < "17:00" →
+      West_Coast_Team
+
+    # After hours any timezone
+    - Always → After_Hours_Support
+```
+
+### Load-Based Routing
+
+Distribute calls based on queue length or agent availability.
+
+```yaml
+# This requires integration with your contact center system
+
+Router: Load_Balancer
+  Conditions:
+    # Check queue sizes via API
+    - {{sales_queue_length}} < {{support_queue_length}} AND
+      {{intent}} == "general" →
+      Sales_Team  # Route general inquiries to less busy team
+
+    # Route to specific queues normally
+    - {{intent}} == "sales" →
+      Sales_Team
+
+    - {{intent}} == "support" →
+      Support_Team
+
+Tool: Check_Queue_Sizes
+  Type: API Call
+  URL: https://api.yourcontactcenter.com/queues
+  Returns:
+    - sales_queue_length
+    - support_queue_length
+    - average_wait_time
+```
+
+**Overflow Routing:**
+
+```yaml
+Router: Overflow_Check
+  Conditions:
+    # Primary team available
+    - {{primary_queue_wait}} < 120 →  # Less than 2 min wait
+      Primary_Team
+
+    # Overflow to backup team
+    - {{primary_queue_wait}} >= 120 AND
+      {{backup_team_available}} == true →
+      Backup_Team
+
+    # Offer callback
+    - {{primary_queue_wait}} >= 300 →  # 5+ min wait
+      Callback_Offer
+
+Callback_Offer:
+  Message: "All agents are busy. Current wait time is
+           {{primary_queue_wait}} minutes.
+           Press 1 to continue holding.
+           Press 2 to request a callback."
+```
+
+### Geographic Routing
+
+Route based on caller location.
+
+```yaml
+# Using area code
+Router: Geographic_Router
+  Conditions:
+    # East Coast (area codes)
+    - {{user_number_area_code}} IN ["212", "718", "646", "917"] →
+      NYC_Office
+
+    - {{user_number_area_code}} IN ["617", "857"] →
+      Boston_Office
+
+    # West Coast
+    - {{user_number_area_code}} IN ["415", "510", "650"] →
+      SF_Office
+
+    - {{user_number_area_code}} IN ["213", "310", "424"] →
+      LA_Office
+
+    # Default to nearest regional office
+    - Always → Find_Nearest_Office
+
+# Using ZIP code (collected from caller)
+Router: ZIP_Router
+  Conditions:
+    - {{zip_code}} >= "10000" AND {{zip_code}} < "20000" →
+      Northeast_Region
+
+    - {{zip_code}} >= "90000" AND {{zip_code}} < "97000" →
+      West_Coast_Region
+
+    - Always → Central_Region
+```
+
+### Language-Based Routing
+
+Route to language-specific agents.
+
+```yaml
+Language_Selection_Menu:
+  Message: "For English, press 1.
+           Para Español, oprima dos.
+           Pour le Français, appuyez sur trois."
+
+  Transitions:
+    - DTMF: 1 → English_Router
+    - DTMF: 2 → Spanish_Router
+    - DTMF: 3 → French_Router
+
+English_Router:
+  # Set language for this path
+  Agent Language: en-US
+  Voice: aura-asteria-en
+
+  # Continue routing based on intent
+  Conditions:
+    - {{intent}} == "sales" → English_Sales
+    - {{intent}} == "support" → English_Support
+
+Spanish_Router:
+  Agent Language: es-MX
+  Voice: aura-sofia-es
+
+  Conditions:
+    - {{intent}} == "sales" → Spanish_Sales
+    - {{intent}} == "support" → Spanish_Support
+```
+
+### Data-Driven Routing
+
+Route based on customer data from your systems.
+
+```yaml
+# Step 1: Identify caller
+Node: Identify_Caller
+  Message: "Please enter your account number followed by pound."
+
+  DTMF Input Capture:
+    Variable: account_number
+    Termination Key: #
+
+# Step 2: Lookup customer data
+Tool: Lookup_Customer
+  URL: https://api.yourcrm.com/customers/{{account_number}}
+  Returns:
+    - customer_name
+    - customer_tier
+    - account_balance
+    - last_purchase_date
+    - assigned_agent
+
+# Step 3: Route based on data
+Router: Customer_Data_Router
+  Conditions:
+    # Negative balance → collections
+    - {{account_balance}} < 0 →
+      Collections_Team
+
+    # Recently purchased → post-sales support
+    - {{last_purchase_date}} within_days 30 →
+      Post_Sales_Support
+
+    # Has assigned agent → route to them
+    - {{assigned_agent}} != null →
+      Assigned_Agent
+
+    # VIP tier → priority
+    - {{customer_tier}} == "VIP" →
+      VIP_Queue
+
+    # Standard routing
+    - Always → General_Support
+```
+
+## Multi-Stage Routing
+
+### Sequential Qualification Routing
+
+Progressively qualify and route callers.
+
+```yaml
+Stage 1: Initial Classification
+  Message: "Are you a current customer or new customer?"
+
+  Transitions:
+    - Natural Language: "current customer" → Existing_Customer_Flow
+    - Natural Language: "new customer" → New_Customer_Flow
+
+Stage 2a: Existing Customer Flow
+  Message: "What can I help you with today?"
+
+  Extract: issue_type
+
+  Router:
+    - {{issue_type}} == "problem" → Triage_Problem
+    - {{issue_type}} == "question" → Answer_Question
+    - {{issue_type}} == "upgrade" → Sales_Team
+
+Stage 2b: New Customer Flow
+  Message: "Are you interested in our products or services?"
+
+  Extract: interest_type
+
+  Router:
+    - {{interest_type}} == "products" → Product_Sales
+    - {{interest_type}} == "services" → Service_Sales
+    - {{interest_type}} == "both" → Full_Sales_Team
+
+Stage 3: Problem Triage (from Stage 2a)
+  Message: "How urgent is this issue?"
+
+  Extract: urgency
+
+  Router:
+    - {{urgency}} == "critical" → Priority_Support
+    - {{urgency}} == "moderate" → Standard_Support
+    - {{urgency}} == "low" → Self_Service_Options
+```
+
+### Escalation Routing
+
+Route to higher tiers when needed.
+
+```yaml
+Level 1: Initial Support
+  Type: Conversation Node
+  Agent handles common issues
+
+  Transitions:
+    # Issue resolved
+    - Natural Language: "problem solved" → Thank_And_Close
+
+    # Needs escalation
+    - Natural Language: "needs expert" OR
+      {{attempt_count}} > 3 →
+      Level_2_Router
+
+Level 2: Specialized Support
+  Type: Conversation Node
+  More experienced agent
+
+  Transitions:
+    # Issue resolved
+    - Natural Language: "resolved" → Thank_And_Close
+
+    # Needs management
+    - Natural Language: "needs supervisor" OR
+      {{customer_satisfaction}} < 3 →
+      Level_3_Manager
+
+Level 3: Manager
+  Type: Transfer Call
+  Message: "Let me connect you with a supervisor who can help."
+  Number: +1-800-MANAGERS
+```
+
+## Router Node Configuration
+
+### Building Conditions
+
+**Comparison Operators:**
+
+```yaml
+Equals:
+  {{variable}} == "value"
+
+Not Equals:
+  {{variable}} != "value"
+
+Greater Than:
+  {{variable}} > 100
+
+Less Than:
+  {{variable}} < 100
+
+Greater or Equal:
+  {{variable}} >= 100
+
+Less or Equal:
+  {{variable}} <= 100
+
+Contains:
+  {{variable}} contains "keyword"
+
+In List:
+  {{variable}} IN ["value1", "value2", "value3"]
+```
+
+**Logical Operators:**
+
+```yaml
+AND:
+  {{condition1}} == true AND {{condition2}} == true
+
+OR:
+  {{condition1}} == true OR {{condition2}} == true
+
+NOT:
+  NOT {{condition1}}
+
+Complex:
+  ({{tier}} == "VIP" OR {{balance}} > 10000) AND
+  {{issue_type}} != "billing"
+```
+
+**Examples:**
+
+```yaml
+# VIP customers with urgent issues
+Condition:
+  {{customer_tier}} == "VIP" AND
+  {{urgency}} == "high"
+→ VIP_Priority_Queue
+
+# New customers or high-value opportunities
+Condition:
+  {{customer_type}} == "new" OR
+  {{opportunity_value}} > 50000
+→ Sales_Team
+
+# Weekend or after hours
+Condition:
+  {{current_weekday}} IN ["Saturday", "Sunday"] OR
+  {{current_time}} > "17:00" OR
+  {{current_time}} < "09:00"
+→ After_Hours_Menu
+
+# Account issues requiring verification
+Condition:
+  {{issue_type}} == "account_access" AND
+  {{verified}} != true
+→ Verification_Flow
+```
+
+### Condition Ordering
+
+**Order matters! First match wins.**
+
+```yaml
+❌ Wrong Order:
+Router:
+  Conditions:
+    - Always → General_Support
+    - {{tier}} == "VIP" → VIP_Support  # Never reached!
+
+✓ Correct Order:
+Router:
+  Conditions:
+    - {{tier}} == "VIP" → VIP_Support
+    - Always → General_Support
+```
+
+**Best Practice Ordering:**
+
+```yaml
+Router: Proper_Order
+  Conditions:
+    # 1. Most specific conditions first
+    - {{tier}} == "VIP" AND {{issue}} == "critical" →
+      VIP_Critical
+
+    # 2. Then specific but less critical
+    - {{tier}} == "VIP" →
+      VIP_Standard
+
+    # 3. Then general conditions
+    - {{issue}} == "critical" →
+      Critical_Support
+
+    # 4. Catch-all last
+    - Always →
+      General_Support
+```
+
+## Testing Routing Logic
+
+### Testing Checklist
+
+<Steps>
+  <Step title="Test Each Path">
+    Verify every condition can be reached
+  </Step>
+  <Step title="Test Edge Cases">
+    - Boundary values (e.g., exactly 100)
+    - Missing variables
+    - Null values
+    - Empty strings
+  </Step>
+  <Step title="Test Condition Order">
+    Ensure specific conditions before general
+  </Step>
+  <Step title="Test Fallback">
+    Verify "Always" catches everything else
+  </Step>
+  <Step title="Test Variable Extraction">
+    Confirm variables populate correctly
+  </Step>
+</Steps>
+
+### Common Issues
+
+<AccordionGroup>
+  <Accordion title="Condition Never Matches">
+    **Causes:**
+    - Variable not extracted
+    - Variable name typo
+    - Wrong comparison operator
+    - Case sensitivity issue
+
+    **Debug:**
+    - Check variable value in logs
+    - Verify variable name exactly matches
+    - Test with simpler condition
+    - Add logging/debugging node
+
+  </Accordion>
+
+  <Accordion title="Wrong Path Taken">
+    **Causes:**
+    - Condition ordering wrong
+    - Too broad condition earlier
+    - Variable contains unexpected value
+
+    **Debug:**
+    - Review condition order
+    - Check actual variable values
+    - Make conditions more specific
+
+  </Accordion>
+
+  <Accordion title="No Path Matched">
+    **Causes:**
+    - Missing "Always" fallback
+    - All conditions too specific
+
+    **Solution:**
+    - Always include "Always" fallback
+    - Review conditions for gaps
+
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Always Use Fallback" icon="shield">
+    Every router should have "Always" as last condition
+  </Card>
+  <Card title="Order Matters" icon="list-ol">
+    Most specific conditions first, general last
+  </Card>
+  <Card title="Test All Paths" icon="check-double">
+    Verify every condition can be reached
+  </Card>
+  <Card title="Keep It Simple" icon="minimize">
+    Complex logic is hard to maintain and debug
+  </Card>
+  <Card title="Document Logic" icon="note-sticky">
+    Comment why routing decisions are made
+  </Card>
+  <Card title="Monitor Routing" icon="chart-line">
+    Track which paths are most used
+  </Card>
+  <Card title="Handle Missing Data" icon="circle-xmark">
+    Plan for when variables aren't populated
+  </Card>
+  <Card title="Use Appropriate Method" icon="signs-post">
+    DTMF for menus, conditions for data, NL for intent
+  </Card>
+</CardGroup>
+
+## Complete Examples
+
+### Example 1: E-commerce Support Router
+
+```yaml
+Entry: Collect_Intent
+  Message: "How can I help you today?"
+  Extract: caller_intent
+
+Router: Main_Router
+  Conditions:
+    # Order tracking (most common)
+    - {{caller_intent}} contains "order" OR
+      {{caller_intent}} contains "tracking" OR
+      {{caller_intent}} contains "delivery" →
+      Order_Tracking_Flow
+
+    # Returns (second most common)
+    - {{caller_intent}} contains "return" OR
+      {{caller_intent}} contains "refund" OR
+      {{caller_intent}} contains "exchange" →
+      Returns_Flow
+
+    # Product questions
+    - {{caller_intent}} contains "product" OR
+      {{caller_intent}} contains "information" →
+      Product_Info_Flow
+
+    # Account issues
+    - {{caller_intent}} contains "account" OR
+      {{caller_intent}} contains "login" OR
+      {{caller_intent}} contains "password" →
+      Account_Support_Flow
+
+    # Speak to human
+    - {{caller_intent}} contains "representative" OR
+      {{caller_intent}} contains "person" OR
+      {{caller_intent}} contains "agent" →
+      Transfer_To_Agent
+
+    # Fallback
+    - Always →
+      General_Support
+```
+
+### Example 2: Healthcare Appointment Router
+
+```yaml
+Entry: Verify_Identity
+  Message: "For your privacy, please enter your date of birth
+           as 8 digits. For example, January 15th, 1990 would be
+           01-15-1990."
+
+  DTMF Input Capture:
+    Variable: date_of_birth
+    Digit Limit: 8
+
+Tool: Verify_Patient
+  API: https://api.healthsystem.com/verify
+  Parameters:
+    dob: {{date_of_birth}}
+    phone: {{user_number}}
+  Returns:
+    - patient_verified
+    - patient_name
+    - has_upcoming_appointments
+
+Router: Verified_Router
+  Conditions:
+    # Not verified
+    - {{patient_verified}} == false →
+      Manual_Verification
+
+    # Has upcoming appointment (likely calling about it)
+    - {{has_upcoming_appointments}} == true →
+      Upcoming_Appointment_Options
+
+    # Verified, no upcoming appointments
+    - Always →
+      Main_Menu
+
+Upcoming_Appointment_Options:
+  Message: "Hello {{patient_name}}. I see you have an appointment
+           coming up. Are you calling about:
+           Press 1 to confirm your appointment
+           Press 2 to reschedule
+           Press 3 to cancel
+           Press 4 for something else"
+
+Main_Menu:
+  Message: "How can I help you?
+           Press 1 to schedule an appointment
+           Press 2 for prescription refills
+           Press 3 for test results
+           Press 4 to speak with a nurse"
+```
+
+### Example 3: Multi-Department Company Router
+
+```yaml
+Entry: Welcome
+  Message: "Thank you for calling Acme Corporation."
+
+Router: Time_Check
+  Conditions:
+    - {{current_weekday}} IN ["Saturday", "Sunday"] → Weekend_Flow
+    - {{current_time}} < "09:00" OR {{current_time}} > "17:00" → After_Hours_Flow
+    - Always → Business_Hours_Flow
+
+Business_Hours_Flow:
+  Message: "For Sales, press 1.
+           For Support, press 2.
+           For Billing, press 3.
+           For Human Resources, press 4.
+           For our directory, press 5.
+           Or stay on the line for the operator."
+
+  Transitions:
+    - DTMF: 1 → Sales_Router
+    - DTMF: 2 → Support_Router
+    - DTMF: 3 → Billing_Router
+    - DTMF: 4 → HR_Router
+    - DTMF: 5 → Directory_Search
+    - Timeout 15s → Operator_Transfer
+
+Sales_Router:
+  Conditions:
+    - {{caller_number}} IN existing_customers → Account_Manager
+    - Always → New_Sales_Team
+
+Support_Router:
+  Message: "Is this a technical issue or product question?"
+  Extract: support_type
+
+  Conditions:
+    - {{support_type}} contains "technical" → Tech_Support
+    - {{support_type}} contains "product" → Product_Support
+    - Always → General_Support
+
+After_Hours_Flow:
+  Message: "You've reached us outside business hours.
+           Press 1 for our automated account information system.
+           Press 2 to leave a message for Sales.
+           Press 3 to leave a message for Support.
+           Press 0 for our emergency hotline."
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="IVR Menus" href="/guides/ivr-menus">
+    Build interactive menu systems
+  </Card>
+  <Card title="Data Collection" href="/guides/data-collection">
+    Collect data to inform routing decisions
+  </Card>
+  <Card title="Variables" href="/agents/flow-agent/variables">
+    Learn about the variable system
+  </Card>
+  <Card title="Flow Agents" href="/agents/flow-agent/overview">
+    Master flow-based agent design
+  </Card>
+</CardGroup>

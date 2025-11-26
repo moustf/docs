@@ -1,0 +1,649 @@
+---
+title: 'Live Calls Monitoring'
+description: 'Monitor active calls in real-time, join conversations as a silent listener, and supervise voice AI agents with live transcription and call details'
+---
+
+# Live Calls Monitoring
+
+The Live Calls feature provides real-time monitoring of all active voice AI conversations. You can view ongoing calls, join as a silent listener, and access live transcription and call details—all from a single interface.
+
+## Overview
+
+The Live Calls tab refreshes automatically every 10 seconds, displaying all calls that are currently in progress or started within the last 10 minutes. This ensures you have an up-to-the-minute view of your system's activity.
+
+### Key Features
+
+- **Real-time updates**: Auto-refresh every 10 seconds
+- **Live duration tracking**: See how long each call has been active
+- **Silent monitoring**: Join calls without the caller knowing
+- **Live transcription**: View conversation in real-time
+- **Call details drawer**: Deep dive into conversation context
+- **Multi-channel support**: Monitor calls from Phone, Web, and WhatsApp
+
+<Info>
+The Live Calls tab only shows calls with status "IN_PROGRESS". Completed calls automatically disappear from this view and can be found in the Call History.
+</Info>
+
+## Accessing Live Calls
+
+1. Navigate to **Dashboard** from the main menu
+2. Click the **Live calls** tab
+3. View all active calls in a grid layout
+
+```
+Dashboard > Live calls
+```
+
+The interface displays:
+
+- A green "Live monitoring & analytics" indicator at the top right
+- Active call cards in a responsive grid (1-3 columns depending on screen size)
+- Empty state message if no calls are active
+
+## Understanding Call Cards
+
+Each active call is displayed in a call card showing essential information at a glance:
+
+### Call Card Layout
+
+```
+┌─────────────────────────────────────────┐
+│ 👤 Agent Name | DD/MM/YYYY HH:MM:SS  ⚡2:34│
+│                                         │
+│ 📞 Phone              🕐 10:45 AM       │
+│                                         │
+│ [🟢 In Progress]         [📞 Join]      │
+└─────────────────────────────────────────┘
+```
+
+### Card Information
+
+**Top Row**:
+
+- **Agent Name**: The voice AI agent handling the call (e.g., "Customer Support Agent")
+- **Timestamp**: When the call started (DD/MM/YYYY HH:MM:SS format)
+- **Live Duration**: Real-time counter showing elapsed time (MM:SS format)
+
+**Middle Row**:
+
+- **Channel Type**: Icon and label indicating communication channel:
+  - 📞 Phone
+  - 🌐 Web
+  - 📱 WhatsApp
+- **Start Time**: Time of day the call began (HH:MM format)
+
+**Bottom Row**:
+
+- **Status Badge**: Green "In Progress" indicator with pulsing dot
+- **Join Button**: Click to join the call as a silent listener
+
+<Tip>
+The duration counter updates every second, giving you precise information about how long each conversation has been ongoing.
+</Tip>
+
+## Agent Filter
+
+Filter the live calls view by specific voice agents:
+
+### Using the Agent Filter
+
+1. Locate the **Agent Filter** dropdown at the top of the page
+2. Click to open the dropdown
+3. Select:
+   - **All agents**: Show calls from all voice agents
+   - **Specific agent**: Show calls only for that agent
+
+**Example use cases**:
+
+```
+Scenario 1: Monitor a new agent
+- Select "Sales Agent Beta" from the filter
+- See only calls handled by that specific agent
+- Evaluate its performance in real-time
+
+Scenario 2: System overview
+- Select "All agents"
+- View all active calls across your entire system
+- Monitor overall system load
+```
+
+<Info>
+The agent filter persists in the URL, so you can bookmark or share filtered views with your team.
+</Info>
+
+## Joining a Call
+
+Join any active call as a silent listener to monitor agent performance, assist with quality assurance, or troubleshoot issues.
+
+### How to Join a Call
+
+**Step 1**: Click the **Join** button on any call card
+
+**Step 2**: The call details drawer opens on the right side of the screen
+
+**Step 3**: In the drawer header, click the **Join Call** button
+
+**Step 4**: You're now connected as a silent listener
+
+### What Happens When You Join
+
+1. **LiveKit room connection**: You're connected to the call's audio room
+2. **Silent listener mode**: Neither the caller nor the AI agent knows you're listening
+3. **Real-time audio**: Hear both the caller and AI agent in real-time
+4. **Live transcription**: See the conversation transcribed as it happens
+5. **Call metrics**: View performance metrics updating in real-time
+
+<Warning>
+When you join a call, the live calls list stops auto-refreshing to prevent disruption. It resumes when you leave the call or close the drawer.
+</Warning>
+
+### During the Call
+
+While monitoring a call, you can:
+
+**Listen to audio**:
+
+- Hear both sides of the conversation in real-time
+- Audio streams directly to your browser
+
+**View live transcription**:
+
+- See what's being said as it's transcribed
+- Segments appear with speaker labels (User/Agent)
+- Transcription updates every few seconds
+
+**Monitor performance**:
+
+- ASR processing time
+- LLM response time
+- TTS generation time
+- Overall latency
+
+**Review conversation history**:
+
+- Scroll up to see earlier parts of the conversation
+- Switch between Overview, Conversation, and Outcome tabs
+
+<Tip>
+Use the Conversation tab to see the full transcript while monitoring. This helps you understand context if you join mid-call.
+</Tip>
+
+### Leaving a Call
+
+You can disconnect from a monitored call in three ways:
+
+**Option 1**: Click the **Leave Call** button in the drawer header
+
+```
+Result: You disconnect, but the caller's conversation continues normally
+```
+
+**Option 2**: Close the call details drawer (X button or click outside)
+
+```
+Result: Automatically disconnects you from the audio room
+```
+
+**Option 3**: Wait for the call to end
+
+```
+Result: Drawer closes automatically with a success message
+```
+
+<Info>
+When a call ends while you're monitoring, you'll see a toast notification: "Call with [Agent Name] has ended"
+</Info>
+
+## Call Details Drawer
+
+The call details drawer provides comprehensive information about the active call.
+
+### Drawer Structure
+
+The drawer occupies the right side of the screen and includes:
+
+**Header Section**:
+
+- Agent name and session ID
+- Start time and live duration
+- Join/Leave Call button
+- Close drawer button (X)
+
+**Tab Navigation**:
+
+- **Overview**: Call metadata and performance metrics
+- **Conversation**: Live transcript and audio player
+- **Outcome**: Call summary and resolution (populates after call ends)
+
+### Overview Tab
+
+**Session Information**:
+
+```
+Session ID: abc123...
+Status: In Progress
+Start Time: Nov 16, 2024 10:45:23 AM
+Duration: 2m 34s (live counter)
+Agent: Customer Support Agent
+Channel: Phone
+```
+
+**Performance Metrics** (updates in real-time):
+
+```
+ASR Processing: 245ms
+LLM Response: 1,234ms
+TTS Generation: 567ms
+Latency: 2,046ms
+```
+
+<Note>
+Performance metrics update as the conversation progresses. Initial values may be 0 until enough data is collected.
+</Note>
+
+### Conversation Tab
+
+**Live Transcript**:
+The transcript displays all conversation exchanges with:
+
+- Speaker labels (User / Agent)
+- Timestamp for each message
+- Auto-scroll to latest message (optional)
+- Search functionality for completed portions
+
+**Example transcript view**:
+
+```
+🟢 User (10:45:23)
+"Hi, I need help with my order"
+
+🤖 Agent (10:45:25)
+"I'd be happy to help you with your order. Could you please provide your order number?"
+
+🟢 User (10:45:32)
+"It's order number 12345"
+
+🤖 Agent (10:45:35)
+[Transcribing...] (shown while AI is responding)
+```
+
+**Audio Player** (for completed calls):
+
+- Once the call ends, the audio recording becomes available
+- Play/pause controls
+- Seek bar to jump to specific times
+- Speed controls (1x, 1.5x, 2x)
+- Download button
+
+<Tip>
+The live transcription is near real-time but may lag 2-3 seconds behind the actual audio. This is normal for speech-to-text processing.
+</Tip>
+
+### Outcome Tab
+
+The Outcome tab populates after the call ends and includes:
+
+**AI Summary**:
+
+- Automatic summary of the call generated by AI
+- Key points discussed
+- Resolution details
+
+**Customer Satisfaction**:
+
+- Sentiment analysis (Positive/Neutral/Negative)
+- CSAT score if customer provided feedback
+
+**Call Outcome**:
+
+- Resolution status (Resolved/Escalated/Pending)
+- Resolution type (Self-Service/Human Agent)
+- Next steps or follow-up required
+
+## Auto-Refresh Behavior
+
+Understanding how auto-refresh works ensures you don't miss important calls:
+
+### When Auto-Refresh is Active
+
+The live calls list refreshes every 10 seconds when:
+
+- You're viewing the Live calls tab
+- No call details drawer is open
+- The browser tab is active (in focus)
+
+**What updates**:
+
+- New calls appear automatically
+- Ended calls disappear automatically
+- Call durations update every second
+- Call counts refresh
+
+### When Auto-Refresh is Paused
+
+Auto-refresh stops when:
+
+- You open a call details drawer
+- You switch to a different browser tab
+- You navigate to another Dashboard tab
+
+**Why it pauses**:
+
+- Prevents jarring content shifts while reading
+- Maintains stable UI when joining calls
+- Reduces unnecessary API calls when you're not watching
+
+<Info>
+Auto-refresh resumes automatically when you close the drawer or return to the Live calls tab.
+</Info>
+
+### Manual Refresh
+
+Force a refresh at any time:
+
+1. Navigate away from the Live calls tab and back
+2. Refresh your browser (F5 or Cmd+R)
+3. Close and reopen the call details drawer
+
+## Empty State
+
+When no calls are active, you'll see:
+
+```
+┌─────────────────────────────────────────┐
+│                                         │
+│              📞                         │
+│                                         │
+│         No Live Calls                   │
+│                                         │
+│  There are currently no live calls.     │
+│  New calls will appear here in          │
+│  real time.                             │
+│                                         │
+└─────────────────────────────────────────┘
+```
+
+<Note>
+The empty state is normal during off-hours or low-traffic periods. The view will automatically populate when calls begin.
+</Note>
+
+## Real-World Use Cases
+
+### Quality Assurance
+
+**Scenario**: Monitor random calls to ensure agent quality
+
+```
+Process:
+1. Set Agent Filter to "All agents"
+2. Wait for calls to appear
+3. Join 3-5 random calls throughout the day
+4. Take notes on agent performance
+5. Use insights to improve prompt engineering
+
+Benefits:
+- Catch issues before customers complain
+- Identify training opportunities
+- Validate agent improvements
+```
+
+### Troubleshooting
+
+**Scenario**: User reports "AI not responding correctly"
+
+```
+Process:
+1. Filter to the specific agent user mentioned
+2. Wait for next call with that agent
+3. Join the call to observe behavior
+4. Monitor performance metrics for anomalies
+5. Review live transcript for response quality
+
+Metrics to watch:
+- LLM Response Time (should be < 2000ms)
+- Error indicators in transcript
+- Unusual silence gaps
+```
+
+### Training and Onboarding
+
+**Scenario**: New team member learning the system
+
+```
+Process:
+1. Have trainee open Live calls tab
+2. Join a call together (screen share)
+3. Walk through the drawer interface
+4. Explain performance metrics
+5. Discuss agent response quality
+
+Learning points:
+- How calls flow through the system
+- What "good" metrics look like
+- How to identify problematic patterns
+```
+
+### Peak Load Monitoring
+
+**Scenario**: Black Friday sale - expect high call volume
+
+```
+Setup:
+1. Open Live calls tab on a dedicated monitor
+2. Set to "All agents"
+3. Watch for call volume spikes
+4. Note if durations are increasing (system strain)
+5. Join calls if many show high latency
+
+Warning signs:
+- 20+ concurrent calls (may need scaling)
+- Latency > 3000ms (performance degradation)
+- Many calls ending quickly (connection issues)
+```
+
+<CardGroup cols={2}>
+  <Card title="Proactive Monitoring" icon="eye">
+    Join calls randomly throughout the day to maintain quality standards
+  </Card>
+  <Card title="Reactive Investigation" icon="magnifying-glass">
+    Use live monitoring to diagnose specific issues reported by users
+  </Card>
+</CardGroup>
+
+## Best Practices
+
+### Regular Monitoring Schedule
+
+**Daily**:
+
+- Spot-check 2-3 calls during peak hours
+- Verify performance metrics are normal
+- Ensure no calls showing errors
+
+**Weekly**:
+
+- Join 10-15 calls throughout the week
+- Note patterns or recurring issues
+- Review with team for agent improvements
+
+**Monthly**:
+
+- Comprehensive audit of 50+ calls
+- Compare to previous month's findings
+- Update agent training based on insights
+
+### What to Listen For
+
+When joining calls, pay attention to:
+
+**Agent Behavior**:
+
+- ✅ Natural conversation flow
+- ✅ Appropriate response times
+- ✅ Accurate information provided
+- ❌ Robotic or repetitive phrasing
+- ❌ Hallucinations or incorrect data
+- ❌ Interrupting the caller
+
+**Technical Issues**:
+
+- ✅ Clear audio quality
+- ✅ Quick ASR transcription
+- ✅ Reasonable latency (< 2s)
+- ❌ Audio cutting out
+- ❌ Delayed responses (> 3s)
+- ❌ Transcription errors
+
+**User Experience**:
+
+- ✅ Caller gets their question answered
+- ✅ Conversation stays on track
+- ✅ Appropriate escalation when needed
+- ❌ User frustration evident
+- ❌ Repeated questions
+- ❌ Call abandoned before resolution
+
+<Tip>
+Create a checklist based on these criteria and score each monitored call. Track scores over time to measure improvement.
+</Tip>
+
+## Troubleshooting
+
+### "No Live Calls" Shows But You Expect Activity
+
+**Possible causes**:
+
+1. **Time-based filtering**: Calls older than 10 minutes don't appear
+
+   - Solution: Check Call History for recent completed calls
+
+2. **Agent filter active**: Filtered agent has no current calls
+
+   - Solution: Select "All agents" to see all calls
+
+3. **Calls completed before load**: System had calls that just ended
+
+   - Solution: Wait a few minutes for new calls
+
+4. **No project selected**: Dashboard requires active project
+   - Solution: Select project from project dropdown
+
+### Join Button Not Working
+
+**Symptoms**: Clicking Join does nothing or shows error
+
+**Solutions**:
+
+1. **Check browser permissions**: Allow microphone access
+
+   ```
+   Chrome: Settings > Privacy > Site Settings > Microphone
+   ```
+
+2. **Network connectivity**: Ensure stable internet connection
+
+   - LiveKit requires WebRTC support
+   - Check firewall doesn't block WebRTC ports
+
+3. **Call already ended**: Call may have ended between viewing and clicking
+
+   - Solution: Refresh and try another call
+
+4. **Browser compatibility**: Use Chrome, Firefox, or Edge (latest versions)
+   - Safari may have limited WebRTC support
+
+### Can't Hear Audio After Joining
+
+**Troubleshooting steps**:
+
+1. **Volume settings**: Check system and browser volume
+2. **Audio output device**: Verify correct speakers/headphones selected
+3. **Browser audio permissions**: Ensure site can play audio
+4. **LiveKit connection**: Look for connection status indicator
+5. **Call audio quality**: May be silence in conversation at that moment
+
+<Warning>
+If you experience persistent audio issues, leave and rejoin the call. If problems continue, check your browser console for WebRTC errors.
+</Warning>
+
+### Drawer Won't Close
+
+**Symptoms**: X button doesn't close drawer or drawer freezes
+
+**Solutions**:
+
+1. **Leave call first**: Click "Leave Call" before closing drawer
+2. **Wait for processing**: Give 2-3 seconds after clicking
+3. **Force close**: Refresh browser (you'll be disconnected from call)
+4. **Check browser console**: Look for JavaScript errors
+
+### Live Transcription Not Updating
+
+**Expected behavior**: Transcription appears 2-3 seconds after speech
+
+**If transcription is missing**:
+
+1. **Still connecting**: Wait 5-10 seconds after joining
+2. **Silent period**: No one is speaking at the moment
+3. **ASR issues**: Check Overview tab for ASR processing errors
+4. **Refresh drawer**: Close and reopen call details
+
+## Privacy and Compliance
+
+### Silent Listener Mode
+
+<Warning>
+You join calls as a silent listener—the caller is NOT notified. Ensure your use complies with:
+- Call recording laws in your jurisdiction
+- Company privacy policies
+- User consent agreements
+</Warning>
+
+**Legal considerations**:
+
+- **One-party consent states**: May be legal if AI agent is party to call
+- **Two-party consent states**: May require disclosure in greeting
+- **International calls**: Different countries have different laws
+
+**Best practices**:
+
+- Include call monitoring disclosure in your agent's greeting
+- Document your call monitoring policy
+- Train staff on appropriate use of monitoring features
+- Only join calls for legitimate business purposes (QA, training, troubleshooting)
+
+### Data Handling
+
+**What gets recorded**:
+
+- Audio of the full conversation
+- Complete transcript
+- Performance metrics
+- Caller metadata (if provided)
+
+**Data retention**:
+
+- Calls stored according to your account settings
+- Transcripts searchable in Call History
+- Access logs for monitoring activities
+
+<Info>
+Consult with your legal team to ensure your use of live call monitoring complies with applicable regulations like GDPR, CCPA, or industry-specific requirements.
+</Info>
+
+## Related Documentation
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Overview" icon="chart-line" href="/dashboard/overview">
+    View overall system metrics and statistics
+  </Card>
+  <Card title="Call History" icon="history" href="/dashboard/call-history">
+    Search and review completed call recordings
+  </Card>
+  <Card title="Performance Metrics" icon="gauge" href="/dashboard/performance">
+    Analyze detailed performance data
+  </Card>
+  <Card title="Satisfaction Metrics" icon="heart" href="/dashboard/satisfaction">
+    Track customer satisfaction and sentiment
+  </Card>
+</CardGroup>

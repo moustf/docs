@@ -1,0 +1,396 @@
+---
+title: Flow Agent Overview
+description: 'Build sophisticated conversation flows with visual node-based editor'
+---
+
+## What is a Flow Agent?
+
+Flow agents allow you to create sophisticated conversation flows using a visual node-based editor. Instead of relying on a single prompt, you build structured workflows where each node represents a specific step or action in your conversation, with transitions that define how the conversation progresses.
+
+## When to Use Flow Agents
+
+Flow agents are ideal when:
+
+- Your conversation has multiple distinct stages or branches
+- You need conditional logic based on user responses or data
+- You want visual representation of conversation paths
+- You need fine-grained control over different conversation stages
+- You're building complex workflows with tool integrations
+- You want to reuse conversation components
+- Your single prompt would exceed 500 words
+
+## Core Concepts
+
+### Nodes
+
+Nodes are the fundamental building blocks of your conversation flow. Each node represents a specific step or action in your agent's conversation, with its own logic, behavior, and purpose.
+
+### Edges
+
+Edges connect nodes and represent the flow of conversation from one node to another. They're created by adding transitions to nodes.
+
+### Transitions
+
+Transitions define the conditions under which the conversation moves from one node to another. Multiple transitions can exist on a single node, creating branching logic.
+
+### Variables
+
+Variables store and pass data between nodes, including:
+
+- **System Variables**: Built-in variables like `session_id`, `user_input`, `current_time`
+- **Extracted Variables**: Data collected from conversations
+- **Custom Variables**: Workflow-level variables you define
+
+## Benefits of Flow Agents
+
+### 🎯 Precise Control
+
+Define exact behavior for each conversation scenario, with different prompts, voice settings, and tools per node.
+
+### 📊 Visual Clarity
+
+See your entire conversation flow at a glance, making it easy to understand and communicate with stakeholders.
+
+### 🔧 Better Performance
+
+Fine-tune specific parts of the conversation without affecting others. Use different LLM models per node to optimize cost and quality.
+
+### 🐛 Easier Debugging
+
+Isolate and fix issues quickly with real-time node highlighting and detailed logs showing exactly where the conversation is.
+
+### ♻️ Reusability
+
+Create modular conversation components that can be reused across different agents or workflows.
+
+### 🔀 Complex Logic
+
+Handle sophisticated decision trees, parallel processes, and dynamic routing based on real-time data.
+
+## Node Types
+
+Hamsa provides 8 different node types to build comprehensive conversation flows:
+
+### 1. **Start Node**
+
+Every flow begins with a start node. Can operate in two modes:
+
+- **Conversation Mode**: Greets the user and starts dialogue
+- **Tool Mode**: Executes a tool before any conversation begins
+
+**[→ Learn More: Start Node](./nodes/start-node)**
+
+### 2. **Conversation Node**
+
+The most commonly used node type for having conversations with users. Each conversation node has its own focused prompt and behavior.
+
+**Key Features:**
+
+- Dynamic or static messages
+- Variable extraction
+- DTMF input capture
+- Skip response mode
+- Block interruptions
+
+**[→ Learn More: Conversation Node](./nodes/conversation-node)**
+
+### 3. **Tool Node**
+
+Execute custom functions or API calls. Choose from:
+
+- **Function Tools**: Custom API integrations
+- **Web Tools**: Simple HTTP requests
+- **MCP Tools**: Model Context Protocol tools
+
+**[→ Learn More: Tool Node](./nodes/tool-node)**
+
+### 4. **Web Tool Node**
+
+Simplified tool node specifically for web/HTTP requests, with streamlined configuration.
+
+**[→ Learn More: Web Tool Node](./nodes/web-tool-node)**
+
+### 5. **Router Node**
+
+Create conditional branches based on logic without having a conversation. Pure routing based on variables and equations.
+
+**[→ Learn More: Router Node](./nodes/router-node)**
+
+### 6. **Transfer Call Node**
+
+Transfer the call to another phone number. Supports:
+
+- Warm transfers (with context)
+- Cold transfers (direct)
+
+**[→ Learn More: Transfer Call Node](./nodes/transfer-call-node)**
+
+### 7. **Transfer Agent Node**
+
+Switch to a different Hamsa agent during the conversation, maintaining call context and history.
+
+**Advantages:**
+
+- Lower latency than phone transfers
+- Better reliability (no new call needed)
+- Full conversation history passed
+- No repeated questions
+
+**[→ Learn More: Transfer Agent Node](./nodes/transfer-agent-node)**
+
+### 8. **End Call Node**
+
+Terminate the conversation. Can include a final message before ending.
+
+**[→ Learn More: End Call Node](./nodes/end-call-node)**
+
+## Transition Types
+
+Control how conversations progress between nodes using four types of transitions:
+
+### 1. **Natural Language (Prompt)**
+
+The LLM evaluates whether a condition described in natural language is met.
+
+**Example:** "User wants to speak to a human agent"
+
+### 2. **Structured Equation**
+
+Hardcoded mathematical/logical conditions using variables.
+
+**Example:** `{{user_age}} > 18 AND {{location}} == "USA"`
+
+### 3. **DTMF (Keypad)**
+
+Trigger transitions based on phone keypad presses (0-9, \*, #).
+
+**Example:** Press 1 for Sales, Press 2 for Support
+
+### 4. **Always**
+
+Fallback transition that always triggers if no other conditions are met.
+
+**[→ Learn More: Transition Conditions](./transitions)**
+
+## Global Nodes
+
+Some nodes need to be accessible from anywhere in the conversation flow because they handle universal scenarios:
+
+- Emergency support routing
+- "Speak to operator" (triggered by pressing 0)
+- "Repeat menu" (triggered by pressing 9)
+- Common objection handling
+
+**How to create:** Mark any node as "Global" and define its trigger (prompt or DTMF key).
+
+**[→ Learn More: Global Nodes](./global-nodes)**
+
+## Variable System
+
+Hamsa's powerful variable system enables dynamic, context-aware conversations:
+
+### 30+ System Variables
+
+Always available throughout the flow:
+
+- Session & Identity: `session_id`, `user_phone`, `caller_id`
+- Call Context: `call_id`, `call_duration`, `call_direction`
+- Time & Environment: `current_time`, `current_date`, `current_day_of_week`
+- Agent Context: `agent_id`, `agent_name`, `workspace_id`
+
+### Extracted Variables
+
+Collect data from conversations using variable extraction in conversation nodes.
+
+### Custom Variables
+
+Define workflow-level variables for data you'll provide via API.
+
+**[→ Learn More: Variable System](./variables)**
+
+## DTMF Features
+
+Hamsa provides three distinct DTMF (phone keypad) features:
+
+### 1. **Simple DTMF Transitions**
+
+Create IVR-style menus: "Press 1 for Sales, Press 2 for Support"
+
+### 2. **DTMF Input Capture**
+
+Collect sequences of digits (account numbers, PINs, phone numbers) and store in variables.
+
+### 3. **Global DTMF Triggers**
+
+Allow keypad presses to trigger global nodes from anywhere: "Press 0 for operator at any time"
+
+**[→ Learn More: DTMF Features](./dtmf)**
+
+## Setup Process
+
+Creating a flow agent follows these main steps:
+
+### Step 1: Configure Global Settings
+
+- Select default voice and language
+- Choose LLM model and temperature
+- Configure default call behavior settings
+- Set up knowledge bases and global tools
+- Define custom variables
+
+**[→ Learn More: Global Settings](./global-settings)**
+
+### Step 2: Design Your Flow
+
+- Add a start node
+- Create conversation nodes for different stages
+- Add tool nodes for integrations
+- Connect nodes with transitions
+- Add router nodes for complex branching
+
+### Step 3: Add Transition Conditions
+
+- Define when to move between nodes
+- Use natural language or structured equations
+- Set up DTMF keypad triggers
+- Configure fallback (always) paths
+
+### Step 4: Configure Individual Nodes
+
+- Write focused prompts for each conversation node
+- Set up variable extraction
+- Configure DTMF input capture
+- Enable/disable interruptions per node
+- Override voice or LLM settings when needed
+
+### Step 5: Test & Debug
+
+- Use visual debugging with node highlighting
+- Review real-time logs during test calls
+- Verify all transition paths work correctly
+- Test edge cases and error scenarios
+
+**[→ Learn More: Testing & Debugging](./debugging)**
+
+## Example Use Cases
+
+### Multi-Department Call Routing
+
+**Nodes:** Start → Main Menu (with DTMF) → Sales Branch → Support Branch → Billing Branch → Transfer/End
+
+**Flow:** User presses keypad to select department, then conversations tailored to each department's needs.
+
+### Appointment Booking with Availability Check
+
+**Nodes:** Start → Collect Info → Check Availability (Tool) → Router (available?) → Book Appointment (Tool) OR Suggest Alternatives → Confirmation → End
+
+**Flow:** Collects customer info, checks real-time availability, books if available, or offers alternatives.
+
+### Customer Support with Escalation
+
+**Nodes:** Start → Initial Triage → Knowledge Base Search (Tool) → Router (resolved?) → End OR Transfer to Agent
+
+**Global Node:** "Speak to human" accessible anytime via natural language or DTMF 0
+
+**Flow:** Attempts to resolve with AI, escalates when needed or requested.
+
+### Lead Qualification Pipeline
+
+**Nodes:** Start → Collect Company Info → Budget Router → High Value Path (immediate transfer) → Medium Value Path (schedule callback) → Low Value Path (nurture sequence) → End
+
+**Flow:** Qualifies leads, routes high-value leads to sales immediately, others to appropriate nurture paths.
+
+## Advanced Features
+
+### Model Overrides per Node
+
+Use GPT-4 for complex reasoning nodes, GPT-3.5 for simple confirmations—optimize cost and performance.
+
+### Voice Settings per Node
+
+Different voices for different conversation stages or personalities.
+
+### Processing Messages
+
+Display messages while tools execute: "Let me check that for you..."
+
+### Variable Extraction with Context Rules
+
+Intelligent recommendations for variables based on conversation context.
+
+### Undo/Redo System
+
+Full history snapshots—never lose your work.
+
+### Validation System
+
+Real-time validation catches errors before deployment:
+
+- Missing required fields
+- Unreachable nodes
+- Invalid variable references
+- Circular dependencies
+
+## Best Practices
+
+### Keep Nodes Focused
+
+Each conversation node should have one clear purpose. If a prompt exceeds 200 words, consider splitting it.
+
+### Group Related Steps
+
+Steps that share the same tools and context should stay in one node to minimize transitions.
+
+### Use Descriptive Names
+
+Name nodes clearly: "Collect_Customer_Info" not "Node_1"
+
+### Plan Fallback Paths
+
+Always provide an "always" transition as a safety net.
+
+### Test All Paths
+
+Don't just test the happy path—verify error scenarios and edge cases.
+
+### Leverage Global Nodes
+
+Common scenarios like "speak to operator" should be global, not repeated in every branch.
+
+### Start Simple
+
+Begin with a basic flow, test thoroughly, then add complexity incrementally.
+
+**[→ Learn More: Best Practices](./best-practices)**
+
+## Feature Comparison: Flow Agent vs Single Prompt
+
+| Feature               | Single Prompt       | Flow Agent                    |
+| --------------------- | ------------------- | ----------------------------- |
+| **Setup Complexity**  | Low                 | Medium                        |
+| **Visual Design**     | ❌ No               | ✅ Yes                        |
+| **Conditional Logic** | Limited (in prompt) | ✅ Unlimited                  |
+| **Multiple Prompts**  | ❌ Single           | ✅ Per node                   |
+| **Tool Integration**  | ✅ Up to ~3         | ✅ Unlimited                  |
+| **DTMF Support**      | ❌ No               | ✅ Full (3 features)          |
+| **Variable System**   | Basic               | ✅ Advanced (30+ system vars) |
+| **Reusability**       | Low                 | ✅ High                       |
+| **Debugging**         | Basic logs          | ✅ Visual + detailed logs     |
+| **Model per Stage**   | ❌ One model        | ✅ Override per node          |
+| **Agent Transfer**    | ❌ No               | ✅ Yes                        |
+| **Best For**          | Simple flows        | Complex workflows             |
+
+## Next Steps
+
+Ready to build your first flow agent?
+
+1. **[Configure Global Settings](./global-settings)** - Set up defaults for your workflow
+2. **[Understand Node Types](./nodes/overview)** - Learn about all 8 node types
+3. **[Master Transitions](./transitions)** - Control conversation flow
+4. **[Variable System](./variables)** - Pass data between nodes
+5. **[DTMF Features](./dtmf)** - Add keypad interactions
+6. **[Test & Debug](./debugging)** - Ensure quality before deployment
+
+---
+
+**Start simple?** Consider **[Single Prompt Agents](../single-prompt/overview)** for straightforward use cases.

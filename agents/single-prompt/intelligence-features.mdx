@@ -1,0 +1,1436 @@
+---
+title: Intelligence Features
+description: 'Advanced AI capabilities including gender detection, smart call end, speaker identification, agentic RAG, and language dialect switcher'
+---
+
+## Overview
+
+Intelligence features are advanced AI capabilities that enhance your agent's understanding, responsiveness, and contextual awareness. These features use machine learning and natural language processing to provide smarter, more personalized interactions.
+
+<Info>
+**Available Intelligence Features:**
+- **Gender Detection** - Identify caller gender for personalized speech
+- **Smart Call End** - Automatically detect conversation completion
+- **Speaker Identification** - Distinguish multiple speakers on same call
+- **Agentic RAG** - Advanced knowledge retrieval with reasoning
+- **Language Dialect Switcher** - Adapt to caller's specific dialect
+</Info>
+
+<Note>
+Intelligence features are optional and can be enabled/disabled independently. Each feature has trade-offs between capability and latency.
+</Note>
+
+## Gender Detection
+
+### What is Gender Detection?
+
+Automatically analyzes voice characteristics to detect the caller's likely gender (male or female) for personalized responses.
+
+**How it works:**
+
+- Analyzes pitch, resonance, and vocal patterns
+- Determines probability: male, female, or uncertain
+- Makes result available to agent via variable
+- Detection occurs early in conversation (first 5-10 seconds)
+
+### Enabling Gender Detection
+
+**To enable:**
+
+1. Open **Call Settings** section
+2. Locate **User Gender Detection** toggle
+3. Enable the toggle
+4. Save changes
+
+**Configuration:**
+
+- No additional settings required
+- Detection is automatic once enabled
+- Results available immediately after detection
+
+### Using Gender Detection in Prompts
+
+Access detected gender via the `{{user_gender}}` variable:
+
+```markdown
+# Greeting with Gender
+
+When greeting users, be respectful and use appropriate pronouns.
+
+If {{user_gender}} is detected:
+
+- Male: Use "sir", "he/him" as appropriate
+- Female: Use "ma'am", "she/her" as appropriate
+- Unknown: Use gender-neutral language
+
+Examples:
+
+- "Yes sir, I can help you with that"
+- "Certainly ma'am, let me look that up"
+- "Of course, I'd be happy to help you" (neutral)
+```
+
+**Advanced Usage:**
+
+```markdown
+# Gender-Aware Responses
+
+When recommending products:
+If {{user_gender}} == "male":
+
+- Suggest men's product lines first
+- Use masculine style references
+
+If {{user_gender}} == "female":
+
+- Suggest women's product lines first
+- Use feminine style references
+
+If {{user_gender}} == "unknown":
+
+- Suggest unisex or ask preference
+- Use neutral language
+```
+
+### Use Cases for Gender Detection
+
+**Personalized Greetings**
+
+```
+Detected: Male → "Good morning sir, how can I help you?"
+Detected: Female → "Good morning ma'am, how can I help you?"
+```
+
+**Product Recommendations**
+
+```
+Healthcare Products:
+- Male: Focus on men's health products
+- Female: Focus on women's health products
+```
+
+**Culturally Appropriate Speech**
+
+```
+Arabic-speaking agents:
+- Adjust verb endings and pronouns based on gender
+- Use appropriate formal address (سيد / سيدة)
+```
+
+**Sales Personalization**
+
+```
+Fashion Retail:
+- Male: Men's section, masculine styles
+- Female: Women's section, feminine styles
+- Ask: "Are you shopping for yourself or someone else?"
+```
+
+**Service Customization**
+
+```
+Fitness/Wellness:
+- Tailor advice based on common gender-specific needs
+- Adjust communication style if appropriate
+```
+
+<Tip>
+Always provide a fallback for when gender cannot be detected or detection is uncertain. Never make assumptions that could alienate callers.
+</Tip>
+
+### Best Practices
+
+✅ **Do:**
+
+- Use gender for grammatical agreement (languages with gendered grammar)
+- Personalize formal address (sir/ma'am) when culturally appropriate
+- Provide gender-specific product recommendations when relevant
+- Always have gender-neutral fallback
+
+❌ **Don't:**
+
+- Make stereotypical assumptions about interests or preferences
+- Use gender to limit options or suggestions
+- Over-emphasize gender when not relevant
+- Assume gender defines needs or wants
+
+### Privacy and Compliance Considerations
+
+<Warning>
+**Legal Compliance:**
+- Some jurisdictions regulate automated gender detection
+- Check local privacy laws (GDPR, CCPA, etc.)
+- May require disclosure in privacy policy
+- Consider opt-out mechanisms for sensitive markets
+</Warning>
+
+**Transparency:**
+
+- Consider mentioning in privacy policy
+- Disclose if asked by caller
+- Explain it's for personalization, not discrimination
+
+**Cultural Sensitivity:**
+
+- Gender is not binary in all cultures
+- Some users may not identify with detected gender
+- Always allow for correction or preference
+
+### Accuracy and Limitations
+
+**Accuracy Rate:** 85-95% for binary gender detection
+
+**Factors Affecting Accuracy:**
+
+- Voice quality and clarity
+- Background noise levels
+- Age of speaker (children harder to detect)
+- Vocal training or characteristics
+- Trans individuals may not align with detected gender
+
+**Handling Uncertainty:**
+
+```markdown
+If {{user_gender}} == "unknown" or confidence is low:
+
+- Default to gender-neutral language
+- Don't mention or call attention to uncertainty
+- Proceed naturally with conversation
+```
+
+<Note>
+Gender detection is probabilistic, not deterministic. Build your prompts to gracefully handle all outcomes including uncertain detection.
+</Note>
+
+## Smart Call End
+
+### What is Smart Call End?
+
+Automatically detects when the conversation objectives are complete and the caller is ready to end the call, then gracefully concludes the interaction.
+
+**How it works:**
+
+- LLM monitors conversation for completion signals
+- Detects farewell indicators ("goodbye", "that's all", "thanks, bye")
+- Identifies when objectives are met
+- Triggers graceful call conclusion
+- Prevents unnecessary conversation extension
+
+### Enabling Smart Call End
+
+**To enable:**
+
+1. Open **Call Settings** section
+2. Locate **Smart Call End** toggle
+3. Enable the toggle
+4. Save changes
+
+### How Smart Call End Detects Completion
+
+**Farewell Indicators:**
+
+- "Goodbye"
+- "Bye"
+- "That's all I needed"
+- "Thank you, goodbye"
+- "I'm all set"
+- "Have a good day" (from user)
+
+**Objective Completion:**
+
+- Task explicitly completed
+- User confirms satisfaction
+- No additional questions when asked
+- Natural conversation conclusion
+
+**Combined Signals:**
+
+```
+User: "Okay perfect, my appointment is confirmed for Tuesday at 2 PM?"
+Agent: "Yes, that's correct. Confirmation number is 12345. Anything else?"
+User: "Nope, that's everything. Thanks!"
+Smart Call End: [Detects objective met + farewell → end call]
+Agent: "You're welcome! Have a great day."
+[Call ends]
+```
+
+### Configuring Smart Call End Behavior
+
+Control Smart Call End behavior in your prompt:
+
+```markdown
+# Smart Call End Configuration
+
+When you detect the conversation is complete:
+
+1. Provide brief summary if appropriate
+2. Offer final assistance: "Is there anything else I can help with?"
+3. If user says no or gives farewell: End gracefully
+
+Final Message Template:
+"Thank you for calling [Company]. Have a great [day/evening]!"
+
+Then the call will automatically end.
+```
+
+**Advanced Configuration:**
+
+```markdown
+# Smart Call End with Confirmation
+
+Before ending calls:
+
+1. Summarize actions taken
+2. Confirm user is satisfied
+3. Provide reference number (if applicable)
+4. Offer final help
+
+Example:
+"Just to confirm, I've scheduled your appointment for [date/time],
+confirmation number [number]. Is there anything else I can help with today?"
+
+If user indicates they're done: Execute graceful farewell and end.
+```
+
+### Use Cases for Smart Call End
+
+**Appointment Booking**
+
+```
+Flow:
+1. Book appointment ✓
+2. Provide confirmation ✓
+3. Ask if anything else
+4. User says no
+→ Smart Call End triggers graceful goodbye
+```
+
+**Order Status Check**
+
+```
+Flow:
+1. Look up order ✓
+2. Provide status ✓
+3. Ask if they need anything else
+4. User satisfied
+→ Smart Call End closes conversation
+```
+
+**Simple FAQ**
+
+```
+Flow:
+1. Answer question ✓
+2. Ask if they need clarification
+3. User says "nope, that's perfect, thanks"
+→ Smart Call End detects completion + farewell
+```
+
+**Lead Qualification**
+
+```
+Flow:
+1. Gather information ✓
+2. Schedule demo ✓
+3. Confirm details
+4. User says "great, see you then"
+→ Smart Call End handles natural conclusion
+```
+
+<Tip>
+Smart Call End works best when combined with clear task completion and confirmation in your prompt. Make it easy for the LLM to know when objectives are met.
+</Tip>
+
+### Benefits of Smart Call End
+
+✅ **Advantages:**
+
+**Better User Experience**
+
+- No awkward "how do I end this call?" moments
+- Natural conversation flow
+- Users feel in control
+
+**Cost Efficiency**
+
+- Prevents unnecessarily long calls
+- Reduces average call duration
+- Eliminates "dead air" at end
+
+**Professional Impression**
+
+- Smooth, confident conclusions
+- No stammering or uncertain endings
+- Clean, polished experience
+
+**Automatic Optimization**
+
+- No need to manually script every ending
+- Adapts to various conclusion patterns
+- Handles unexpected farewell styles
+
+### Smart Call End vs. Max Call Duration
+
+Both features can end calls, but serve different purposes:
+
+| Feature               | Purpose            | When It Triggers                      | Type        |
+| --------------------- | ------------------ | ------------------------------------- | ----------- |
+| **Smart Call End**    | Natural conclusion | Conversation complete, objectives met | Intelligent |
+| **Max Call Duration** | Safety net         | Time limit reached                    | Hard limit  |
+
+**Best Practice:**
+Enable both features:
+
+- Smart Call End: Handles 90%+ of calls naturally
+- Max Call Duration: Safety net for edge cases
+
+```
+Max Call Duration: 300 seconds (5 minutes)
+Smart Call End: Enabled
+
+Expected: Most calls end naturally at 90-180 seconds via Smart Call End
+Backup: If call goes long, max duration prevents runaway at 300 seconds
+```
+
+### Troubleshooting Smart Call End
+
+**Problem: Calls End Too Early**
+
+Agent ends call when user still has questions.
+
+**Solution:**
+
+```markdown
+# Smart Call End Criteria
+
+Only end the call when ALL of these are true:
+
+1. User's primary objective is complete
+2. You've asked "anything else?" and user says no
+3. User uses farewell language OR explicitly indicates they're done
+
+If any doubt remains, ask: "Is there anything else I can help you with today?"
+```
+
+**Problem: Calls Don't End When They Should**
+
+User says goodbye but call continues.
+
+**Solution:**
+
+- Verify Smart Call End is enabled
+- Check prompt doesn't override with "never end calls"
+- Simplify farewell detection in prompt
+
+**Problem: Inconsistent Behavior**
+
+Sometimes ends naturally, sometimes doesn't.
+
+**Solution:**
+
+- Review call transcripts to find patterns
+- Adjust prompt to consistently ask if anything else needed
+- Ensure clear task completion markers
+
+<Warning>
+Don't disable interrupts if using Smart Call End. Users need to be able to say "goodbye" while agent is speaking.
+</Warning>
+
+## Speaker Identification
+
+### What is Speaker Identification?
+
+Distinguishes between different speakers on the same call, identifying who said what in multi-person conversations.
+
+**How it works:**
+
+- Analyzes voice biometrics (pitch, timber, resonance)
+- Assigns unique identifiers to each speaker
+- Tracks conversation by speaker
+- Maintains context per speaker
+
+**Status:** <Badge variant="default">Beta</Badge>
+
+### Enabling Speaker Identification
+
+**To enable:**
+
+1. Open **Call Settings** section
+2. Locate **Speaker Identification** toggle (marked Beta)
+3. Enable the toggle
+4. Save changes
+
+<Note>
+Speaker Identification is in beta. Accuracy improves with clear, distinct voices and minimal background noise.
+</Note>
+
+### Use Cases for Speaker Identification
+
+**Speakerphone Calls**
+
+```
+Scenario: Couple calling about joint account
+
+Agent: "Are you both on the line?"
+Speaker 1: "Yes, this is John"
+Speaker 2: "And I'm Sarah"
+
+Agent tracks:
+- Speaker 1 = John
+- Speaker 2 = Sarah
+
+Throughout call, agent knows who is speaking and can address appropriately.
+```
+
+**Family Conversations**
+
+```
+Scenario: Parent and child calling about appointment
+
+Parent: "I'm calling to book an appointment for my daughter"
+Agent: "Great, and what's your daughter's name?"
+Child: "I'm Emily"
+
+Agent distinguishes:
+- Parent's voice
+- Child's voice
+Can direct questions appropriately to each speaker.
+```
+
+**Business Calls**
+
+```
+Scenario: Multiple stakeholders on conference call
+
+Agent identifies:
+- Decision maker
+- Technical person
+- Budget authority
+
+Can tailor responses to who is speaking.
+```
+
+**Healthcare Scenarios**
+
+```
+Scenario: Patient with caregiver
+
+Agent can:
+- Get medical info from patient
+- Get logistics info from caregiver
+- Maintain HIPAA compliance by knowing who is who
+```
+
+### Technical Implementation
+
+**In Conversation Transcript:**
+
+```
+[Speaker 1]: "Hello, I'd like to schedule an appointment"
+[Agent]: "Of course! What's your name?"
+[Speaker 1]: "This is David"
+[Speaker 2]: "And I'm his wife, Sarah. We need a joint appointment"
+[Agent]: "Perfect David and Sarah. Let me help you both."
+```
+
+**In Prompts:**
+Access speaker information via conversation context:
+
+```markdown
+When multiple speakers are detected:
+
+1. Ask each person to identify themselves
+2. Address them by name throughout conversation
+3. Direct questions to appropriate speaker
+4. Confirm with correct person before finalizing
+
+Example:
+"David, you mentioned [X]. Sarah, did you have anything to add?"
+```
+
+### Accuracy and Limitations
+
+**Accuracy:** 80-90% with clear, distinct voices
+
+**Works Best With:**
+
+- Distinct male/female voices
+- Clear audio quality
+- Minimal background noise
+- Significant voice characteristic differences
+- Speakerphone or conference calls
+
+**Limitations:**
+
+- Similar voices may be confused
+- Background noise reduces accuracy
+- Very brief utterances harder to identify
+- More than 3-4 speakers becomes challenging
+- Requires distinct speech patterns
+
+<Warning>
+Don't rely on Speaker Identification for security purposes (authentication). Use it for UX enhancement only.
+</Warning>
+
+### Best Practices
+
+✅ **Do:**
+
+- Ask speakers to identify themselves by name
+- Use speaker ID to enhance conversation flow
+- Address speakers by name when identified
+- Gracefully handle when identification is uncertain
+
+❌ **Don't:**
+
+- Use for authentication or security
+- Assume perfect accuracy
+- Ignore verbal identification in favor of voice only
+- Make critical decisions based solely on speaker ID
+
+## Agentic RAG
+
+### What is Agentic RAG?
+
+Advanced knowledge retrieval where the AI agent actively decides when and what to search in your knowledge base, using multi-step reasoning to find the best answer.
+
+**Standard RAG (Retrieval Augmented Generation):**
+
+1. User asks question
+2. System retrieves potentially relevant documents
+3. LLM uses retrieved docs to answer
+4. Single-pass retrieval
+
+**Agentic RAG:**
+
+1. User asks question
+2. Agent reasons about what information is needed
+3. Agent searches knowledge base strategically
+4. Agent evaluates results
+5. Agent may search again with refined query
+6. Agent synthesizes final answer
+7. Multi-step, iterative retrieval
+
+### Enabling Agentic RAG
+
+**To enable:**
+
+1. Open **Knowledge Base** section in Configuration
+2. Locate **Agentic RAG** toggle
+3. Enable the toggle
+4. Save changes
+
+<Info>
+Agentic RAG requires having knowledge base items configured. If no knowledge base is attached, this feature has no effect.
+</Info>
+
+### How Agentic RAG Works
+
+**Example Flow:**
+
+**User:** "What's your return policy for electronics purchased online during holiday sales?"
+
+**Standard RAG:**
+
+```
+1. Retrieve docs matching "return policy electronics online holiday"
+2. Pass all docs to LLM
+3. Generate answer
+```
+
+**Agentic RAG:**
+
+```
+1. Agent reasons: "Complex question with three components"
+2. First search: "return policy electronics"
+3. Evaluates: "Found general electronics policy, but missing holiday info"
+4. Second search: "holiday sale terms"
+5. Evaluates: "Now have both pieces"
+6. Synthesizes: Combines both results into comprehensive answer
+7. Response addresses all three components accurately
+```
+
+### Benefits of Agentic RAG
+
+✅ **Advantages:**
+
+**Higher Accuracy**
+
+- More precise answers to complex questions
+- Better handling of multi-faceted queries
+- Fewer incorrect or partial answers
+
+**Better Context Understanding**
+
+- Understands nuanced questions
+- Identifies what information is actually needed
+- Handles ambiguity better
+
+**Improved Multi-Step Reasoning**
+
+- Can answer questions requiring multiple pieces of information
+- Synthesizes information from different sources
+- Handles "compare X and Y" questions
+
+**Dynamic Retrieval**
+
+- Only searches when actually needed
+- Refines search based on what's found
+- Avoids information overload
+
+### Trade-offs
+
+⚠️ **Disadvantages:**
+
+**Higher Latency**
+
+- Additional LLM calls for reasoning
+- Multiple search operations
+- Adds 500-2000ms per response
+
+**Increased Costs**
+
+- More LLM API calls
+- More processing overhead
+- Higher token usage
+
+**Complexity**
+
+- More moving parts
+- Harder to debug
+- Requires well-structured knowledge base
+
+<Warning>
+**Latency Impact:**
+Agentic RAG adds 500-2000ms to response time. For real-time voice calls, this can feel slow. Only enable if accuracy is more important than speed.
+</Warning>
+
+### When to Use Agentic RAG
+
+✅ **Good Use Cases:**
+
+**Complex Technical Support**
+
+```
+Questions requiring multiple documentation sections:
+"How do I reset my password if I don't have access to my recovery email?"
+
+Requires:
+1. Password reset procedure
+2. Alternative authentication methods
+3. Account recovery process
+```
+
+**Detailed Product Information**
+
+```
+Comparative questions:
+"What's the difference between the Pro and Enterprise plans?"
+
+Requires:
+1. Pro plan features
+2. Enterprise plan features
+3. Pricing comparison
+4. Use case recommendations
+```
+
+**Policy Clarifications**
+
+```
+Conditional questions:
+"Can I return an item if I opened it but didn't use it?"
+
+Requires:
+1. General return policy
+2. Opened item policy
+3. Condition requirements
+```
+
+**Multi-Domain Knowledge**
+
+```
+Questions spanning topics:
+"I want to schedule a consultation to discuss upgrading my plan and migrating my data"
+
+Requires:
+1. Scheduling process
+2. Plan upgrade information
+3. Data migration procedures
+```
+
+❌ **Avoid Agentic RAG For:**
+
+**Simple Lookups**
+
+```
+"What are your business hours?"
+- Single fact, standard RAG is sufficient
+```
+
+**Time-Sensitive Interactions**
+
+```
+Emergency support, urgent issues
+- Latency is critical, accuracy threshold is lower
+```
+
+**Small Knowledge Bases**
+
+```
+<10 knowledge items
+- Standard RAG works fine
+- Overhead not justified
+```
+
+**Straightforward FAQs**
+
+```
+Single-topic, common questions
+- No reasoning needed
+- Fast retrieval more important
+```
+
+### Optimizing Agentic RAG Performance
+
+**Knowledge Base Structure:**
+
+✅ **Good Structure:**
+
+```
+- Break complex topics into logical chunks
+- Use descriptive titles
+- Include clear headers and sections
+- Moderate document size (1-5 pages)
+```
+
+❌ **Poor Structure:**
+
+```
+- Huge monolithic documents
+- Vague titles ("Information")
+- No clear organization
+- Mixed unrelated topics in one doc
+```
+
+**Quality Over Quantity:**
+
+- 20 well-written docs > 100 poorly organized docs
+- Clear, concise content
+- Up-to-date information
+- Consistent formatting
+
+<Tip>
+Agentic RAG works best with well-organized, clearly-titled knowledge base items. Invest time in knowledge base structure for best results.
+</Tip>
+
+### Monitoring Agentic RAG
+
+**Metrics to Track:**
+
+**Accuracy Improvement:**
+
+- Compare answer accuracy vs standard RAG
+- Track questions correctly answered
+- Monitor user satisfaction
+
+**Latency Impact:**
+
+- Average response time increase
+- P95/P99 latency
+- User feedback on speed
+
+**Cost Analysis:**
+
+- Additional LLM costs
+- Token usage increase
+- ROI vs improved accuracy
+
+**Usage Patterns:**
+
+- How often does it search multiple times?
+- Average number of searches per query
+- Which questions trigger multi-step reasoning?
+
+### Agentic RAG Configuration in Prompts
+
+Guide agentic behavior in your prompt:
+
+```markdown
+# Agentic RAG Instructions
+
+When using the knowledge base:
+
+1. First determine if the question is simple or complex
+2. For simple questions: Single search is sufficient
+3. For complex questions: Use multi-step reasoning
+
+Complex Question Indicators:
+
+- Multiple sub-questions
+- Comparisons ("X vs Y")
+- Conditional logic ("if... then...")
+- Requiring multiple sources
+
+Search Strategy:
+
+1. Identify key information needed
+2. Search for each component
+3. Evaluate if you have enough information
+4. If gaps remain, search with refined query
+5. Synthesize comprehensive answer
+
+If information not found after 2-3 searches:
+"I don't have that specific information in my knowledge base.
+Let me connect you with someone who can help."
+```
+
+### Agentic RAG + Other Features
+
+**Combined with Smart Call End:**
+
+- Complex questions answered thoroughly
+- Natural conclusion once complete
+- Better user satisfaction
+
+**Combined with Speaker Identification:**
+
+- Multiple people with different questions
+- Agent handles each person's needs
+- Retrieves relevant info for each speaker
+
+**With Gender Detection:**
+
+- Gender-specific information retrieval
+- Personalized recommendations from knowledge base
+
+## Language Dialect Switcher
+
+### What is Language Dialect Switcher?
+
+Automatically detects the caller's specific dialect or accent within the same language and adapts speech recognition for better understanding.
+
+**How it works:**
+
+- Analyzes pronunciation patterns
+- Identifies regional dialect
+- Switches speech recognition model
+- Improves transcription accuracy
+
+### Enabling Language Dialect Switcher
+
+**To enable:**
+
+1. Open **Call Settings** section
+2. Locate **Language/Dialect Switcher** toggle
+3. Enable the toggle
+4. Save changes
+
+### How Dialect Switching Works
+
+**Arabic Example:**
+
+**Scenario:**
+
+- Agent configured with Egyptian Arabic voice
+- Caller speaks in Saudi dialect
+
+**Without Dialect Switcher:**
+
+- Speech recognition optimized for Egyptian
+- Saudi pronunciation may be misunderstood
+- Some words transcribed incorrectly
+
+**With Dialect Switcher:**
+
+- Detects Saudi dialect from first few sentences
+- Switches to Saudi-optimized recognition
+- Better transcription accuracy
+- Agent still speaks in Egyptian voice
+
+**English Example:**
+
+**Scenario:**
+
+- Agent configured with US English
+- Caller has strong Scottish accent
+
+**Without Dialect Switcher:**
+
+- US English speech recognition
+- Accent causes transcription errors
+- May misunderstand key words
+
+**With Dialect Switcher:**
+
+- Detects UK/Scottish accent
+- Adapts recognition
+- Better understands caller
+- Agent still speaks in US English voice
+
+### Supported Dialects
+
+**Arabic:**
+
+- Egyptian (EGY)
+- Saudi Arabian (KSA)
+- Emirati (UAE)
+- Jordanian (JOR)
+- Lebanese (LEB)
+- Syrian (SYR)
+- Palestinian (PLS)
+- Iraqi (IRQ)
+- Bahraini (BAH)
+
+**English:**
+
+- US English
+- UK English
+- Australian English
+- Canadian English
+- Indian English
+- Various regional accents
+
+### Benefits of Dialect Switching
+
+✅ **Advantages:**
+
+**Improved Understanding**
+
+- Better transcription accuracy
+- Fewer misunderstood words
+- Reduced need for repetition
+
+**Broader Market Reach**
+
+- Single agent handles multiple dialects
+- No need for separate agents per region
+- Consistent brand voice across markets
+
+**Better User Experience**
+
+- Callers feel understood
+- Natural conversation flow
+- Less frustration
+
+**Cost Efficiency**
+
+- One agent instead of many region-specific agents
+- Reduced development complexity
+
+### Latency and Performance
+
+**Latency Impact:**
+
+- Detection: 2-5 seconds (during first few sentences)
+- Switching: ~50-100ms
+- Total impact: Minimal (one-time cost at call start)
+
+**Accuracy:**
+
+- Dialect detection: 85-95% accuracy
+- Recognition improvement: 10-30% better transcription for non-standard dialects
+
+<Info>
+Dialect switching happens once at the beginning of the call. There's no ongoing latency impact after initial detection.
+</Info>
+
+### Use Cases
+
+**Multi-Region Service Centers**
+
+```
+Company serves entire Middle East:
+- Configure agent with widely-understood Egyptian Arabic
+- Enable Dialect Switcher
+- Handles callers from Saudi, UAE, Jordan, etc.
+- Each caller understood in their dialect
+```
+
+**International English Support**
+
+```
+Global SaaS company:
+- Configure with US English
+- Enable Dialect Switcher
+- Handles UK, Australian, Indian callers
+- Better understands various accents
+```
+
+**Diverse Customer Base**
+
+```
+National retail chain:
+- Customers from all regions
+- Single agent handles all calls
+- Adapts to each caller's way of speaking
+```
+
+### Limitations
+
+**Does Not Change Agent's Voice:**
+
+- Agent continues speaking in configured dialect
+- Only affects how agent understands caller
+- For voice change, need separate agents
+
+**Same Language Family Only:**
+
+- Cannot switch English ↔ Arabic
+- Only within same language
+- For multi-language, need separate agents
+
+**Accent vs Dialect:**
+
+- Works best with standard dialects
+- Heavy accents may still challenge system
+- Non-standard speech patterns may not be recognized
+
+<Note>
+Language Dialect Switcher improves understanding of caller speech. It does NOT change the agent's speaking voice or dialect.
+</Note>
+
+### Best Practices
+
+✅ **Do:**
+
+- Enable for agents serving multi-region markets
+- Test with speakers from target dialects
+- Monitor transcription accuracy improvements
+- Combine with standard RAG or knowledge base
+
+❌ **Don't:**
+
+- Expect it to change agent's speaking dialect
+- Rely on it for completely different languages
+- Assume 100% accuracy across all accents
+- Skip testing with actual dialect speakers
+
+## Combining Intelligence Features
+
+Intelligence features work well together:
+
+### Recommended Combinations
+
+**Customer Service Excellence:**
+
+```
+✓ Gender Detection (personalization)
+✓ Smart Call End (natural conclusions)
+✓ Language Dialect Switcher (understand everyone)
+```
+
+**Knowledge-Intensive Support:**
+
+```
+✓ Agentic RAG (complex questions)
+✓ Smart Call End (after thorough answers)
+✓ Language Dialect Switcher (diverse callers)
+```
+
+**Multi-Person Business Calls:**
+
+```
+✓ Speaker Identification (who's speaking)
+✓ Gender Detection (personalization per speaker)
+✓ Agentic RAG (comprehensive information)
+```
+
+**High-Volume Call Center:**
+
+```
+✓ Smart Call End (efficiency)
+✓ Language Dialect Switcher (broad reach)
+Skip: Agentic RAG (latency sensitive)
+Skip: Speaker Identification (simple 1:1 calls)
+```
+
+### Feature Selection Matrix
+
+| Use Case           | Gender   | Smart End | Speaker ID | Agentic RAG | Dialect  |
+| ------------------ | -------- | --------- | ---------- | ----------- | -------- |
+| Simple FAQ         | Optional | ✓         | ✗          | ✗           | ✓        |
+| Customer Support   | ✓        | ✓         | ✗          | Optional    | ✓        |
+| Technical Support  | Optional | ✓         | Optional   | ✓           | ✓        |
+| Sales Calls        | ✓        | ✓         | ✗          | ✗           | ✓        |
+| Multi-Person       | Optional | ✓         | ✓          | Optional    | ✓        |
+| Complex Research   | Optional | ✓         | ✗          | ✓           | ✓        |
+| Quick Transactions | Optional | ✓         | ✗          | ✗           | Optional |
+
+<Tip>
+Start with Smart Call End and Language Dialect Switcher as defaults. Add other features based on specific needs.
+</Tip>
+
+## Performance Considerations
+
+### Latency Impact by Feature
+
+| Feature                | Latency Added | When Applied                  |
+| ---------------------- | ------------- | ----------------------------- |
+| Gender Detection       | ~100-200ms    | Once, early in call           |
+| Smart Call End         | ~0ms          | Throughout (no extra latency) |
+| Speaker Identification | ~50-100ms     | Per speaker change            |
+| Agentic RAG            | ~500-2000ms   | Per knowledge query           |
+| Dialect Switcher       | ~50-100ms     | Once, at call start           |
+
+**Total Worst Case:**
+All features enabled + complex question:
+
+- Detection overhead: ~400ms (one time)
+- Agentic RAG: ~2000ms (when used)
+- Total: ~2400ms for complex knowledge query
+
+**Typical Case:**
+Standard features + simple question:
+
+- Detection overhead: ~200ms (one time)
+- Smart call end: 0ms
+- Total: Negligible impact
+
+<Warning>
+Voice conversations are latency-sensitive. Each 100ms is noticeable. Balance features vs. responsiveness based on your use case.
+</Warning>
+
+### Cost Impact
+
+**Higher API Usage:**
+
+- Gender Detection: +1-2 API calls per call
+- Smart Call End: +0-1 API calls per call (minimal)
+- Speaker Identification: +1-3 API calls per speaker
+- Agentic RAG: +2-5 API calls per knowledge query
+- Dialect Switcher: +1-2 API calls at start
+
+**Monthly Cost Example:**
+
+```
+1000 calls/month baseline: $200
++ Gender Detection: +$10-20
++ Smart Call End: +$5
++ Speaker ID (if used): +$15-30
++ Agentic RAG (avg 2 queries/call): +$50-100
++ Dialect Switcher: +$10-15
+
+Total: $290-370 (45-85% increase)
+```
+
+<Tip>
+Enable features that provide clear value for your use case. More features ≠ better experience if they add latency without benefit.
+</Tip>
+
+## Troubleshooting Intelligence Features
+
+### Gender Detection Issues
+
+**Problem: Incorrect gender detected**
+
+**Solution:**
+
+- Review prompt to handle uncertainty gracefully
+- Use gender-neutral fallbacks
+- Don't over-rely on detection for critical decisions
+
+**Problem: Gender not detected**
+
+**Solution:**
+
+- Check audio quality
+- Verify feature is enabled
+- Check for background noise interference
+- Some voices are naturally ambiguous
+
+### Smart Call End Issues
+
+**Problem: Calls end prematurely**
+
+**Solution:**
+
+```markdown
+# Stricter Smart Call End
+
+Only end when:
+
+1. Objective explicitly complete
+2. Asked "anything else?" and user said no
+3. User used farewell ("goodbye", "that's all")
+```
+
+**Problem: Calls don't end when they should**
+
+**Solution:**
+
+- Review transcripts for patterns
+- Simplify farewell detection
+- Ensure agent asks confirming question before end
+
+### Speaker Identification Issues
+
+**Problem: Speakers confused or not distinguished**
+
+**Solution:**
+
+- Ask speakers to identify themselves verbally
+- Use names instead of relying solely on voice
+- Check audio quality (speakerphone distance)
+
+**Problem: Speakers identified but names mixed up**
+
+**Solution:**
+
+- Always ask "who am I speaking with now?"
+- Confirm name when speaker changes
+- Use verbal identification as primary method
+
+### Agentic RAG Issues
+
+**Problem: Very slow responses**
+
+**Solution:**
+
+- Review knowledge base size (too large?)
+- Reduce complexity of documents
+- Consider disabling for simple questions
+- Check for prompt encouraging excessive searching
+
+**Problem: Incorrect answers despite Agentic RAG**
+
+**Solution:**
+
+- Review knowledge base content quality
+- Ensure information is up to date
+- Check for contradictory information
+- Improve document structure and titles
+
+### Dialect Switcher Issues
+
+**Problem: Still not understanding caller**
+
+**Solution:**
+
+- Verify caller's dialect is supported
+- Check for heavy accent vs standard dialect
+- Review audio quality
+- May need custom training for very specific accents
+
+**Problem: Switched to wrong dialect**
+
+**Solution:**
+
+- First few seconds may be ambiguous
+- System typically corrects after more speech
+- Check for code-switching (mixing dialects)
+
+## Best Practices Summary
+
+### Do's
+
+✅ **Test before enabling**
+
+- Test each feature with real calls
+- Measure latency impact
+- Verify value added
+
+✅ **Start minimal**
+
+- Begin with Smart Call End + Dialect Switcher
+- Add features one at a time
+- Measure impact of each
+
+✅ **Monitor performance**
+
+- Track latency metrics
+- Monitor cost increases
+- Measure user satisfaction
+
+✅ **Graceful degradation**
+
+- Handle feature failures elegantly
+- Always have fallbacks
+- Don't assume 100% accuracy
+
+### Don'ts
+
+❌ **Don't enable everything**
+
+- Only enable features you need
+- More features = more latency
+- Each feature has trade-offs
+
+❌ **Don't skip testing**
+
+- Test with real target audience
+- Verify benefits outweigh costs
+- Check edge cases
+
+❌ **Don't forget privacy**
+
+- Review legal requirements
+- Update privacy policy if needed
+- Consider data retention
+
+❌ **Don't assume perfect accuracy**
+
+- All ML features have error rates
+- Build robust fallbacks
+- Handle uncertainty gracefully
+
+## Feature-Specific Recommendations
+
+### Always Recommend
+
+**Smart Call End**
+
+- Minimal cost
+- No latency
+- Better UX
+- Enable by default
+
+**Language Dialect Switcher**
+
+- Minimal cost (~50ms one-time)
+- Improves understanding
+- Broader reach
+- Enable for multi-region
+
+### Situationally Recommend
+
+**Gender Detection**
+
+- If culturally appropriate
+- If personalization adds value
+- If prompt can use it effectively
+- Check legal compliance
+
+**Agentic RAG**
+
+- If knowledge base is large/complex
+- If accuracy > latency priority
+- If questions are multi-faceted
+- If budget allows
+
+**Speaker Identification (Beta)**
+
+- If multi-person calls expected
+- If call context benefits from it
+- If willing to handle beta limitations
+- If accuracy is acceptable
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Write Effective Prompts" href="./write-prompt">
+    Leverage intelligence features in your prompts
+  </Card>
+  <Card title="Call Behavior Settings" href="./call-behavior">
+    Optimize timing and interaction controls
+  </Card>
+  <Card title="Voice Settings" href="./voice-settings">
+    Configure voice and language options
+  </Card>
+  <Card title="Knowledge Base" href="/features/knowledge-base">
+    Build a robust knowledge base for Agentic RAG
+  </Card>
+</CardGroup>
+
+---
+
+**Need more advanced capabilities?** Explore **[Flow Agent Features](../flow-agent/overview)** for node-based intelligence configuration.

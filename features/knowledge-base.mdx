@@ -1,0 +1,669 @@
+---
+title: 'Knowledge Base'
+description: 'Give your AI agents instant access to your company knowledge, documents, and data'
+---
+
+## Overview
+
+The Knowledge Base allows you to upload information that your AI agents can reference during conversations. Add company policies, product documentation, FAQs, pricing information, or any other content your agents need to answer questions accurately.
+
+<Info>
+**Three ways to add knowledge:**
+- **Upload Documents** - PDF, DOCX, TXT, HTML, EPUB files
+- **Add URLs** - Web pages and online documentation
+- **Free Text** - Direct text entry for quick content
+</Info>
+
+## How It Works
+
+When you add items to your Knowledge Base:
+
+1. **Upload** - You submit text, URLs, or files
+2. **Processing** - The system extracts and indexes the content
+3. **Availability** - Agents can access the information during calls
+4. **Usage** - AI retrieves relevant information based on conversation context
+
+<Note>
+Knowledge Base items are available to all agents in your project. Select which items each agent can access in the agent's configuration.
+</Note>
+
+## Item Types
+
+### Free Text
+
+Add text content directly without uploading files.
+
+**Best for:**
+
+- Quick FAQs
+- Company policies
+- Product descriptions
+- Pricing information
+- Short reference materials
+
+**Specifications:**
+
+- **Name**: 1-100 characters (required)
+- **Content**: 50-10,000 characters (required)
+- **Format**: Plain text
+- **Processing time**: Instant
+
+**Example Use Cases:**
+
+```
+Name: "Return Policy"
+Content: "We offer a 30-day return policy on all products. Items must
+be in original condition with tags attached. Refunds are processed
+within 5-7 business days after we receive the return..."
+```
+
+```
+Name: "Business Hours"
+Content: "Our customer service is available:
+Monday-Friday: 9 AM - 6 PM EST
+Saturday: 10 AM - 4 PM EST
+Sunday: Closed
+Holiday hours may vary."
+```
+
+### URL
+
+Import content from websites and web pages.
+
+**Best for:**
+
+- Product pages
+- Online documentation
+- Blog articles
+- Support articles
+- Public knowledge bases
+
+**Specifications:**
+
+- **Name**: 1-100 characters (required)
+- **URL**: Valid HTTPS URL (required)
+- **Format**: Web page content (HTML is parsed)
+- **Processing time**: 10-60 seconds
+
+**Supported:**
+
+- HTTPS URLs only
+- Valid domain names or IP addresses
+- Web pages with text content
+
+**Not Supported:**
+
+- HTTP URLs (must use HTTPS)
+- Media files (.mp3, .mp4, .wav, .jpg, .png, etc.)
+- Download links to media
+
+**Example Use Cases:**
+
+```
+Name: "Product Catalog"
+URL: "https://www.acme.com/products/catalog"
+```
+
+```
+Name: "API Documentation"
+URL: "https://docs.acme.com/api/v2/getting-started"
+```
+
+<Warning>
+The system fetches the web page content at the time of creation. If the web page updates later, you'll need to re-add the URL to get fresh content.
+</Warning>
+
+### Document (File Upload)
+
+Upload files with structured content.
+
+**Supported Formats:**
+
+- **PDF** - `.pdf`
+- **Word Documents** - `.docx`
+- **Text Files** - `.txt`
+- **HTML Files** - `.html`
+- **EPUB** - `.epub`
+
+**Specifications:**
+
+- **File Name**: 1-100 characters per file (required)
+- **File Size**: Maximum 10MB per file
+- **Multiple Upload**: Upload multiple files at once
+- **Processing time**: 30 seconds - 5 minutes depending on size
+
+**Best for:**
+
+- Product manuals
+- Technical documentation
+- Policy documents
+- Training materials
+- Comprehensive guides
+
+**Example Use Cases:**
+
+```
+Document: "Employee_Handbook_2024.pdf"
+Document: "Product_Specifications.docx"
+Document: "Troubleshooting_Guide.pdf"
+```
+
+<Tip>
+For best results, use well-formatted documents with clear headings and structure. The AI extracts and indexes text, so complex layouts may not preserve all formatting.
+</Tip>
+
+## Adding Knowledge Base Items
+
+### Add Free Text
+
+1. Navigate to **Knowledge Base** in the sidebar
+2. Click **Add Item** → **Add Free Text**
+3. Enter a descriptive name (1-100 characters)
+4. Write or paste your text content (minimum 50 characters)
+5. Click **Save**
+
+**Validation:**
+
+- Name cannot be empty or only whitespace
+- Content must be at least 50 characters
+- Content cannot exceed 10,000 characters
+
+### Add URL
+
+1. Navigate to **Knowledge Base** in the sidebar
+2. Click **Add Item** → **Add URL**
+3. Enter the HTTPS URL
+4. Enter a descriptive name for the item
+5. Click **Save**
+
+**Validation:**
+
+- URL must start with `https://`
+- URL must have valid domain or IP address
+- URL cannot point to media files
+- Name is required (1-100 characters)
+
+<Info>
+The system will fetch and process the web page content. This may take 10-60 seconds depending on page size.
+</Info>
+
+### Add Document
+
+1. Navigate to **Knowledge Base** in the sidebar
+2. Click **Add Item** → **Add Document**
+3. Drag and drop files or click to browse
+4. (Optional) Edit file names
+5. Click **Upload**
+
+**Multiple Files:**
+
+- Upload up to 10 files at once
+- Each file is created as a separate knowledge base item
+- Each file can have a custom name
+
+**Supported Formats:**
+| Format | Extension | Max Size |
+|--------|-----------|----------|
+| PDF | .pdf | 10 MB |
+| Word | .docx | 10 MB |
+| Text | .txt | 10 MB |
+| HTML | .html | 10 MB |
+| EPUB | .epub | 10 MB |
+
+## Status Tracking
+
+Each knowledge base item has a status showing its processing state:
+
+### Processing
+
+<span className="text-yellow-600">●</span> **Processing**
+
+The item is being uploaded, read, and indexed. This usually takes:
+
+- **Text**: Instant
+- **URL**: 10-60 seconds
+- **Documents**: 30 seconds - 5 minutes
+
+Wait for processing to complete before using the item in agents.
+
+### Completed
+
+<span className="text-green-600">●</span> **Completed**
+
+The item is ready to use. Agents can now reference this content.
+
+### Failed States
+
+<span className="text-red-600">●</span> **Upload Failed**
+
+- File couldn't be uploaded
+- Try uploading again
+- Check file size (max 10MB)
+
+<span className="text-red-600">●</span> **Reading Failed**
+
+- File format couldn't be read
+- Verify file isn't corrupted
+- Ensure it's a supported format
+
+<span className="text-red-600">●</span> **Processing Failed**
+
+- Content couldn't be indexed
+- Check content quality
+- Try simplifying complex layouts
+
+<Warning>
+If an item fails processing, you'll see a failure reason. Delete the failed item and try again with adjustments.
+</Warning>
+
+## Managing Knowledge Base
+
+### Search and Filter
+
+**Search Bar**
+Search by item name or content keywords:
+
+```
+"return policy"
+"pricing"
+"API authentication"
+```
+
+**Filter by Type**
+
+- All Types
+- Text only
+- URL only
+- File only
+
+**Filter by Status**
+
+- All Statuses
+- Completed
+- Processing
+- Upload Failed
+- Reading Failed
+- Processing Failed
+
+**Filter by Extension** (Files only)
+
+- PDF (.pdf)
+- Word (.docx)
+- Text (.txt)
+- HTML (.html)
+- EPUB (.epub)
+
+**Filter by Usage**
+
+- All items
+- Used in agents
+- Not used in agents
+
+**Filter by Active Status**
+
+- All
+- Active (available to agents)
+- Inactive (hidden from agents)
+
+### Sort Options
+
+Sort knowledge base items by:
+
+**Created Date**
+
+- Newest first (default)
+- Oldest first
+
+**Word Count**
+
+- Most words first
+- Fewest words first
+
+**File Size** (Files only)
+
+- Largest first
+- Smallest first
+
+### Edit Item Name
+
+1. Find the item in the list
+2. Click the **Actions** menu (⋮)
+3. Select **Edit Title**
+4. Enter new name (1-100 characters)
+5. Click **Save Changes**
+
+<Note>
+Editing the name doesn't affect the item's content, only its display name.
+</Note>
+
+### Download Items
+
+Download the original content:
+
+**Text Items**: Downloads as `.txt` file
+**URL Items**: Downloads extracted content as `.txt`
+**Document Items**: Downloads original file in its format
+
+1. Find the item in the list
+2. Click the **Actions** menu (⋮)
+3. Select **Download**
+
+### Delete Items
+
+Delete items you no longer need:
+
+1. Find the item in the list
+2. Click the **Actions** menu (⋮)
+3. Select **Delete**
+4. Type `DELETE` to confirm
+5. Click **Confirm Deletion**
+
+<Warning>
+**Deletion Protection:**
+If an item is currently used in any agent, you must first remove it from all agents before deleting. This prevents accidentally breaking agent knowledge.
+</Warning>
+
+### Activate/Deactivate Items
+
+Control item availability without deleting:
+
+**Active** - Item is available for agents to use
+**Inactive** - Item is hidden from agent selection
+
+Toggle status from the item actions menu.
+
+<Tip>
+Use Inactive status to temporarily hide outdated information without losing it permanently.
+</Tip>
+
+## Using Knowledge Base in Agents
+
+### In Single Prompt Agents
+
+1. Open your Single Prompt Agent
+2. Navigate to **Configuration** → **Knowledge Base**
+3. Click **Add Knowledge Base Items**
+4. Select items from the list
+5. Selected items appear in the agent's knowledge base section
+6. Save the agent
+
+**What happens:**
+
+- The AI can reference selected knowledge during calls
+- Relevant information is retrieved based on conversation context
+- Only completed items can be selected
+
+### In Flow Agents
+
+Knowledge Base works the same way in Flow Agents:
+
+1. Open your Flow Agent settings
+2. Navigate to **Knowledge Base** tab
+3. Select items to make available
+4. The entire flow can reference this knowledge
+
+**In Conversation Nodes:**
+
+- The AI automatically retrieves relevant knowledge
+- No special configuration needed per node
+- Knowledge is available throughout the flow
+
+## Best Practices
+
+### Content Quality
+
+**Use clear, concise language:**
+
+```
+Good: "Our return window is 30 days from purchase date."
+Bad: "Well, um, we have this policy where you can kinda return stuff..."
+```
+
+**Structure information logically:**
+
+```
+Good:
+"Shipping Times:
+- Standard: 5-7 business days
+- Express: 2-3 business days
+- Overnight: Next business day"
+
+Bad:
+"We ship standard in about 5-7 days usually, and if you want express
+that's 2-3 days, oh and overnight gets there next day..."
+```
+
+**Include specific details:**
+
+```
+Good: "Customer service hours: Monday-Friday 9 AM - 6 PM EST"
+Bad: "We're usually available during business hours"
+```
+
+### Naming Conventions
+
+**Be descriptive:**
+
+```
+Good: "2024 Return Policy - Electronics"
+Bad: "Returns", "Doc1", "Policy"
+```
+
+**Include dates for versioned content:**
+
+```
+Good: "Product Catalog - Q1 2024"
+Good: "Employee Handbook - January 2024"
+```
+
+**Use consistent naming:**
+
+```
+"FAQ - Shipping"
+"FAQ - Returns"
+"FAQ - Payments"
+```
+
+### Organization
+
+**Group related content:**
+
+- Create separate items for different topics
+- Don't combine unrelated information
+- Use clear names to show relationships
+
+**Keep items focused:**
+
+```
+Good: One item per topic
+- "Shipping Policy"
+- "Return Policy"
+- "Warranty Information"
+
+Bad: Everything in one item
+- "All Policies and Information"
+```
+
+**Update regularly:**
+
+- Review knowledge base quarterly
+- Remove outdated items
+- Update changed information
+- Archive old versions
+
+### Content Size
+
+**Text Items:**
+
+- Aim for 100-2,000 characters
+- Break long content into multiple items
+- Maximum 10,000 characters per item
+
+**Documents:**
+
+- Keep files under 5MB when possible
+- Split large manuals into chapters
+- Maximum 10MB per file
+
+**URLs:**
+
+- Choose focused pages over entire websites
+- Avoid pages with excessive navigation/ads
+- Content-heavy pages work best
+
+## Usage Analytics
+
+Track how your knowledge base is performing:
+
+**Word Count** - Shows content depth
+
+- Helps identify thin vs comprehensive content
+- Available in list view and sorting
+
+**Used Status** - Shows agent usage
+
+- Filter to see which items are actually used
+- Identify unused items for review/deletion
+
+**File Size** - Shows document complexity
+
+- Monitor storage usage
+- Identify large files for optimization
+
+## Auto-Save Drafts
+
+When adding knowledge base items, drafts are automatically saved:
+
+**Features:**
+
+- Saved to browser localStorage
+- Recover work after browser close
+- Separate drafts for Text, URL, and Document
+- Warning before navigating away with unsaved changes
+
+**Draft Indicators:**
+
+- Badge shows "Continue with saved draft"
+- Draft description shows what's ready
+- One draft per item type
+
+**Draft Lifecycle:**
+
+1. Start adding item
+2. Fill in form fields
+3. Navigate away → draft saved
+4. Return later → draft loads automatically
+5. Complete and save → draft removed
+
+## Troubleshooting
+
+### URL Processing Failed
+
+**Possible causes:**
+
+- URL is not reachable
+- Page requires authentication
+- URL points to media file
+- Page has anti-scraping protection
+
+**Solutions:**
+
+- Verify URL is accessible in browser
+- Use public pages (no login required)
+- Ensure URL is HTTPS
+- Try a different page from the same site
+
+### Document Upload Failed
+
+**Possible causes:**
+
+- File size exceeds 10MB
+- File is corrupted
+- Unsupported file format
+- Network connection issue
+
+**Solutions:**
+
+- Check file size (max 10MB)
+- Verify file opens correctly on your computer
+- Ensure file extension is supported (.pdf, .docx, .txt, .html, .epub)
+- Try uploading again
+
+### Document Reading Failed
+
+**Possible causes:**
+
+- File is password protected
+- File has complex formatting
+- File contains only images (no text)
+- File is corrupted
+
+**Solutions:**
+
+- Remove password protection
+- Save as simpler format (e.g., .txt)
+- Ensure file contains extractable text
+- Re-export file from source application
+
+### Item Not Appearing in Agent
+
+**Possible causes:**
+
+- Item is still processing
+- Item failed to process
+- Item is inactive
+- Item not selected in agent configuration
+
+**Solutions:**
+
+- Wait for "Completed" status
+- Check for error status
+- Ensure item is Active
+- Verify item is selected in agent settings
+
+### Filter Conflicts
+
+**Extensions with Text/URL selected:**
+
+Extensions filter only works with File type. Either:
+
+- Select File type only
+- Remove Text/URL from type filter
+- Clear extension filter
+
+## Limits and Quotas
+
+**Per Item:**
+
+- Text content: 10,000 characters
+- File size: 10MB
+- Name length: 100 characters
+- Minimum text: 50 characters
+
+**Per Upload:**
+
+- Multiple files: Up to 10 files at once
+- Each file counted separately
+
+**Processing:**
+
+- Text: Instant
+- URLs: 10-60 seconds
+- Documents: 30 seconds - 5 minutes
+
+## Related Documentation
+
+<CardGroup cols={2}>
+  <Card title="Single Prompt Configuration" href="/agents/single-prompt/configure-settings">
+    Add knowledge base to Single Prompt Agents
+  </Card>
+  <Card title="Flow Agent Settings" href="/agents/flow-agent/global-settings">
+    Configure knowledge base in Flow Agents
+  </Card>
+  <Card title="Tools" href="./tools">
+    Combine knowledge with external API tools
+  </Card>
+  <Card title="Prompt Engineering" href="../guides/prompt-engineering">
+    Write effective prompts that leverage knowledge
+  </Card>
+</CardGroup>

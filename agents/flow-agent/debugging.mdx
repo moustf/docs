@@ -1,0 +1,1113 @@
+---
+title: Debugging & Validation
+description: 'Validation system, testing flows, troubleshooting common issues, and debugging tools'
+---
+
+# Debugging & Validation
+
+Master the tools and techniques for validating, testing, and debugging your Flow Agents to ensure they work perfectly in production.
+
+---
+
+## Validation System
+
+Hamsa's built-in validation system checks your flow for errors before you can save or deploy.
+
+### Real-Time Validation
+
+The validation system runs continuously as you build:
+
+```yaml
+Validation Triggers:
+  - When you add/edit a node
+  - When you create/modify a transition
+  - When you connect edges
+  - When you change global settings
+  - Before saving the flow
+  - Before deploying to production
+```
+
+### Validation Indicator
+
+```yaml
+Header Validation Badge:
+  ✅ Green checkmark: No errors
+  ⚠️  Yellow warning: Issues found (non-blocking)
+  ❌ Red X: Critical errors (blocks saving)
+
+Click badge to see:
+  - Total error count
+  - Errors grouped by node
+  - Specific error messages
+  - "Focus" button to jump to problematic node
+```
+
+### Validation Categories
+
+#### 1. Workflow-Level Errors
+
+**Missing Start Node**:
+
+```yaml
+Error: 'Workflow must have exactly one start node'
+Cause: No start node exists or multiple start nodes
+Fix: Add a start node or remove duplicates
+```
+
+**Empty System Instructions**:
+
+```yaml
+Error: 'System instructions are required'
+Cause: Global settings system prompt is empty
+Fix: Add system prompt in global settings
+Location: Global Settings → System Prompt
+```
+
+#### 2. Node-Level Errors
+
+**Empty Message**:
+
+```yaml
+Error: 'Message is required'
+Node: Conversation Node "Welcome_User"
+Cause: Message field is empty
+Fix: Add message content
+```
+
+**Missing Tool Selection**:
+
+```yaml
+Error: 'Tool selection is required'
+Node: Tool Node "Lookup_Account"
+Cause: No tool selected
+Fix: Click "Select Tool" and choose a tool
+```
+
+**Invalid Phone Number**:
+
+```yaml
+Error: 'Invalid phone number format'
+Node: Transfer Call Node "Transfer_to_Support"
+Cause: Phone number doesn't match format +1234567890
+Fix: Use international format (e.g., +15551234567)
+```
+
+**Missing Agent Selection**:
+
+```yaml
+Error: 'Agent selection is required'
+Node: Transfer Agent Node "Transfer_to_Human"
+Cause: No agent/agent pool selected
+Fix: Select an agent from the dropdown
+```
+
+#### 3. Variable Errors
+
+**Invalid Variable Name**:
+
+```yaml
+Error: "Variable #1: Name must be in snake_case format"
+Node: Conversation Node "Collect_Info"
+Cause: Variable named "customerName" (camelCase)
+Fix: Rename to "customer_name"
+
+Valid Format:
+  - Starts with letter
+  - Lowercase only
+  - Underscores allowed
+  - No spaces or special characters
+  Examples: customer_name, account_id, order_total
+```
+
+**Missing Variable Name**:
+
+```yaml
+Error: 'Variable #2: Name is required'
+Node: Tool Node "API_Call"
+Cause: Variable extraction configured but name is empty
+Fix: Provide a variable name
+```
+
+**Short Description (Conversation Nodes)**:
+
+```yaml
+Error: 'Variable #1: Description must be at least 10 characters'
+Node: Conversation Node "Get_Details"
+Cause: Description is "name" (4 characters)
+Fix: Provide detailed description (e.g., "The customer's full name for account lookup")
+```
+
+**Missing Extraction Prompt (Conversation Nodes)**:
+
+```yaml
+Error: 'Variable #3: Extraction prompt is required'
+Node: Conversation Node "Collect_Phone"
+Cause: Extraction prompt is empty
+Fix: Add prompt like "Extract the phone number the customer provides"
+```
+
+**Missing JSON Path (Tool Nodes)**:
+
+```yaml
+Error: 'Variable #1: JSON path is required'
+Node: Tool Node "API_Lookup"
+Cause: JSON path field is empty
+Fix: Add JSON path like "$.data.customer.email"
+```
+
+#### 4. Transition Errors
+
+**Empty Transition Description**:
+
+```yaml
+Error: 'All transitions must have descriptions'
+Node: Conversation Node "Menu"
+Cause: Natural language transition has empty prompt
+Fix: Add condition like "User wants to speak with billing"
+```
+
+**Missing Target Node**:
+
+```yaml
+Error: 'Transition target node does not exist'
+Node: Router "Account_Type"
+Cause: Transition points to deleted node
+Fix: Reconnect transition to valid node or delete transition
+```
+
+**No Fallback Transition** (Warning):
+
+```yaml
+Warning: 'No fallback transition found'
+Node: Conversation Node "Categorize_Issue"
+Cause: No Always transition
+Impact: User input might not match any condition
+Fix: Add Always transition as fallback
+```
+
+#### 5. Global Node Errors
+
+**Missing Global Condition**:
+
+```yaml
+Error: 'Global trigger condition is required'
+Node: Transfer Agent Node "Transfer_Agent"
+Cause: isGlobal = true but globalCondition is empty
+Fix: Add condition like "User wants to speak with a human agent"
+```
+
+**Extracted Variable in Global Condition**:
+
+```yaml
+Error: "Global node uses extracted variable '{{account_number}}'"
+Node: Global Conversation "Account_Specific_Help"
+Cause: globalCondition references extracted variable
+Fix: Use only system or custom variables in global conditions
+```
+
+#### 6. Tool Override Errors
+
+**Empty Parameter Override**:
+
+```yaml
+Error: 'All parameter override values must be filled'
+Node: Tool Node "Custom_API"
+Cause: Parameter override enabled but value is empty
+Fix: Provide override value or disable override
+```
+
+**Empty Header Override**:
+
+```yaml
+Error: 'All header override values must be filled'
+Node: Tool Node "External_Service"
+Cause: HTTP header override enabled but value is empty
+Fix: Provide header value or disable override
+```
+
+---
+
+## Validation Popover
+
+The validation popover provides detailed information about all errors and warnings.
+
+### Opening the Validation Popover
+
+```yaml
+Location: Top-right header, next to Save button
+Icon: Red alert circle with error count badge
+Click: Opens detailed validation panel
+```
+
+### Popover Contents
+
+```yaml
+Sections: 1. Summary
+  - Total error count
+  - "Fix before saving" reminder
+
+  2. Workflow-Level Issues
+  - System prompt errors
+  - Start node errors
+  - General configuration issues
+
+  3. Node-Specific Issues (Per Node)
+  - Node name and type
+  - "Focus" button (jumps to node on canvas)
+  - List of all errors for that node
+  - Helpful descriptions of each error
+
+  4. Global Variable Issues
+  - Duplicate variable names
+  - Variable conflicts
+  - Naming validation errors
+
+  5. Quick Tips
+  - Helpful reminders
+  - Common solutions
+```
+
+### Using the Focus Button
+
+```yaml
+Steps: 1. Click validation popover
+  2. Find the node with errors
+  3. Click "Focus" button
+  4. Canvas zooms to that node
+  5. Node is highlighted
+  6. Inspector panel opens with node form
+
+Result: You're immediately at the problem location
+```
+
+---
+
+## Testing Strategies
+
+### 1. Development Testing
+
+**Test as you build**:
+
+```yaml
+After Adding Each Node: 1. Fill in all required fields
+  2. Check for validation errors
+  3. Test transitions logic
+  4. Verify variable extraction
+  5. Save snapshot
+
+After Completing a Branch: 1. Test entire path end-to-end
+  2. Try invalid inputs
+  3. Test edge cases
+  4. Verify error handling
+  5. Save named snapshot
+```
+
+### 2. Call Testing (Test Mode)
+
+Use the built-in call testing feature:
+
+```yaml
+Location: Header → "Test Call" button
+
+Features:
+  - Make test call to your flow
+  - Real-time node highlighting (shows current node)
+  - Live call logs (see AI decisions)
+  - Variable inspection (view extracted variables)
+  - Transition tracking (see which transitions fired)
+
+Test Scenarios: ✓ Happy path (ideal user)
+  ✓ Confused user (unclear inputs)
+  ✓ Difficult user (edge case responses)
+  ✓ Error scenarios (invalid data)
+  ✓ Global node triggers (interrupt flow)
+  ✓ DTMF inputs (keypad presses)
+  ✓ Long silences (timeout behavior)
+  ✓ Multiple interruptions (concurrent events)
+```
+
+### 3. Live Call Logs
+
+Real-time debugging during test calls:
+
+```yaml
+Call Log Panel:
+  Location: Right side during test call
+
+  Shows:
+    - Timestamp for each event
+    - Node entered/exited
+    - Transitions evaluated
+    - Transition results (matched/not matched)
+    - Variables extracted (name and value)
+    - Tool calls (request and response)
+    - LLM decisions (why transition fired)
+    - Errors or warnings
+
+  Use Cases:
+    - See why a transition didn't fire
+    - Verify variable extraction
+    - Debug tool failures
+    - Understand AI decisions
+    - Track conversation flow
+```
+
+### 4. Snapshot Testing
+
+Use snapshots for regression testing:
+
+```yaml
+Snapshot Strategy:
+  1. Create "Known Good" snapshot
+     - Flow works correctly
+     - All tests pass
+     - Named: "v1.0 - Production"
+
+  2. Create "Development" snapshot
+     - Make experimental changes
+     - Named: "v1.1-dev - Testing new routing"
+
+  3. Test development snapshot
+     - Run all test scenarios
+     - Compare to known good
+
+  4. If tests pass:
+     - Promote to production
+     - Create new known good snapshot
+
+  5. If tests fail:
+     - Debug in dev snapshot
+     - Don't affect production
+     - Can rollback to known good
+```
+
+---
+
+## Debugging Tools
+
+### 1. Node Highlighting
+
+```yaml
+During Test Calls:
+  - Current node: Highlighted with animated ring
+  - Previous nodes: Dimmed
+  - Unvisited nodes: Normal opacity
+
+  Use To:
+    - Verify conversation path
+    - See which nodes were triggered
+    - Identify unexpected routing
+    - Confirm global node triggering
+```
+
+### 2. Variable Inspector
+
+```yaml
+Variables Panel:
+  Location: Right panel during test or edit
+
+  Shows:
+    - System variables (session_id, current_time, etc.)
+    - Custom variables (your API-provided vars)
+    - Extracted variables (collected during conversation)
+
+  Features:
+    - Real-time updates during calls
+    - Type indicators (string, number, boolean)
+    - Value preview
+    - Scope information (global, node-specific)
+
+  Use To:
+    - Verify variable extraction
+    - Check variable values
+    - Debug template rendering
+    - Validate variable references
+```
+
+### 3. Transition Inspector
+
+```yaml
+Transition Details (in Call Logs):
+  For each transition evaluated:
+    - Transition type (NL, Equation, DTMF, Always)
+    - Condition (full text)
+    - Evaluation result (true/false)
+    - Priority (if applicable)
+    - Target node
+    - Why it matched/didn't match
+
+  Example:
+    Transition: Natural Language
+      Condition: "User wants to speak with billing"
+      User Input: "I have a billing question"
+      LLM Decision: MATCH (confidence: 0.95)
+      Action: Navigate to Billing_Department node
+```
+
+### 4. Debug Panel
+
+```yaml
+Debug Panel Features:
+  Location: Bottom of screen (toggle with "Debug" button)
+
+  Tabs: 1. Flow State
+    - Current node
+    - Previous node
+    - Next possible nodes
+    - Active global nodes
+
+    2. Variables
+    - All variables and values
+    - Variable history (when changed)
+    - Variable scope
+
+    3. Transition History
+    - All transitions evaluated
+    - Which ones matched
+    - Evaluation timestamps
+
+    4. Tool Calls
+    - Tool name
+    - Input parameters
+    - Output data
+    - Execution time
+    - Success/failure status
+
+    5. Errors
+    - Runtime errors
+    - Validation warnings
+    - API failures
+    - Timeout events
+```
+
+---
+
+## Common Issues and Solutions
+
+### Issue 1: Transition Never Fires
+
+**Symptoms**:
+
+- Expected transition doesn't trigger
+- Conversation stuck or goes to wrong path
+
+**Debugging Steps**:
+
+```yaml
+1. Check Transition Priority:
+   - Is there a higher priority transition that matches first?
+   - Check call logs to see which transition actually fired
+
+2. Check Transition Condition:
+   Natural Language:
+     - Is prompt specific enough?
+     - Test with exact user phrasing
+     - Check LLM evaluation in call logs
+
+   Equation:
+     - Does variable exist?
+     - Is variable value what you expect?
+     - Check operator (equals vs. contains)
+     - Verify type matching (string vs. number)
+
+3. Check Variable Availability:
+   - Was variable extracted before this node?
+   - Check Variables panel for current values
+   - Verify variable name spelling
+
+4. Check Fallback:
+   - Is there an Always transition that's catching everything?
+   - Is it at the right priority (lowest)?
+
+Solution Examples:
+  ❌ Priority issue:
+    - Always (priority: 100) catches before Natural Language (priority: 50)
+  ✅ Fix:
+    - Always (priority: 0), Natural Language (priority: 100)
+
+  ❌ Variable issue:
+    - Equation: account_balance > 1000
+    - But account_balance doesn't exist yet
+  ✅ Fix:
+    - Add existence check first, or extract variable earlier in flow
+```
+
+### Issue 2: Variable Not Extracted
+
+**Symptoms**:
+
+- Variable shows as undefined or null
+- Template {{variable_name}} renders as empty
+
+**Debugging Steps**:
+
+```yaml
+1. Check Extraction Configuration:
+   Conversation Node:
+     - Is extraction prompt clear?
+     - Is description detailed enough (10+ chars)?
+     - Is variable name valid (snake_case)?
+
+   Tool Node:
+     - Is JSON path correct?
+     - Does tool response contain expected field?
+     - Check tool call logs for actual response
+
+2. Check User Input:
+   - Did user actually provide the information?
+   - Check call logs for user utterance
+   - Was input clear and parseable?
+
+3. Check LLM Extraction:
+   - See call logs for extraction attempt
+   - LLM might not have understood input
+   - Extraction prompt might be unclear
+
+4. Check Variable Scope:
+   - Using variable before it's extracted?
+   - Check flow order (extract before use)
+
+Solution Examples:
+  ❌ Vague extraction:
+    Prompt: "Get the number"
+    User: "My account is 12345678"
+    Result: LLM doesn't know which number
+  ✅ Fix:
+    Prompt: "Extract the 8-digit account number the customer provides"
+
+  ❌ Wrong JSON path:
+    Path: $.accountNumber
+    Response: {"data": {"account_number": "12345"}}
+    Result: undefined
+  ✅ Fix:
+    Path: $.data.account_number
+```
+
+### Issue 3: Global Node Not Triggering
+
+**Symptoms**:
+
+- Say "I want an agent" but transfer doesn't happen
+- DTMF press doesn't trigger global node
+
+**Debugging Steps**:
+
+```yaml
+1. Check Global Configuration:
+   - Is isGlobal = true?
+   - Is globalCondition filled?
+   - Is globalCondition specific enough?
+
+2. Check Variable Usage:
+   - Does globalCondition use extracted variables?
+   - Only system and custom variables allowed
+   - Check for validation errors
+
+3. Check Trigger Specificity:
+   Natural Language:
+     - Try exact phrasing from globalCondition
+     - Check if condition is too narrow
+     - Check if overlapping with other global nodes
+
+   DTMF:
+     - Verify key is configured (0-9, *, #)
+     - Check if DTMF is enabled globally
+     - Try pressing key during conversation
+
+4. Check Priority Conflicts:
+   - Is a local transition catching input first?
+   - Local transitions can override global
+   - Check call logs for what matched
+
+Solution Examples:
+  ❌ Uses extracted variable:
+    globalCondition: "User needs help with {{account_type}}"
+    Result: Validation error
+  ✅ Fix:
+    globalCondition: "User wants to speak with an agent"
+
+  ❌ Too narrow:
+    globalCondition: "User says 'transfer me to an agent please'"
+    Result: Only matches exact phrase
+  ✅ Fix:
+    globalCondition: "User wants to speak with a human agent or representative"
+```
+
+### Issue 4: Tool Call Fails
+
+**Symptoms**:
+
+- Tool node doesn't execute
+- Error in call logs
+- Flow doesn't proceed
+
+**Debugging Steps**:
+
+```yaml
+1. Check Tool Configuration:
+   - Is tool selected?
+   - Are all required parameters filled?
+   - Are parameter values valid?
+
+2. Check Tool Response:
+   - Look at call logs → Tool Calls tab
+   - See exact request sent
+   - See exact response received
+   - Check for error messages
+
+3. Check Parameter Templates:
+   - Are variables in templates defined?
+   - Example: "{{account_number}}" - does account_number exist?
+   - Check for typos in variable names
+
+4. Check Tool Availability:
+   - Is tool still available in your account?
+   - Has tool configuration changed?
+   - Try tool in tool testing interface
+
+5. Check Timeout Settings:
+   - Default: 30 seconds
+   - Is tool taking too long?
+   - Increase timeout if needed
+
+6. Check Error Handling:
+   - What's onErrorBehavior setting?
+   - continue: Flow proceeds anyway
+   - retry: Retries N times
+   - fail: Stops flow
+   - Check which path was taken
+
+Solution Examples:
+  ❌ Undefined variable in parameter:
+    Parameter: account_id = "{{account_num}}"
+    Variable name: account_number (typo)
+    Result: Sent as empty string
+  ✅ Fix:
+    Parameter: account_id = "{{account_number}}"
+
+  ❌ Tool timeout:
+    Timeout: 5000ms (5 seconds)
+    Tool takes: 10 seconds
+    Result: Timeout error
+  ✅ Fix:
+    Timeout: 15000ms (15 seconds)
+```
+
+### Issue 5: Message Not Speaking as Expected
+
+**Symptoms**:
+
+- Message renders incorrectly
+- Variables show as {{variable_name}} instead of value
+- Message skipped entirely
+
+**Debugging Steps**:
+
+```yaml
+1. Check Message Content:
+   - Is message field filled?
+   - Is messageType set correctly (static vs. prompt)?
+   - Check for template syntax errors
+
+2. Check Variable Availability:
+   - Were variables extracted before this node?
+   - Check Variables panel for current values
+   - Use fallback syntax: {{var || 'default'}}
+
+3. Check Skip Response Setting:
+   - Is skipResponse = true?
+   - This silences the message
+   - Intentional for silent routing
+
+4. Check Voice Settings:
+   - Is voice configured in global settings?
+   - Is voice provider accessible?
+   - Check for voice-related errors in logs
+
+5. Check Message Type:
+   Static:
+     - Speaks message exactly as written
+     - Variables are replaced
+
+   Prompt:
+     - LLM generates response based on prompt
+     - Check LLM settings
+     - See generated response in call logs
+
+Solution Examples:
+  ❌ Variable not available:
+    Message: "Hello {{customer_name}}, your balance is {{balance}}"
+    Variables: customer_name exists, balance doesn't
+    Result: "Hello John, your balance is "
+  ✅ Fix:
+    Message: "Hello {{customer_name}}, your balance is {{balance || 'unavailable'}}"
+    Result: "Hello John, your balance is unavailable"
+
+  ❌ Unbalanced braces:
+    Message: "Your balance is {{balance}"
+    Result: Validation error
+  ✅ Fix:
+    Message: "Your balance is {{balance}}"
+```
+
+### Issue 6: Flow Performance Issues
+
+**Symptoms**:
+
+- Long delays between messages
+- Slow transition evaluation
+- Timeouts during calls
+
+**Debugging Steps**:
+
+```yaml
+1. Check Global Node Count:
+   - How many global nodes?
+   - Each adds 200-800ms per user input
+   - Recommended: 3-5 maximum
+
+2. Check Natural Language Transition Count:
+   - Count NL transitions per node
+   - Each adds 200-800ms
+   - Recommended: < 5 per node
+
+3. Check Tool Call Efficiency:
+   - Are tools called sequentially?
+   - Can they be parallelized?
+   - Are there redundant API calls?
+
+4. Check LLM Settings:
+   - Max tokens too high?
+   - Using slower model unnecessarily?
+   - Can use faster model for simple tasks?
+
+5. Check Knowledge Base:
+   - How many knowledge items?
+   - Retrieval adds 200-500ms
+   - Optimize chunk size and top-k
+
+Optimization Examples:
+  ❌ Slow (5 NL transitions):
+    - Natural: "billing" → Billing
+    - Natural: "technical" → Tech
+    - Natural: "sales" → Sales
+    - Natural: "support" → Support
+    - Natural: "account" → Account
+    Total: 5 × 500ms = 2.5 seconds
+
+  ✅ Fast (1 NL + equations):
+    - Natural: "categorize" → Category_Router
+      Router:
+        - Equation: category == "billing" → Billing
+        - Equation: category == "technical" → Tech
+        ...
+    Total: 500ms (single NL evaluation)
+```
+
+---
+
+## Debugging Workflows
+
+### Workflow 1: New Flow Not Working
+
+```yaml
+Steps: 1. Check validation errors
+  → Fix all red errors
+  → Address warnings
+
+  2. Test in call mode
+  → Follow happy path
+  → Check node highlighting
+
+  3. Verify variables
+  → Open Variables panel
+  → Confirm extractions work
+
+  4. Check transitions
+  → Review call logs
+  → See which transitions fired
+
+  5. Test edge cases
+  → Invalid inputs
+  → Unexpected responses
+
+  6. Iterate and improve
+  → Fix issues found
+  → Retest
+```
+
+### Workflow 2: Existing Flow Broke After Changes
+
+```yaml
+Steps: 1. Identify what changed
+  → Check snapshot history
+  → Compare to last working version
+
+  2. Revert to last known good
+  → Load previous snapshot
+  → Verify it still works
+
+  3. Reapply changes incrementally
+  → One change at a time
+  → Test after each change
+
+  4. Find breaking change
+  → When issue reappears, you found it
+  → Debug that specific change
+
+  5. Fix and test
+  → Correct the issue
+  → Verify fix works
+  → Save new snapshot
+```
+
+### Workflow 3: Production Issue Reported
+
+```yaml
+Steps: 1. Reproduce the issue
+  → Use test call with same inputs
+  → Try to see the problem yourself
+
+  2. Enable debug logging
+  → Turn on detailed call logs
+  → Make test call again
+
+  3. Analyze call logs
+  → Find where flow diverged from expected
+  → Check variable values at that point
+  → See which transitions evaluated
+
+  4. Identify root cause
+  → Missing validation?
+  → Unexpected user input?
+  → Variable not extracted?
+  → Transition logic wrong?
+
+  5. Create fix
+  → Make changes in development snapshot
+  → Test thoroughly
+
+  6. Deploy fix
+  → Deploy to production
+  → Monitor for recurrence
+  → Document issue and fix
+```
+
+---
+
+## Testing Checklist
+
+Before deploying to production, test:
+
+### Basic Functionality
+
+- [ ] Happy path works end-to-end
+- [ ] All nodes are reachable
+- [ ] All transitions fire correctly
+- [ ] All variables extract properly
+- [ ] All tools execute successfully
+- [ ] All global nodes trigger appropriately
+
+### Error Handling
+
+- [ ] Invalid inputs handled gracefully
+- [ ] Missing variables have fallbacks
+- [ ] Tool failures don't crash flow
+- [ ] Timeouts handled appropriately
+- [ ] User confusion leads to help or transfer
+- [ ] Max retry limits work correctly
+
+### Edge Cases
+
+- [ ] Empty user input
+- [ ] Very long user input (> 1 minute)
+- [ ] Rapid repeated inputs
+- [ ] Interrupting agent mid-sentence
+- [ ] Long silences (timeout)
+- [ ] DTMF during voice input
+- [ ] Switching between voice and DTMF
+
+### User Experience
+
+- [ ] Messages are clear and concise
+- [ ] No awkward pauses or delays
+- [ ] Confirmations for critical actions
+- [ ] Easy escape hatches (agent, menu, end)
+- [ ] Helpful error messages
+- [ ] Natural conversation flow
+
+### Performance
+
+- [ ] Transitions evaluate in < 2 seconds
+- [ ] Tool calls complete in < 10 seconds
+- [ ] Total call duration reasonable
+- [ ] No unnecessary API calls
+- [ ] Voice sounds natural (speed, pitch)
+
+### Validation
+
+- [ ] No validation errors
+- [ ] All warnings addressed or acknowledged
+- [ ] All nodes have names
+- [ ] All transitions have descriptions
+- [ ] All variables follow naming convention
+
+---
+
+## Troubleshooting Resources
+
+### Built-in Help
+
+```yaml
+Validation Popover:
+  - Click error to see description
+  - Use "Focus" to jump to problem
+  - Check "Quick Tips" section
+
+Call Logs:
+  - Real-time event stream
+  - Transition evaluation details
+  - Variable extraction results
+  - Tool call request/response
+  - LLM decision reasoning
+
+Variables Panel:
+  - Current variable values
+  - Variable types
+  - Variable scope
+  - Variable history
+```
+
+### External Resources
+
+```yaml
+Documentation:
+  - Flow Agent Overview
+  - Node Type Reference
+  - Transition Guide
+  - Variables Guide
+  - Best Practices
+
+Support:
+  - Help Center (help.hamsa.ai)
+  - Community Forum
+  - Support tickets
+  - Office hours (if available)
+```
+
+---
+
+## Best Debugging Practices
+
+### 1. Start Small
+
+```yaml
+✅ Test individual nodes before full flow
+✅ Add complexity gradually
+✅ Test after each change
+✅ Save snapshots frequently
+
+❌ Build entire flow before testing
+❌ Change many things at once
+❌ Hope it works in production
+```
+
+### 2. Use Descriptive Names
+
+```yaml
+✅ Names that explain purpose:
+  - 'Verify_Customer_Account_Number'
+  - 'Route_to_Department_by_Issue_Type'
+  - 'Retry_Payment_Collection_Max_3_Attempts'
+
+❌ Generic names:
+  - 'Node 1'
+  - 'Router'
+  - 'Conversation'
+```
+
+### 3. Document Complex Logic
+
+```yaml
+✅ Use description fields:
+  Node Description: 'This router checks if customer is VIP (tier=platinum OR lifetime_value>50000) and routes to priority support'
+
+✅ Use transition descriptions: 'User explicitly wants to cancel (not just asking about cancellation policy)'
+
+✅ Comment in node names: 'Account_Verification_IMPORTANT_MUST_PASS'
+```
+
+### 4. Test with Real Data
+
+```yaml
+✅ Use realistic test scenarios
+✅ Test with actual customer phrases
+✅ Try edge cases from real calls
+✅ Test in noisy environments
+
+❌ Only test perfect conditions
+❌ Only use simple test phrases
+❌ Assume users follow instructions
+```
+
+### 5. Monitor Production
+
+```yaml
+✅ Set up webhooks for call events
+✅ Track outcome metrics
+✅ Review failed calls
+✅ Monitor transfer rates
+✅ Check average call duration
+
+❌ Deploy and forget
+❌ Ignore user complaints
+❌ Assume it works if no errors
+```
+
+---
+
+## Quick Reference
+
+### Validation Error Quick Fixes
+
+| Error                            | Quick Fix                               |
+| -------------------------------- | --------------------------------------- |
+| "System instructions required"   | Add system prompt in global settings    |
+| "Message is required"            | Fill message field in conversation node |
+| "Tool selection required"        | Click "Select Tool" and choose a tool   |
+| "Invalid variable name"          | Use snake_case (lowercase, underscores) |
+| "Variable description too short" | Extend to 10+ characters                |
+| "Missing extraction prompt"      | Add extraction prompt for variable      |
+| "Global condition required"      | Add globalCondition for global node     |
+| "No fallback transition"         | Add Always transition as last option    |
+| "Invalid phone number"           | Use international format (+15551234567) |
+
+### Debugging Commands
+
+| Tool               | Access                    | Purpose             |
+| ------------------ | ------------------------- | ------------------- |
+| Validation Popover | Header badge              | See all errors      |
+| Test Call          | Header button             | Live testing        |
+| Call Logs          | Right panel (test mode)   | Real-time debugging |
+| Variables Panel    | Right panel               | Variable inspection |
+| Debug Panel        | Bottom toggle             | Detailed state info |
+| Node Focus         | Validation → Focus button | Jump to error       |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Best Practices" icon="star" href="./best-practices">
+    Learn flow design patterns and optimization
+  </Card>
+  <Card title="Variables Guide" icon="brackets-curly" href="./variables">
+    Master variable usage and troubleshooting
+  </Card>
+  <Card title="Transitions" icon="shuffle" href="./transitions">
+    Deep dive into transition logic and debugging
+  </Card>
+  <Card title="Node Reference" icon="book-open" href="./nodes/overview">
+    Complete node documentation and examples
+  </Card>
+</CardGroup>

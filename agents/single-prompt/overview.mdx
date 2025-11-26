@@ -1,0 +1,226 @@
+---
+title: Single Prompt Agent Overview
+description: 'Simple, fast, and effective for straightforward conversational scenarios'
+---
+
+## What is a Single Prompt Agent?
+
+A single prompt agent uses one comprehensive prompt (called a "preamble") to define all agent behaviors. This approach is the simplest and fastest way to create a voice agent, perfect for straightforward conversational scenarios.
+
+## When to Use Single Prompt Agents
+
+Single prompt agents are ideal when:
+
+- Your conversation flow is relatively linear
+- You don't need complex conditional branching
+- Your prompt is under 500 words
+- You're using 3 or fewer custom tools/functions
+- You need to build and deploy quickly
+
+## When to Upgrade to Flow Agent
+
+Consider upgrading to a Flow Agent when:
+
+- Your single prompt exceeds 500 words
+- You need complex decision trees with multiple paths
+- You require more than 3 custom tools
+- You need fine-grained control over different conversation stages
+- You want visual representation of your conversation flow
+- You need to reuse conversation components across agents
+
+## Key Components
+
+### 1. **Preamble (System Prompt)**
+
+The core instructions that define your agent's behavior, personality, task, and guidelines. This is where you tell the agent:
+
+- Who it is (identity)
+- How to behave (style and tone)
+- What to do (tasks and goals)
+- What not to do (guardrails and limitations)
+
+### 2. **Greeting Message**
+
+The first thing your agent says when a call starts. Can be:
+
+- **Static**: A fixed greeting message
+- **Prompt-based**: Dynamically generated based on context
+
+### 3. **Global Settings**
+
+Configuration applied to all conversations:
+
+- Voice and language selection
+- LLM model and parameters
+- Response timing and interruption handling
+- Call behavior settings
+
+### 4. **Knowledge Base** (Optional)
+
+Upload documents, web content, or custom text that your agent can reference during conversations.
+
+### 5. **Tools** (Optional)
+
+Integrate custom functions, web APIs, or MCP tools to extend your agent's capabilities.
+
+### 6. **Variables & Parameters** (Optional)
+
+Define structured data that your agent should collect during calls, with optional outcome schema for structured responses.
+
+## Setup Process
+
+Creating a single prompt agent follows three main steps:
+
+### Step 1: Write the Prompt
+
+- Define agent identity and personality
+- Set style guardrails and conversation tone
+- Specify response guidelines
+- Outline tasks and procedures
+
+**[→ Learn More: Writing a Single Prompt](./write-prompt)**
+
+### Step 2: Configure Basic Settings
+
+- Select voice and language
+- Configure call behavior (interruptions, delays, timeouts)
+- Set up noise cancellation and audio processing
+- Enable advanced features (gender detection, smart call end, etc.)
+
+**[→ Learn More: Configure Basic Settings](./configure-settings)**
+
+### Step 3: Add Integrations (Optional)
+
+- Connect knowledge bases
+- Add custom tools and functions
+- Configure webhooks
+- Define outcome parameters
+
+**[→ Learn More: Knowledge Base/features/knowledge-base)**
+**[→ Learn More: Tools & Functions/features/tools)**
+**[→ Learn More: Webhooks/features/webhooks)**
+
+## Example Use Cases
+
+### Customer Support Bot
+
+Simple Q&A agent that answers common questions using knowledge base:
+
+- **Preamble**: ~200 words defining personality and guidelines
+- **Knowledge Base**: FAQ documents and help articles
+- **Tools**: None or minimal (ticket creation)
+
+### Appointment Scheduler
+
+Collects information and books appointments:
+
+- **Preamble**: ~300 words with booking procedure
+- **Tools**: Calendar availability check, booking function
+- **Variables**: Name, phone, date, time, service type
+
+### Lead Qualification
+
+Gathers lead information and routes to sales:
+
+- **Preamble**: ~250 words with qualification questions
+- **Variables**: Company size, budget, timeline, needs
+- **Outcome**: Structured lead data
+
+## Key Features
+
+### Flexible Greeting
+
+Choose between static greetings for consistency or dynamic greetings that adapt to context (time of day, caller information, etc.).
+
+### Advanced Call Settings
+
+- **Response Delay**: Control how quickly the agent responds (100-1500ms)
+- **Interruption Handling**: Allow or prevent user interruptions
+- **Inactivity Timeout**: Automatically handle silent callers (5-30 seconds)
+- **Max Call Duration**: Set maximum call length (30-600 seconds)
+
+### Audio Processing
+
+- **Noise Cancellation**: Remove background noise (disabled, per sentence, or per conversation)
+- **Background Noise**: Add ambient sound for realism
+- **Thinking Voice**: Add natural pauses and filler words
+
+### Intelligence Features
+
+- **Gender Detection**: Detect caller gender for personalized responses
+- **Smart Call End**: Automatically end calls when conversation concludes
+- **Language Dialect Switcher**: Adapt to caller's dialect
+- **Speaker Identification**: Identify different speakers on the same call
+- **Agentic RAG**: Advanced knowledge retrieval with reasoning
+
+## Benefits
+
+### ✅ Quick to Build
+
+Get started in minutes with a single comprehensive prompt.
+
+### ✅ Easy to Maintain
+
+All agent behavior defined in one place makes updates simple.
+
+### ✅ Cost-Effective
+
+Simpler architecture means lower latency and potentially lower costs.
+
+### ✅ Perfect for MVPs
+
+Fastest path from idea to working agent.
+
+## Limitations
+
+### ⚠️ Limited Complexity
+
+Not suitable for highly branching conversation flows.
+
+### ⚠️ Prompt Size Constraints
+
+Large prompts (>500 words) become harder to manage and may reduce performance.
+
+### ⚠️ Less Control
+
+Cannot fine-tune behavior for specific conversation stages independently.
+
+### ⚠️ Tool Limitations
+
+Best with 3 or fewer tools; more tools can confuse the agent.
+
+## Template Structure
+
+Here's a recommended prompt structure:
+
+```
+## Identity
+[Define who the agent is and what it represents]
+
+## Style Guardrails
+[Set tone, personality, and conversation style]
+
+## Response Guidelines
+[Specify how to format responses and handle edge cases]
+
+## Task & Goals
+[Outline what the agent should accomplish]
+
+## Objection Handling
+[Provide guidance for common objections or difficult scenarios]
+```
+
+**[→ See Full Template & Examples](./write-prompt)**
+
+## Next Steps
+
+Ready to create your first single prompt agent?
+
+1. **[Write Your First Prompt](./write-prompt)** - Learn prompt engineering best practices
+2. **[Configure Settings](./configure-settings)** - Set up voice, timing, and behavior
+3. **[Add Knowledge Base/features/knowledge-base)** - Enhance with company information
+4. **[Test Your Agent/features/testing)** - Test in browser or via phone call
+
+---
+
+**Need more power?** Check out **[Flow Agent Overview](../flow-agent/overview)** for complex conversation flows.

@@ -1,0 +1,414 @@
+---
+title: Core Concepts
+description: 'Essential concepts and terminology for Hamsa Voice Agents'
+---
+
+# Core Concepts
+
+Understanding these core concepts will help you build better voice agents and make the most of Hamsa's features.
+
+## Agent Types
+
+### Single Prompt Agent
+
+A voice agent powered by a single comprehensive prompt (called a "preamble") that defines all behaviors, personality, and logic.
+
+**Key characteristics:**
+
+- One unified prompt for all conversation stages
+- Simpler to build and maintain
+- Best for linear conversational flows
+- Limited conditional branching capability
+
+**[→ Learn More](/agents/single-prompt/overview)**
+
+### Flow Agent
+
+A voice agent built using visual node-based workflows, where each node represents a step in the conversation with its own logic and behavior.
+
+**Key characteristics:**
+
+- Visual conversation design
+- Unlimited conditional branching
+- 8 different node types
+- Advanced variable system
+- DTMF support
+
+**[→ Learn More](/agents/flow-agent/overview)**
+
+---
+
+## Key Components
+
+### Preamble (Single Prompt)
+
+The core instructions that define your agent's identity, personality, behavior, and task. Think of it as the agent's "constitution" - the fundamental rules it follows.
+
+**Best practices:**
+
+- Keep under 500 words for optimal performance
+- Structure with clear sections (Identity, Style, Task)
+- Be specific about what the agent should and shouldn't do
+- Include examples for complex scenarios
+
+### Nodes (Flow Agent)
+
+Individual building blocks in a flow agent representing specific steps or actions:
+
+- **Conversation Nodes**: Natural dialogue with users
+- **Tool Nodes**: Execute functions and API calls
+- **Router Nodes**: Pure logic branching
+- **Transfer Nodes**: Call and agent transfers
+- **End Call Nodes**: Conversation termination
+
+**[→ Learn More](/agents/flow-agent/nodes/overview)**
+
+### Transitions
+
+Connections between nodes that define how conversations progress. Four types:
+
+1. **Natural Language**: LLM evaluates conditions described in prose
+2. **Structured Equation**: Mathematical/logical conditions with variables
+3. **DTMF**: Triggered by phone keypad presses
+4. **Always**: Default fallback path
+
+**[→ Learn More](/agents/flow-agent/transitions)**
+
+---
+
+## Variables
+
+### System Variables
+
+Built-in variables automatically populated by Hamsa:
+
+- **Time**: `current_time`, `current_date`, `current_datetime`, `current_timestamp`, `current_day`, `current_month`, `current_year`, `current_weekday`
+- **Call**: `call_id`, `call_type`, `call_start_time`, `direction`
+- **User**: `user_number`, `user_number_area_code`
+- **Agent**: `agent_name`, `agent_id`, `agent_number`
+
+**Total:** 17 system variables always available
+
+### Extracted Variables
+
+Data collected from conversations and stored for use throughout the flow:
+
+- Captured via "Extract Variables" in conversation nodes
+- Available to all downstream nodes
+- Fully integrated into variable system
+
+### Custom Variables
+
+Workflow-level variables you define and populate via API when initiating calls:
+
+- Defined in global settings
+- Always available to all nodes
+- Useful for caller-specific data (account info, preferences)
+
+**[→ Learn More](/agents/flow-agent/variables)**
+
+---
+
+## DTMF (Dual-Tone Multi-Frequency)
+
+Phone keypad interaction using digits 0-9, \*, and #. Hamsa provides three distinct DTMF features:
+
+### Simple DTMF Transitions
+
+IVR menu navigation: "Press 1 for Sales, Press 2 for Support"
+
+### DTMF Input Capture
+
+Collect sequences: account numbers, PINs, phone numbers
+
+### Global DTMF Triggers
+
+Universal shortcuts: "Press 0 for operator anytime"
+
+**[→ Learn More](/agents/flow-agent/dtmf)**
+
+---
+
+## Knowledge Base
+
+A collection of information sources your agent can access during conversations:
+
+**Supported formats:**
+
+- Documents: PDF, DOC, TXT, CSV, and more
+- Web pages: Scrape websites and sitemaps
+- Custom text: Manually added content
+
+**How it works:**
+
+- Agent searches knowledge base when relevant
+- Retrieves information in real-time (&lt;100ms)
+- Synthesizes answers from multiple sources
+
+**[→ Learn More](/features/knowledge-base)**
+
+---
+
+## Tools & Functions
+
+Extend your agent's capabilities by connecting to external systems:
+
+### Function Tools
+
+Custom API integrations you define:
+
+- HTTP method, URL, parameters
+- Headers and authentication
+- Response mapping to variables
+
+### Web Tools
+
+Simplified HTTP requests for quick integrations
+
+### MCP Tools
+
+Model Context Protocol tools for advanced use cases
+
+**[→ Learn More](/features/tools)**
+
+---
+
+## Call Settings
+
+Configuration controlling conversation dynamics:
+
+### Response Delay
+
+Time agent waits before responding (100-1500ms)
+
+- Lower: More responsive, faster-paced
+- Higher: More thoughtful, better for complex topics
+
+### Interruption Handling
+
+Whether users can interrupt the agent mid-speech
+
+- Enabled: Natural conversation flow
+- Disabled: Agent completes full message
+
+### Timeouts
+
+- **Inactivity**: How long to wait for user response (5-30s)
+- **Max Duration**: Maximum call length (30-600s)
+
+**[→ Learn More](/agents/single-prompt/call-behavior)**
+
+---
+
+## LLM Configuration
+
+Language model settings for your agent:
+
+### Provider
+
+- **OpenAI**: GPT-4, GPT-4o, GPT-4.1
+- **Gemini**: Gemini 2.5 Pro, Flash
+- **DeepMyst**: Optimized models for voice AI
+- **Custom**: OpenAI-compatible endpoints
+
+### Model Selection
+
+Different models for different needs:
+
+- **GPT-4**: Best reasoning, higher cost
+- **GPT-4o Mini**: Fast, cost-effective
+- **Gemini 2.5**: Google's latest, competitive pricing
+
+### Temperature
+
+Creativity vs consistency (0.0-1.0):
+
+- **0.0-0.3**: Deterministic, consistent responses
+- **0.4-0.7**: Balanced (recommended)
+- **0.8-1.0**: Creative, varied responses
+
+**[→ Learn More](/features/llm-configuration)**
+
+---
+
+## Voice Settings
+
+Text-to-speech configuration:
+
+### Provider
+
+- **Deepgram**: Fast, natural voices
+- **ElevenLabs**: Highly expressive, premium quality
+- **PlayHT**: Good balance of quality and speed
+
+### Voice Selection
+
+Each provider offers dozens of voices:
+
+- Different genders, ages, accents
+- Preview before selecting
+- Can override per-node (Flow Agents)
+
+### Audio Processing
+
+- **Noise Cancellation**: Remove background noise
+- **Background Noise**: Add ambient sound for realism
+- **Thinking Voice**: Natural pauses and filler words
+
+---
+
+## Testing
+
+Verify agent behavior before deployment:
+
+### Browser Testing
+
+- Test immediately without phone
+- Real-time logs and debugging
+- Edit and test iteratively
+
+### Phone Testing
+
+- Real phone call experience
+- Test with actual telephony
+- Verify audio quality and latency
+
+### Test Call Logs
+
+- Full conversation transcript
+- Timing information
+- Tool call results
+- Error tracking
+
+**[→ Learn More](/features/testing)**
+
+---
+
+## Global Nodes
+
+Nodes accessible from anywhere in the flow (Flow Agents only):
+
+**Use cases:**
+
+- "Speak to operator" - emergency escalation
+- "Repeat menu" - accessibility
+- "Return to start" - navigation reset
+
+**Trigger types:**
+
+- **Natural Language**: User expresses intent in speech
+- **DTMF**: User presses specific keypad button
+
+**Limitations:**
+
+- Cannot access extracted variables (only system & custom vars)
+- Not available for start nodes or web_tool nodes
+
+**[→ Learn More](/agents/flow-agent/global-nodes)**
+
+---
+
+## Webhooks
+
+Receive real-time notifications about call events:
+
+**Events:**
+
+- Call started
+- Call ended
+- Agent response generated
+- Tool executed
+- Error occurred
+
+**Authentication:**
+
+- Bearer token
+- Custom headers
+- HTTPS required
+
+**[→ Learn More](/features/webhooks)**
+
+---
+
+## Outcome Parameters
+
+Define structured data schema for information collected during calls:
+
+**Use cases:**
+
+- Lead qualification data
+- Survey responses
+- Appointment details
+- Customer feedback
+
+**Format:** JSON Schema with validation
+
+**[→ Learn More](/features/outcomes)**
+
+---
+
+## Best Practices
+
+### Prompt Engineering
+
+- Be specific and concrete
+- Use examples for complex behaviors
+- Test edge cases thoroughly
+- Iterate based on real conversations
+
+**[→ Learn More](/guides/prompt-engineering)**
+
+### Flow Design
+
+- Keep nodes focused (one purpose each)
+- Provide fallback paths
+- Test all branches
+- Use descriptive names
+
+**[→ Learn More](/agents/flow-agent/best-practices)**
+
+### Testing
+
+- Test in browser first
+- Then test via phone
+- Test edge cases and errors
+- Get feedback from real users
+
+**[→ Learn More](/features/testing)**
+
+---
+
+## Glossary
+
+| Term           | Definition                                             |
+| -------------- | ------------------------------------------------------ |
+| **Agent**      | AI-powered voice assistant that handles phone calls    |
+| **Preamble**   | Core instructions for single prompt agents             |
+| **Node**       | Building block in flow agents representing a step      |
+| **Transition** | Connection between nodes defining conversation flow    |
+| **Variable**   | Data stored and passed between conversation steps      |
+| **DTMF**       | Phone keypad tones (0-9, \*, #)                        |
+| **LLM**        | Large Language Model (GPT-4, Claude, etc.)             |
+| **TTS**        | Text-to-Speech synthesis                               |
+| **STT**        | Speech-to-Text recognition                             |
+| **IVR**        | Interactive Voice Response (menu system)               |
+| **RAG**        | Retrieval-Augmented Generation (knowledge base search) |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Build Single Prompt" icon="file-lines" href="/agents/single-prompt/overview">
+    Start with simple agent
+  </Card>
+  <Card title="Build Flow Agent" icon="diagram-nodes" href="/agents/flow-agent/overview">
+    Create complex workflows
+  </Card>
+  <Card title="Prompt Engineering" icon="pen" href="/guides/prompt-engineering">
+    Write effective prompts
+  </Card>
+  <Card title="API Reference" icon="code" href="/api-reference/introduction">
+    Programmatic access
+  </Card>
+</CardGroup>

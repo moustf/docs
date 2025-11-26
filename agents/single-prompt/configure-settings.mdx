@@ -1,0 +1,357 @@
+---
+title: Configure Settings
+description: 'Voice, behavior, and intelligence settings for single prompt agents'
+---
+
+After writing your prompt, configure the basic settings that control how your agent sounds, behaves, and interacts with callers.
+
+## Voice & Language Settings
+
+### Voice Selection
+
+Choose the voice that will represent your AI during conversations.
+
+**How to configure:**
+
+1. Navigate to the "Voice Settings" section
+2. Click the voice dropdown
+3. Browse available voices by:
+   - **Provider**: Deepgram, ElevenLabs, PlayHT, etc.
+   - **Language**: Filter by target language
+   - **Gender**: Male, female, or neutral voices
+4. Preview voices before selecting
+
+**Best Practices:**
+
+- Match voice to your brand personality
+- Consider your target audience demographics
+- Test voice with actual prompts, not just previews
+- Ensure voice supports your selected language/dialect
+
+### Language & Dialect
+
+Select the primary language for interactions.
+
+**Available Options:**
+
+- Language selection with full locale support
+- Dialect-specific options (e.g., US English, UK English, Mexican Spanish)
+- Automatic language detection (optional)
+
+**Language Dialect Switcher:**
+Enable this to automatically adapt to the caller's specific dialect within the same language.
+
+**Use case:** A caller from Scotland speaking English would be better understood with UK English model vs US English.
+
+## Call Behavior Settings
+
+### Response Delay
+
+Control how quickly the agent responds after the user stops speaking.
+
+**Range:** 100ms - 1500ms
+**Default:** 400ms
+
+**Lower values (100-300ms):**
+
+- More responsive, faster-paced conversations
+- Better for customer service, sales
+- Risk: May interrupt users who pause naturally
+
+**Higher values (600-1500ms):**
+
+- More thoughtful, deliberate responses
+- Better for elderly callers, complex topics
+- Risk: May feel slow or unresponsive
+
+**Formula:** Each 100ms adjustment changes perceived responsiveness significantly.
+
+**Recommendation:** Start with 400ms, adjust based on testing.
+
+### Interruption Handling
+
+Choose whether users can interrupt the agent while speaking.
+
+**Options:**
+
+- **Enabled (default)**: Users can interrupt naturally, like human conversation
+- **Disabled**: Agent completes full response before listening again
+
+**When to disable:**
+
+- Critical information that must be heard completely
+- Legal disclaimers or compliance statements
+- Multi-step instructions
+- Confirmation of important actions
+
+**When to enable:**
+
+- Natural customer support conversations
+- Sales calls where engagement is key
+- Interactive Q&A sessions
+
+### User Inactivity Timeout
+
+Automatically handle callers who don't respond.
+
+**Range:** 5-30 seconds
+**Default:** 15 seconds
+
+**What happens:** After silence, agent will:
+
+1. Prompt user ("Are you still there?")
+2. If still no response, either end call or transfer (configurable)
+
+**Shorter timeouts (5-10s):**
+
+- Tighter, more efficient conversations
+- Better for high-volume scenarios
+
+**Longer timeouts (20-30s):**
+
+- More patient with users who need time to think
+- Better for complex topics or elderly users
+
+### Max Call Duration
+
+Set maximum call length to prevent runaway costs.
+
+**Range:** 30-600 seconds
+**Default:** 300 seconds (5 minutes)
+
+**What happens:** Call automatically ends after maximum duration, with optional farewell message.
+
+**Recommendations:**
+
+- **Customer support:** 300-600 seconds
+- **Lead qualification:** 180-300 seconds
+- **Appointment booking:** 120-240 seconds
+- **Surveys:** 120-180 seconds
+
+## Audio Processing Settings
+
+### Noise Cancellation
+
+Remove background noise from caller's audio.
+
+**Options:**
+
+- **Disabled**: No noise cancellation (lowest latency)
+- **Per Sentence**: Processes each sentence separately (balanced)
+- **Per Conversation**: Processes entire conversation (highest quality)
+
+**Latency Impact:**
+
+- Disabled: 0ms
+- Per Sentence: ~50-100ms
+- Per Conversation: ~100-200ms
+
+**When to use:**
+
+- **Disabled**: Quiet environments, latency-critical applications
+- **Per Sentence**: General use, balanced quality and performance
+- **Per Conversation**: Noisy environments, quality over speed
+
+### Background Noise
+
+Add ambient sound to make agent feel more human.
+
+**Use cases:**
+
+- Call center ambiance for authenticity
+- White noise to avoid "dead air" feeling
+- Environmental sounds for context (office, store, etc.)
+
+**Options:**
+
+- **Disabled (default)**: Pure AI voice, no background
+- **Enabled**: Subtle background ambiance
+
+**Note:** Don't combine with noise cancellation—creates processing artifacts.
+
+### Thinking Voice
+
+Add natural pauses and filler words for human-like conversation.
+
+**When enabled, agent may use:**
+
+- "Hmm..."
+- "Let me see..."
+- "Ah, okay..."
+- Natural pauses before responses
+
+**Benefits:**
+
+- More natural, human-like interaction
+- Gives users time to process information
+- Less jarring during transitions
+
+**Drawbacks:**
+
+- Slightly longer conversations
+- May seem less professional in some contexts
+
+**Best for:** Customer support, friendly conversations
+**Avoid for:** Professional/corporate settings, compliance calls
+
+## Intelligence Features
+
+### Gender Detection
+
+Automatically detect caller's gender for personalized responses.
+
+**How it works:** Analyzes voice characteristics to determine likely gender.
+
+**Use cases:**
+
+- Personalized greetings ("Yes sir" vs "Yes ma'am")
+- Tailored product recommendations
+- Culturally appropriate responses
+
+**Access in prompts:** Use the `{{user_gender}}` variable
+
+**Privacy note:** Ensure compliance with local regulations regarding automated gender detection.
+
+### Smart Call End
+
+Automatically end calls when conversation naturally concludes.
+
+**How it works:** LLM detects when:
+
+- User says goodbye or farewell
+- Conversation objectives completed
+- User indicates they're done
+
+**Benefits:**
+
+- Cleaner call endings
+- Better user experience
+- Reduced call duration costs
+
+**Note:** Combines with max call duration as a safety net.
+
+### Speaker Identification
+
+Identify different speakers on the same call.
+
+**Use cases:**
+
+- Speakerphone calls with multiple people
+- Conference calls
+- Household calls where multiple people may speak
+
+**Access in prompts:** System tracks which speaker said what in conversation history.
+
+**Limitations:** Requires distinct voice characteristics to differentiate speakers.
+
+### Agentic RAG
+
+Advanced knowledge retrieval with reasoning.
+
+**Standard RAG:** Retrieves relevant documents, passes to LLM
+**Agentic RAG:** LLM reasons about what information is needed, retrieves iteratively, synthesizes answer
+
+**Benefits:**
+
+- More accurate answers to complex questions
+- Better handling of multi-step reasoning
+- Improved context understanding
+
+**Drawbacks:**
+
+- Higher latency (additional LLM calls)
+- Increased costs
+- Requires well-structured knowledge base
+
+**Best for:** Complex technical support, detailed product information, multi-faceted questions
+
+## Tool Settings
+
+### Gender Detection (Tool)
+
+Enable gender detection as a callable tool (different from automatic feature).
+
+**When to use:** When you want explicit control over when gender is detected, not automatic.
+
+### Smart Call End (Tool)
+
+Enable smart call end as a tool the agent can invoke.
+
+**Difference from setting:** Agent decides when to end call based on prompt instructions, rather than automatic detection.
+
+## Example Configurations
+
+### Friendly Customer Support
+
+```
+Voice: Natural, conversational female voice
+Response Delay: 400ms
+Interruption: Enabled
+Inactivity Timeout: 20s
+Max Duration: 600s
+Noise Cancellation: Per Sentence
+Thinking Voice: Enabled
+Smart Call End: Enabled
+```
+
+### Professional Corporate Helpdesk
+
+```
+Voice: Clear, professional neutral voice
+Response Delay: 500ms
+Interruption: Disabled for critical info
+Inactivity Timeout: 15s
+Max Duration: 480s
+Noise Cancellation: Per Conversation
+Thinking Voice: Disabled
+Smart Call End: Enabled
+```
+
+### Fast-Paced Sales
+
+```
+Voice: Energetic, confident voice
+Response Delay: 200ms
+Interruption: Enabled
+Inactivity Timeout: 10s
+Max Duration: 300s
+Noise Cancellation: Per Sentence
+Thinking Voice: Disabled
+Smart Call End: Disabled (agent controls end)
+```
+
+### Elderly Care Support
+
+```
+Voice: Warm, slow-paced voice
+Response Delay: 800ms
+Interruption: Disabled
+Inactivity Timeout: 30s
+Max Duration: 600s
+Noise Cancellation: Per Conversation
+Thinking Voice: Enabled
+Smart Call End: Enabled
+```
+
+## Testing Your Configuration
+
+After configuring settings:
+
+1. **Test in browser** first with various scenarios
+2. **Test via phone call** to verify audio quality
+3. **Test interruptions** by speaking over agent
+4. **Test silence handling** by staying quiet
+5. **Test noise** in different environments
+6. **Test with real users** from your target demographic
+
+## Next Steps
+
+- **[Add Knowledge Base](/features/knowledge-base)** - Enhance agent with company information
+- **[Integrate Tools](/features/tools)** - Connect custom functions and APIs
+- **[Configure Webhooks](/features/webhooks)** - Receive call events and data
+- **[Define Outcome Parameters](/features/outcomes)** - Structure collected data
+- **[Test Your Agent](/features/testing)** - Thorough testing before deployment
+
+---
+
+**Ready for complex flows?** Explore **[Flow Agent Global Settings](../flow-agent/global-settings)** for node-based configuration.

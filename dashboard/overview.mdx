@@ -1,0 +1,445 @@
+---
+title: 'Dashboard Overview'
+description: "Monitor your voice AI system's overall performance with comprehensive metrics and statistics including session counts, durations, and call distribution analytics"
+---
+
+# Dashboard Overview
+
+The Dashboard Overview provides a comprehensive view of your voice AI system's performance, displaying key metrics, session statistics, and call distribution analytics. This centralized monitoring interface helps you track system activity and make data-driven decisions.
+
+## Overview Tab
+
+The Overview tab is your primary view for monitoring overall system performance. It displays real-time metrics and historical data based on your selected filters.
+
+### Accessing the Overview
+
+1. Navigate to **Dashboard** from the main navigation menu
+2. The **Overview** tab opens by default
+3. Use the filter controls at the top to refine your view:
+   - **Agent Filter**: Select "All agents" or a specific voice agent
+   - **Date Range**: Choose from preset ranges or custom dates
+
+<Info>
+The Overview tab automatically refreshes when you return to it after viewing call details, ensuring you always see the latest data.
+</Info>
+
+## Overall Information Metrics
+
+The top section displays four primary metrics that provide a snapshot of your system's activity:
+
+### Live Sessions
+
+**What it tracks**: The number of concurrent active calls happening right now.
+
+**Use cases**:
+
+- Monitor real-time system load
+- Identify peak usage times
+- Ensure adequate capacity during high-traffic periods
+
+```
+Example: 5 Live Sessions
+Meaning: Five calls are currently in progress
+```
+
+<Tip>
+If you frequently see high numbers of live sessions, consider scaling your infrastructure or reviewing your agent configuration for optimization opportunities.
+</Tip>
+
+### Total Sessions
+
+**What it tracks**: The total number of completed sessions within your selected date range.
+
+**Use cases**:
+
+- Track call volume over time
+- Compare performance across different time periods
+- Measure system utilization
+
+```
+Example: 1,247 Total Sessions
+With filter: Today
+Meaning: 1,247 calls occurred today
+```
+
+### Average Session Duration
+
+**What it tracks**: The mean duration of all sessions in your selected time range, displayed in minutes and seconds (e.g., "2m 34s").
+
+**Use cases**:
+
+- Understand typical conversation length
+- Identify agents that may need optimization
+- Benchmark against expected call durations
+
+```
+Example: 2m 34s
+Meaning: On average, calls last 2 minutes and 34 seconds
+```
+
+<Warning>
+Very short average durations (under 30 seconds) may indicate call quality issues or premature disconnections. Investigate call logs to identify the root cause.
+</Warning>
+
+### Total Session Duration
+
+**What it tracks**: The cumulative time of all sessions combined, displayed in hours and minutes (e.g., "52h 18m").
+
+**Use cases**:
+
+- Calculate total system utilization
+- Estimate resource consumption
+- Track trends in overall usage
+
+```
+Example: 52h 18m
+Meaning: All calls combined totaled 52 hours and 18 minutes
+```
+
+## Additional Metrics
+
+The Additional Metrics section provides deeper insights into call patterns and agent performance:
+
+### Calls by Duration Bucket
+
+This metric categorizes calls into three duration ranges:
+
+- **Less than 30s**: Very short calls (often quick queries or disconnections)
+- **30-120s**: Medium-length calls (standard conversations)
+- **More than 120s**: Long calls (complex issues or extended interactions)
+
+**Example**:
+
+```
+Less than 30s: 45 calls
+30-120s: 892 calls
+More than 120s: 310 calls
+```
+
+**Analysis tips**:
+
+- High numbers in the "Less than 30s" bucket may indicate:
+  - Connection issues
+  - Misrouted calls
+  - Users hanging up quickly (potential UX problem)
+- Most calls should fall in the 30-120s range for typical use cases
+- Many long calls might suggest:
+  - Complex customer needs
+  - Agent requires better training
+  - Opportunities for workflow optimization
+
+<Note>
+The duration buckets are fixed at 30 and 120 seconds. These thresholds are designed based on typical voice AI interaction patterns.
+</Note>
+
+### Average Words per AI Response
+
+**What it tracks**: The average number of words the AI agent uses in each response.
+
+**Use cases**:
+
+- Ensure responses are concise yet informative
+- Identify verbose agents that may need tuning
+- Optimize for natural conversation flow
+
+```
+Example: 42 words per response
+Ideal range: 20-60 words
+```
+
+**Optimization guidelines**:
+
+- **Too low (< 20 words)**: Responses may be too terse or unhelpful
+- **Optimal (20-60 words)**: Natural, conversational responses
+- **Too high (> 80 words)**: May overwhelm users or sound robotic
+
+<Tip>
+If your average is consistently above 60 words, review your agent's prompt engineering to encourage more concise responses while maintaining helpfulness.
+</Tip>
+
+### Forwarded to Human Agent
+
+**What it tracks**: The percentage of calls that were escalated to a human agent.
+
+**Use cases**:
+
+- Measure AI containment rate
+- Identify areas where the AI needs improvement
+- Calculate ROI of your voice AI system
+
+```
+Example: 12%
+Meaning: 12% of calls required human intervention
+```
+
+**Target benchmarks**:
+
+- **Excellent (< 10%)**: High AI containment, well-trained agent
+- **Good (10-20%)**: Acceptable performance with room for improvement
+- **Needs attention (> 20%)**: Consider agent training improvements
+
+<CardGroup cols={2}>
+  <Card title="Low Escalation Rate" icon="check">
+    Indicates your AI agent handles most inquiries successfully without human intervention
+  </Card>
+  <Card title="High Escalation Rate" icon="warning">
+    Review conversation logs to identify common escalation triggers and improve agent training
+  </Card>
+</CardGroup>
+
+## Visualizations and Charts
+
+The Overview tab includes two interactive charts for data visualization:
+
+### Calls by Duration Bucket (Pie Chart)
+
+**What it shows**: Visual distribution of calls across the three duration buckets.
+
+**How to use it**:
+
+1. Hover over segments to see exact counts and percentages
+2. Quickly identify which duration range dominates
+3. Spot unusual patterns (e.g., spike in very short calls)
+
+**Interpretation example**:
+
+```
+If the pie chart shows:
+- 5% Less than 30s
+- 70% 30-120s
+- 25% More than 120s
+
+This is a healthy distribution indicating:
+- Few dropped/failed calls
+- Majority are standard conversations
+- Some complex inquiries requiring more time
+```
+
+### Calls Over Time (Line Chart)
+
+**What it shows**: The volume of calls across time, with granularity based on your selected date range:
+
+- **Today or Yesterday**: Hourly breakdown
+- **This Week**: Daily breakdown
+- **This Month**: Daily breakdown
+- **Custom range**: Automatically adjusts (hourly, daily, weekly, or monthly)
+
+**How to use it**:
+
+1. Identify peak usage hours or days
+2. Spot trends (increasing/decreasing call volume)
+3. Plan maintenance windows during low-traffic periods
+4. Allocate resources based on predicted demand
+
+**Example scenarios**:
+
+<Tabs>
+  <Tab title="Hourly Pattern">
+    ```
+    Peak hours: 10 AM - 2 PM (300+ calls/hour)
+    Low hours: 2 AM - 6 AM (< 10 calls/hour)
+
+    Action: Schedule system updates between 2-6 AM
+    ```
+
+  </Tab>
+  <Tab title="Daily Pattern">
+    ```
+    Weekdays: Average 1,200 calls/day
+    Weekends: Average 400 calls/day
+
+    Action: Reduce infrastructure on weekends to save costs
+    ```
+
+  </Tab>
+  <Tab title="Trend Analysis">
+    ```
+    Week 1: 5,000 calls
+    Week 2: 6,200 calls
+    Week 3: 7,500 calls
+
+    Observation: 20-25% weekly growth
+    Action: Plan capacity expansion
+    ```
+
+  </Tab>
+</Tabs>
+
+## Filtering Your Data
+
+The Overview tab supports powerful filtering to help you drill down into specific data:
+
+### Agent Filter
+
+Filter data by specific voice agents to compare performance:
+
+```
+Use case: Compare Agent A vs. Agent B
+1. Select "Agent A" from the dropdown
+2. Note the metrics (avg duration, escalation rate, etc.)
+3. Select "Agent B"
+4. Compare the metrics to identify the better performer
+```
+
+<Info>
+The agent filter applies to all metrics and charts on the Overview tab. When "All agents" is selected, you see aggregated data across your entire system.
+</Info>
+
+### Date Range Filter
+
+Choose from preset ranges or create custom date ranges:
+
+**Preset options**:
+
+- **Today**: Current day (midnight to now)
+- **Yesterday**: Previous full day
+- **This Week**: Sunday to today (week starts on Sunday)
+- **This Month**: First day of month to today
+- **Custom**: Select any start and end date
+
+**Timezone handling**:
+<Note>
+All times are displayed in your browser's local timezone. The system automatically converts UTC timestamps from the backend to ensure accuracy.
+</Note>
+
+**Custom range example**:
+
+```
+Scenario: Analyze Black Friday weekend performance
+
+1. Click Date Range filter
+2. Select "Custom"
+3. Start date: Nov 24, 2024
+4. End date: Nov 26, 2024
+5. Click "Done"
+
+Result: View metrics for just that 3-day period
+```
+
+<Warning>
+Custom date ranges cannot include future dates. If you select a future end date, you'll see an error message: "Future dates are not allowed."
+</Warning>
+
+## Best Practices
+
+### Daily Monitoring
+
+Check these metrics every day:
+
+1. **Live Sessions**: Ensure it's within expected range
+2. **Total Sessions**: Compare to previous day for anomalies
+3. **Forwarded to Human Agent**: Track escalation trends
+
+### Weekly Review
+
+Perform these analyses weekly:
+
+1. Compare current week to previous week for trends
+2. Review the Calls Over Time chart for unusual patterns
+3. Check if Average Session Duration is increasing or decreasing
+4. Analyze duration bucket distribution for changes
+
+### Monthly Optimization
+
+Use monthly data to:
+
+1. Calculate month-over-month growth
+2. Identify long-term trends
+3. Set performance goals for next month
+4. Review agent performance and make adjustments
+
+## Troubleshooting
+
+### "No Data Available" Message
+
+**Problem**: Charts show "No data available for the selected time period"
+
+**Solutions**:
+
+1. Verify you have calls in the selected date range
+2. Try selecting "All agents" if a specific agent is filtered
+3. Expand your date range (e.g., from "Today" to "This Week")
+4. Check if the selected project has any configured agents
+
+### Metrics Show Zero
+
+**Problem**: All metrics display 0 or "--"
+
+**Possible causes**:
+
+1. **No project selected**: Select a project from the project dropdown
+2. **No calls in range**: Your selected date range has no activity
+3. **Agent filter mismatch**: The filtered agent has no calls
+4. **Loading state**: Wait a few seconds for data to load
+
+### Slow Loading
+
+**Problem**: Dashboard takes a long time to load metrics
+
+**Solutions**:
+
+1. **Reduce date range**: Large ranges (multiple months) process more data
+2. **Filter by agent**: Narrow down to specific agents instead of "All agents"
+3. **Check network**: Slow connection may delay API responses
+4. **Peak hours**: System may be slower during high-traffic times
+
+<Tip>
+For fastest performance, use preset date ranges (Today, Yesterday, This Week) rather than custom ranges spanning many months.
+</Tip>
+
+## API Integration
+
+The Overview tab fetches data from the following API endpoint:
+
+```
+GET /v1/agent-analytics/overview
+```
+
+**Query parameters**:
+
+- `projectId`: Your project identifier (required)
+- `voiceAgentId`: Specific agent ID or "all" for aggregated data
+- `period`: Preset period (e.g., "today", "yesterday")
+- `startPeriod`: Custom start date (YYYY-MM-DD format)
+- `endPeriod`: Custom end date (YYYY-MM-DD format)
+- `timeDifference`: Timezone offset in hours from UTC
+
+**Response structure**:
+
+```json
+{
+  "liveSessionsNumber": 5,
+  "totalSessionsNumber": 1247,
+  "averageSessionDuration": 154,
+  "totalSessionDuration": 192038,
+  "averageMessagesPerSession": 8.5,
+  "averageWordsPerAiResponse": 42,
+  "forwardToHumanAgent": 12,
+  "callsOverTime": [
+    { "timeBucket": "2024-11-16T09:00:00Z", "count": 45 },
+    { "timeBucket": "2024-11-16T10:00:00Z", "count": 78 }
+  ],
+  "callsByDurationBuckets": {
+    "shortDurationBucketCalls": 45,
+    "mediumDurationBucketCalls": 892,
+    "longDurationBucketCalls": 310
+  }
+}
+```
+
+## Related Documentation
+
+<CardGroup cols={2}>
+  <Card title="Live Calls" icon="phone" href="/dashboard/live-calls">
+    Monitor active calls in real-time and join as a listener
+  </Card>
+  <Card title="Performance Metrics" icon="gauge" href="/dashboard/performance">
+    Analyze system performance and response times
+  </Card>
+  <Card title="Satisfaction Metrics" icon="heart" href="/dashboard/satisfaction">
+    Track customer satisfaction and sentiment analysis
+  </Card>
+  <Card title="Call History" icon="history" href="/dashboard/call-history">
+    Search and review detailed call logs and transcripts
+  </Card>
+</CardGroup>

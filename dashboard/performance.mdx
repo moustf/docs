@@ -1,0 +1,1032 @@
+---
+title: 'Performance Metrics & Analytics'
+description: "Monitor and optimize your voice AI system's performance with detailed metrics on ASR processing, LLM response times, TTS generation, latency, and error rates"
+---
+
+# Performance Metrics & Analytics
+
+The Performance tab provides real-time insights into your voice AI system's technical performance. Monitor processing times, identify bottlenecks, optimize response speeds, and ensure your system delivers a fast, reliable user experience.
+
+## Overview
+
+System performance directly impacts user experience. Slow processing times, high latency, or frequent errors can frustrate callers and reduce the effectiveness of your voice AI. The Performance tab helps you:
+
+- **Monitor technical health**: Track key performance indicators
+- **Identify bottlenecks**: Find which components are slowing down responses
+- **Optimize system**: Use data to guide infrastructure and configuration decisions
+- **Maintain SLAs**: Ensure you meet performance service level agreements
+- **Troubleshoot issues**: Quickly spot and diagnose performance problems
+
+<Info>
+Performance metrics are calculated based on your selected date range and agent filter, allowing you to compare different time periods or agents.
+</Info>
+
+## Accessing Performance Metrics
+
+1. Navigate to **Dashboard** from the main menu
+2. Click the **Performance** tab
+3. Use the top filters to refine your view:
+   - **Agent Filter**: Select specific agent or "All agents"
+   - **Date Range**: Choose time period for analysis
+
+```
+Dashboard > Performance tab
+```
+
+The Performance tab automatically refreshes when you return to it after viewing other tabs or call details.
+
+## Key Performance Metrics
+
+The Performance tab displays five critical metrics that measure different aspects of your system's speed and reliability:
+
+### ASR Processing Time
+
+**What it measures**: Average time to convert speech to text (Automatic Speech Recognition)
+
+**Displayed as**: Milliseconds (ms)
+
+**What happens during ASR**:
+
+1. User speaks into phone/microphone
+2. Audio is captured and sent to ASR service
+3. ASR service processes audio and returns text
+4. Text is ready for the LLM to process
+
+**Example values**:
+
+```
+Good: 150ms - 300ms
+Acceptable: 300ms - 500ms
+Slow: > 500ms
+```
+
+**Why it matters**:
+
+- Fast ASR means quicker understanding of what the user said
+- Slow ASR delays the entire response cycle
+- High ASR times may indicate audio quality issues or service problems
+
+<Tip>
+ASR processing time can vary based on audio quality. Background noise, poor connection, or unclear speech may increase processing time.
+</Tip>
+
+**Optimization tips**:
+
+- Ensure good audio quality (reduce background noise)
+- Use appropriate microphone settings
+- Consider upgrading ASR service tier if consistently slow
+- Check network latency between your system and ASR provider
+
+### NLU/LLM Response Time
+
+**What it measures**: Average time for the AI language model to generate a response
+
+**Displayed as**: Milliseconds (ms)
+
+**What happens during LLM processing**:
+
+1. Transcribed text sent to LLM (e.g., GPT-4, Claude)
+2. LLM analyzes context, conversation history, and instructions
+3. LLM generates appropriate response text
+4. Response text returned to system
+
+**Example values**:
+
+```
+Fast: < 1,000ms (1 second)
+Good: 1,000ms - 2,000ms
+Acceptable: 2,000ms - 3,000ms
+Slow: > 3,000ms
+```
+
+**Why it matters**:
+
+- Primary contributor to overall latency
+- Users notice delays over 2-3 seconds
+- Slow LLM times create awkward conversation pauses
+
+<Warning>
+LLM response times above 3,000ms (3 seconds) may cause users to think the system is broken or unresponsive. Aim for under 2,000ms for natural conversation flow.
+</Warning>
+
+**Factors affecting LLM speed**:
+
+- **Model choice**: GPT-4 is slower than GPT-3.5; Claude 3 Opus slower than Haiku
+- **Prompt length**: Longer prompts and conversation history slow processing
+- **Response length**: Longer responses take more time to generate
+- **Service load**: Provider's API may be slower during peak hours
+- **Complexity**: Complex reasoning tasks take longer than simple responses
+
+**Optimization strategies**:
+
+```
+Strategy 1: Choose faster models
+- Use GPT-3.5-turbo instead of GPT-4 for simple tasks
+- Consider Claude 3 Haiku for speed-critical applications
+
+Strategy 2: Optimize prompts
+- Keep system prompts concise
+- Limit conversation history to last 5-10 messages
+- Remove unnecessary examples or instructions
+
+Strategy 3: Streaming responses (if supported)
+- Stream tokens as they're generated
+- Start TTS before full response complete
+- Reduces perceived latency
+
+Strategy 4: Caching
+- Cache common responses
+- Pre-generate frequent answer variations
+- Reduce LLM calls for repeated questions
+```
+
+<CardGroup cols={2}>
+  <Card title="Speed vs Quality Tradeoff" icon="balance-scale">
+    Faster models (GPT-3.5, Claude Haiku) may sacrifice some quality for speed. Test to find the right balance for your use case.
+  </Card>
+  <Card title="Monitor Peak Hours" icon="clock">
+    LLM response times often increase during peak API usage hours. Consider upgrading to dedicated capacity if this is a consistent issue.
+  </Card>
+</CardGroup>
+
+### TTS Generation Time
+
+**What it measures**: Average time to convert response text to speech (Text-to-Speech)
+
+**Displayed as**: Milliseconds (ms)
+
+**What happens during TTS**:
+
+1. LLM provides response text
+2. Text sent to TTS service (e.g., ElevenLabs, Google TTS, Azure)
+3. TTS generates audio from text
+4. Audio file returned to system
+5. Audio played to user
+
+**Example values**:
+
+```
+Fast: < 400ms
+Good: 400ms - 600ms
+Acceptable: 600ms - 800ms
+Slow: > 800ms
+```
+
+**Why it matters**:
+
+- Final step before user hears response
+- Contributes to overall conversation latency
+- Quality vs speed tradeoff (more natural voices take longer)
+
+**Factors affecting TTS speed**:
+
+- **Voice quality**: Premium/neural voices are slower than standard
+- **Text length**: Longer responses take more time to synthesize
+- **Language/accent**: Some languages or accents process slower
+- **Service tier**: Higher-tier TTS services may offer faster generation
+
+**Optimization approaches**:
+
+```
+Approach 1: Use faster voice models
+- Standard voices instead of neural/premium
+- Trade some naturalness for speed
+
+Approach 2: Chunk long responses
+- Break long responses into smaller audio segments
+- Start playing first segment while generating rest
+- Reduces perceived delay
+
+Approach 3: Pre-generate common phrases
+- Cache audio for frequently used phrases
+- "Thank you", "How can I help?", etc.
+- Instant playback, no generation needed
+
+Approach 4: Consider streaming TTS
+- Generate and play audio in real-time
+- Further reduces latency for long responses
+```
+
+<Note>
+The relationship between voice quality and speed is significant. Ultra-realistic voices may take 2-3x longer than standard voices. Evaluate if the quality improvement justifies the latency increase for your use case.
+</Note>
+
+### Latency
+
+**What it measures**: Total end-to-end response time (cumulative)
+
+**Displayed as**: Milliseconds (ms)
+
+**What latency includes**:
+
+```
+Latency = ASR Time + LLM Time + TTS Time + Network Overhead
+
+Example breakdown:
+ASR:     250ms
+LLM:   1,500ms
+TTS:     550ms
+Network: 200ms
+----------------
+Total: 2,500ms (2.5 seconds)
+```
+
+**Target latency values**:
+
+```
+Excellent: < 2,000ms (2 seconds)
+Good: 2,000ms - 3,000ms
+Acceptable: 3,000ms - 4,000ms
+Poor: > 4,000ms (4 seconds)
+```
+
+**Why it matters**:
+
+- **User experience**: Primary metric for conversation naturalness
+- **Abandonment rate**: High latency increases call abandonment
+- **Satisfaction**: Users rate faster systems as more "intelligent"
+- **Business impact**: Slow systems reduce containment and increase costs
+
+<Warning>
+Research shows that users begin to feel a system is "slow" around 3 seconds, and "broken" around 4-5 seconds. Aim to keep latency under 3,000ms for optimal user experience.
+</Warning>
+
+**Analyzing latency issues**:
+
+When latency is high, check which component is the bottleneck:
+
+```
+Scenario 1: ASR is the bottleneck
+Symptoms:
+- ASR: 800ms
+- LLM: 1,200ms
+- TTS: 500ms
+- Total: 2,500ms
+
+Action: Focus on ASR optimization
+- Check audio quality
+- Review network to ASR provider
+- Consider faster ASR service
+
+Scenario 2: LLM is the bottleneck
+Symptoms:
+- ASR: 250ms
+- LLM: 3,500ms
+- TTS: 500ms
+- Total: 4,250ms
+
+Action: Optimize LLM processing
+- Switch to faster model
+- Reduce prompt size
+- Implement caching
+- Consider streaming
+
+Scenario 3: Balanced but overall slow
+Symptoms:
+- ASR: 450ms
+- LLM: 1,800ms
+- TTS: 700ms
+- Total: 2,950ms
+
+Action: Incremental improvements across all
+- Each component has room for small gains
+- 20% improvement in each = significant total reduction
+```
+
+<Tip>
+Use the Performance Bar Chart (see below) to visually identify which component is taking the most time. The tallest bar is your primary optimization target.
+</Tip>
+
+### Error Rate
+
+**What it measures**: Percentage of sessions that encountered errors
+
+**Displayed as**: Percentage (%)
+
+**What counts as an error**:
+
+- ASR transcription failures
+- LLM API errors or timeouts
+- TTS generation failures
+- Network connection issues
+- System crashes or exceptions
+- Unexpected call terminations
+
+**Target error rates**:
+
+```
+Excellent: < 1%
+Good: 1% - 3%
+Acceptable: 3% - 5%
+Problematic: > 5%
+```
+
+**Why it matters**:
+
+- **Reliability**: High error rates indicate unstable system
+- **User trust**: Errors frustrate users and damage trust
+- **Cost**: Failed calls waste resources without providing value
+- **Reputation**: Repeated errors lead to negative reviews
+
+**Common error causes and solutions**:
+
+<Tabs>
+  <Tab title="ASR Errors">
+    **Causes**:
+    - Poor audio quality
+    - Unsupported language/accent
+    - Network timeouts to ASR service
+    - Audio format incompatibility
+
+    **Solutions**:
+    - Implement audio quality checks
+    - Add fallback: "I didn't catch that, could you repeat?"
+    - Increase ASR timeout limits
+    - Validate audio format before sending
+
+  </Tab>
+
+  <Tab title="LLM Errors">
+    **Causes**:
+    - API rate limits hit
+    - Timeout due to long processing
+    - Invalid prompt format
+    - Service outage
+
+    **Solutions**:
+    - Implement retry logic with exponential backoff
+    - Monitor API rate limits and upgrade if needed
+    - Add request timeout with graceful handling
+    - Have fallback responses for service outages
+
+  </Tab>
+
+  <Tab title="TTS Errors">
+    **Causes**:
+    - Text contains unsupported characters
+    - Response too long for single TTS call
+    - TTS service timeout
+    - Invalid voice parameters
+
+    **Solutions**:
+    - Sanitize text before sending to TTS
+    - Split long texts into chunks
+    - Implement retry logic
+    - Validate voice settings in configuration
+
+  </Tab>
+
+  <Tab title="Network Errors">
+    **Causes**:
+    - Caller's poor internet/phone connection
+    - Server-side network issues
+    - Firewall blocking WebRTC
+    - DNS resolution failures
+
+    **Solutions**:
+    - Implement connection quality monitoring
+    - Provide clear error messages to users
+    - Have redundant network paths
+    - Monitor infrastructure health
+
+  </Tab>
+</Tabs>
+
+**Error rate monitoring best practices**:
+
+```
+Daily:
+- Check error rate compared to yesterday
+- Investigate if > 5% or sudden spike
+- Review error logs for new error patterns
+
+Weekly:
+- Calculate error rate trend
+- Group errors by type
+- Prioritize fixes for most common errors
+
+Monthly:
+- Compare month-over-month error rates
+- Measure impact of fixes implemented
+- Set error rate targets for next month
+```
+
+<Info>
+A small number of errors (1-2%) is normal and expected in any production system. Focus on maintaining low rates and quickly addressing spikes.
+</Info>
+
+## Performance Bar Chart
+
+The visual chart displays all four processing time metrics side-by-side for easy comparison.
+
+### Chart Features
+
+**X-axis**: Metric names
+
+- ASR Processing Time
+- NLU/LLM Response Time
+- TTS Generation Time
+- Latency
+
+**Y-axis**: Time in milliseconds (ms)
+
+**Bars**:
+
+- Height represents metric value
+- Hover to see exact value
+- Color-coded for easy identification
+
+**Empty state**: If no data available, shows "No Data Available" message
+
+### How to Use the Chart
+
+**Identify bottlenecks**:
+
+```
+Visual scan:
+1. Look for the tallest bar
+2. That's your primary bottleneck
+3. Focus optimization efforts there
+
+Example:
+- ASR: Short bar (200ms) ✓
+- LLM: Tallest bar (3,200ms) ← Bottleneck!
+- TTS: Medium bar (600ms) ✓
+- Latency: Tall bar (4,000ms) ← Result of LLM
+
+Action: Optimize LLM processing
+```
+
+**Track improvements**:
+
+```
+Process:
+1. Note current bar heights
+2. Implement optimization
+3. Wait for data to update (change date filter or wait)
+4. Compare new bar heights
+5. Quantify improvement
+
+Example:
+Before: LLM bar at 3,200ms
+After: LLM bar at 1,800ms
+Improvement: 44% reduction
+```
+
+**Compare time periods**:
+
+```
+Method:
+1. Set date range to "This Week"
+2. Note all bar heights
+3. Change to "Last Week"
+4. Compare differences
+5. Identify trends
+
+Use case:
+- Did recent deployment improve performance?
+- Are we getting faster or slower over time?
+- Is there a specific day with issues?
+```
+
+<Tip>
+Screenshot the chart weekly and create a performance timeline. Visual trends are easier to spot and share with your team than raw numbers.
+</Tip>
+
+## Filtering Performance Data
+
+Performance metrics respect the same filters as other dashboard tabs:
+
+### Agent Filter
+
+Compare performance across different agents:
+
+**Use case: Agent comparison**
+
+```
+Steps:
+1. Select "Agent A"
+2. Note performance metrics
+   - ASR: 250ms
+   - LLM: 2,100ms
+   - TTS: 550ms
+   - Latency: 2,900ms
+
+3. Select "Agent B"
+4. Note performance metrics
+   - ASR: 260ms
+   - LLM: 1,600ms
+   - TTS: 520ms
+   - Latency: 2,380ms
+
+Analysis:
+Agent B is 18% faster overall due to better LLM performance
+Investigate: Why is Agent B's LLM faster?
+- Shorter prompts?
+- Simpler responses?
+- Different model?
+```
+
+**Why performance varies by agent**:
+
+- Different LLM models (GPT-4 vs GPT-3.5)
+- Different prompt lengths and complexity
+- Different average response lengths
+- Different knowledge base sizes
+- Different tool/function calling complexity
+
+<Note>
+When comparing agents, ensure you're using similar date ranges and volumes. An agent with 10 calls may have different averages than one with 1,000 calls.
+</Note>
+
+### Date Range Filter
+
+Analyze performance over different time periods:
+
+**Use case: Performance degradation investigation**
+
+```
+Scenario: Users report system feels slower lately
+
+Investigation:
+1. Set date range to "Today"
+   - Latency: 3,500ms
+
+2. Change to "Yesterday"
+   - Latency: 2,200ms
+
+3. Change to "Last Week"
+   - Latency: 2,300ms
+
+Finding: Performance degraded today
+Next steps: Check for:
+- Recent deployments
+- Increased traffic/load
+- LLM provider status
+- Infrastructure issues
+```
+
+**Time period comparison table**:
+
+| Period    | Latency | LLM Time | Error Rate | Conclusion |
+| --------- | ------- | -------- | ---------- | ---------- |
+| Today     | 3,500ms | 2,800ms  | 7%         | Problem!   |
+| Yesterday | 2,200ms | 1,500ms  | 2%         | Normal     |
+| This Week | 2,400ms | 1,600ms  | 2.5%       | Normal     |
+| Last Week | 2,300ms | 1,550ms  | 2%         | Baseline   |
+
+**Pattern identification**:
+
+```
+Daily pattern: Monday mornings slow
+- Date: Multiple Mondays around 9-11 AM
+- Finding: High traffic causes LLM queue delays
+- Solution: Scale up on Monday mornings
+
+Weekly pattern: Degradation over time
+- Week 1: 2,000ms
+- Week 2: 2,200ms
+- Week 3: 2,400ms
+- Week 4: 2,600ms
+- Finding: Gradual degradation
+- Cause: Prompt templates growing longer
+- Solution: Audit and trim prompts
+
+Monthly pattern: Month-end spikes
+- Last 3 days of month: Latency +50%
+- Finding: Business quarter-end creates high load
+- Solution: Temporary capacity increase end of each month
+```
+
+<Warning>
+When comparing different time periods, watch out for selection bias. Compare similar time ranges (e.g., Tuesday to Tuesday, not Tuesday to Saturday) and similar volumes for accurate insights.
+</Warning>
+
+## Benchmark Targets
+
+Use these industry benchmarks to evaluate your system's performance:
+
+### Target Metrics by Use Case
+
+**Simple Q&A / FAQ Bot**:
+
+```
+ASR: < 300ms
+LLM: < 1,200ms (using faster models like GPT-3.5)
+TTS: < 500ms
+Latency: < 2,000ms
+Error Rate: < 2%
+
+Characteristics:
+- Simple queries with straightforward answers
+- Minimal context needed
+- Short responses
+- High volume, low complexity
+```
+
+**Customer Support**:
+
+```
+ASR: < 400ms
+LLM: < 2,000ms (may use GPT-4 for better understanding)
+TTS: < 600ms
+Latency: < 3,000ms
+Error Rate: < 3%
+
+Characteristics:
+- Moderate complexity
+- Need for context and history
+- Varied response lengths
+- Balance of speed and quality
+```
+
+**Complex Advisory / Consultation**:
+
+```
+ASR: < 500ms
+LLM: < 3,000ms (using GPT-4 or Claude Opus for reasoning)
+TTS: < 700ms
+Latency: < 4,000ms
+Error Rate: < 4%
+
+Characteristics:
+- Complex reasoning required
+- Long-form responses
+- Multiple tool calls or database queries
+- Quality prioritized over speed
+```
+
+**Live Sales / High-Touch**:
+
+```
+ASR: < 250ms
+LLM: < 1,500ms
+TTS: < 500ms
+Latency: < 2,500ms
+Error Rate: < 1%
+
+Characteristics:
+- Natural conversation critical
+- Low tolerance for delays
+- High-value interactions
+- Professional voice quality required
+```
+
+<CardGroup cols={2}>
+  <Card title="Set Realistic Targets" icon="target">
+    Don't chase unrealistic speed at the cost of quality. Understand your use case requirements and optimize accordingly.
+  </Card>
+  <Card title="Measure What Matters" icon="chart-line">
+    User satisfaction is the ultimate metric. Fast but unhelpful is worse than slightly slower but accurate.
+  </Card>
+</CardGroup>
+
+## Optimization Strategies
+
+Systematic approach to improving performance:
+
+### 1. Identify the Bottleneck
+
+Use the Performance Bar Chart to find the slowest component:
+
+```
+Step 1: Look at the chart
+- Which bar is tallest?
+
+Step 2: Determine if it's abnormal
+- Compare to benchmarks above
+- Compare to historical data
+
+Step 3: Prioritize
+- Component taking longest = highest impact
+- Start there
+```
+
+### 2. Gather Detailed Data
+
+```
+For ASR bottleneck:
+- Check audio quality across calls
+- Measure by language/accent
+- Test different ASR providers
+- Analyze transcription accuracy
+
+For LLM bottleneck:
+- Measure prompt length
+- Track response length
+- Compare models (GPT-4 vs 3.5)
+- Check time of day patterns (API load)
+- Review conversation history size
+
+For TTS bottleneck:
+- Compare voice models
+- Measure by response length
+- Test different TTS providers
+- Check audio quality settings
+```
+
+### 3. Implement Changes
+
+**Quick wins (can implement immediately)**:
+
+```
+ASR:
+☑ Reduce audio quality if overkill (48kHz → 16kHz)
+☑ Add audio preprocessing (noise reduction)
+☑ Implement VAD (Voice Activity Detection) to trim silence
+
+LLM:
+☑ Switch to faster model for simple queries
+☑ Reduce max_tokens if responses are too long
+☑ Trim conversation history (keep last 5 turns, not 20)
+☑ Simplify system prompts (remove verbose examples)
+
+TTS:
+☑ Use standard voice instead of neural/premium
+☑ Chunk long responses and stream
+☑ Cache common phrases
+
+System:
+☑ Upgrade server resources (CPU, memory)
+☑ Use CDN for audio delivery
+☑ Implement connection pooling to APIs
+```
+
+**Medium-term improvements (1-4 weeks)**:
+
+```
+☑ Implement prompt caching for repeated context
+☑ Build response cache for common questions
+☑ Set up streaming for LLM and TTS
+☑ Optimize database queries if using knowledge base
+☑ A/B test different model/provider combinations
+☑ Implement adaptive quality (faster models in high load)
+```
+
+**Long-term strategies (1-3 months)**:
+
+```
+☑ Fine-tune smaller, faster models for your domain
+☑ Implement predictive pre-generation
+☑ Build custom ASR/TTS for your use case
+☑ Architect multi-region deployment for lower latency
+☑ Develop hybrid approach (fast model → escalate to slow)
+```
+
+### 4. Measure Impact
+
+```
+Before change:
+- Record baseline metrics
+- Note date and time
+- Document configuration
+
+After change:
+- Wait for sufficient data (24-48 hours)
+- Compare to baseline
+- Calculate improvement percentage
+- Check for side effects (quality, errors)
+
+Example:
+Before: LLM 2,400ms, Error Rate 2%
+Change: GPT-4 → GPT-3.5-turbo
+After: LLM 1,200ms, Error Rate 3%
+Result: 50% faster, +1% errors (acceptable tradeoff)
+```
+
+<Tip>
+Always measure both speed AND quality when optimizing. A faster system that gives wrong answers is worse than a slower system that's accurate.
+</Tip>
+
+## Troubleshooting
+
+### Sudden Performance Degradation
+
+**Symptom**: Metrics were good, suddenly all slow
+
+**Investigation checklist**:
+
+```
+☐ Check LLM provider status page
+   - OpenAI status.openai.com
+   - Anthropic status.anthropic.com
+
+☐ Review recent deployments
+   - New code pushed?
+   - Configuration changes?
+
+☐ Check infrastructure
+   - Server CPU/memory usage
+   - Database performance
+   - Network connectivity
+
+☐ Analyze traffic patterns
+   - Sudden spike in volume?
+   - DDoS attack?
+
+☐ Review error logs
+   - New errors appearing?
+   - Timeout patterns?
+```
+
+### High Variability in Metrics
+
+**Symptom**: Performance bounces between fast and slow
+
+**Possible causes**:
+
+```
+Cause 1: Time-of-day API load
+- Fast during off-peak hours
+- Slow during peak hours
+- Solution: Use dedicated capacity or reserved instances
+
+Cause 2: Query complexity variance
+- Simple queries fast
+- Complex queries slow
+- Solution: Route by complexity (fast model for easy, slow for hard)
+
+Cause 3: Network instability
+- Jitter in latency
+- Packet loss
+- Solution: Monitor network quality, consider multi-region
+
+Cause 4: Shared infrastructure contention
+- Other services consuming resources
+- Solution: Isolate voice AI on dedicated infrastructure
+```
+
+### Error Rate Spike
+
+**Symptom**: Error rate suddenly increases
+
+**Immediate actions**:
+
+```
+1. Check service status pages (all providers)
+2. Review error logs for specific error types
+3. Identify if errors are clustered:
+   - Specific agent?
+   - Specific time period?
+   - Specific error type?
+4. Implement temporary mitigation:
+   - Increase timeout limits
+   - Add retry logic
+   - Fallback to simpler responses
+5. Monitor to see if self-resolves
+6. Escalate to infrastructure team if persists
+```
+
+### Performance Metrics Not Loading
+
+**Symptom**: Performance tab shows loading spinner or "No Data Available"
+
+**Troubleshooting**:
+
+```
+Check 1: Date range has data
+- Expand date range to "This Month"
+- Verify calls exist in that period
+
+Check 2: Agent filter
+- Select "All agents"
+- See if data appears
+
+Check 3: Browser console
+- Open DevTools (F12)
+- Check for API errors
+- Note any error messages
+
+Check 4: Network
+- Verify internet connection
+- Check if other tabs load
+- Try refreshing page
+
+Check 5: Permissions
+- Ensure you have access to performance data
+- Check with admin if access issue
+```
+
+<Warning>
+If performance metrics are consistently unavailable, contact your system administrator. There may be a backend issue or permissions problem preventing data access.
+</Warning>
+
+## Best Practices
+
+### Daily Monitoring
+
+**Quick check (2-3 minutes)**:
+
+```
+Morning:
+1. Open Performance tab
+2. Set date to "Today"
+3. Scan metrics:
+   - Latency < 3,000ms? ✓
+   - Error Rate < 5%? ✓
+4. Compare to "Yesterday"
+   - Similar? ✓ All good
+   - Worse? → Investigate
+
+If issues found:
+- Note which metric is problematic
+- Check other tabs for context
+- Review error logs
+- Create ticket if needed
+```
+
+### Weekly Analysis
+
+**Deep dive (15-30 minutes)**:
+
+```
+Weekly review process:
+1. Compare "This Week" to "Last Week"
+2. Note trends:
+   - Getting faster or slower?
+   - Error rate improving or degrading?
+3. Review performance chart
+   - Any new bottlenecks emerging?
+4. Check agent comparison
+   - All agents performing similarly?
+   - Any outliers need investigation?
+5. Document findings
+6. Plan optimizations if needed
+```
+
+### Monthly Optimization
+
+**Comprehensive review (1-2 hours)**:
+
+```
+Monthly optimization cycle:
+1. Analyze month-over-month trends
+2. Calculate averages and percentiles
+3. Identify systematic issues
+4. Prioritize optimization projects
+5. Set performance goals for next month
+6. Review progress on previous month's goals
+
+Example monthly goal:
+"Reduce average latency from 2,800ms to 2,400ms"
+- Target: 14% improvement
+- Method: Optimize prompts, cache common responses
+- Timeline: Implement by week 2, measure through month
+```
+
+<CardGroup cols={2}>
+  <Card title="Proactive Monitoring" icon="bell">
+    Set up alerts for when metrics exceed thresholds. Catch issues before users report them.
+  </Card>
+  <Card title="Continuous Improvement" icon="chart-up">
+    Performance optimization is ongoing. Always look for the next bottleneck to eliminate.
+  </Card>
+</CardGroup>
+
+## API Integration
+
+The Performance tab fetches data from:
+
+```
+GET /v1/agent-analytics/performance
+```
+
+**Query parameters**:
+
+- `projectId`: Your project ID (required)
+- `voiceAgentId`: Specific agent or "all"
+- `period`: Preset period or custom range
+- `startPeriod`: Custom start date (YYYY-MM-DD)
+- `endPeriod`: Custom end date (YYYY-MM-DD)
+- `timeDifference`: Timezone offset in hours
+
+**Response structure**:
+
+```json
+{
+  "avgAsrProcessingTime": 245.5,
+  "avgLlmResponseTime": 1834.2,
+  "avgTtsGenerationTime": 567.8,
+  "latency": 2647.5,
+  "sessionsHaveErrorsPercentage": 2.4
+}
+```
+
+All times are in milliseconds, error rate is a percentage (0-100).
+
+## Related Documentation
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Overview" icon="chart-line" href="/dashboard/overview">
+    View overall system metrics and statistics
+  </Card>
+  <Card title="Live Calls" icon="phone" href="/dashboard/live-calls">
+    Monitor active calls and real-time performance
+  </Card>
+  <Card title="Call History" icon="history" href="/dashboard/call-history">
+    Review individual call performance metrics
+  </Card>
+  <Card title="Satisfaction Metrics" icon="heart" href="/dashboard/satisfaction">
+    Understand how performance impacts customer satisfaction
+  </Card>
+</CardGroup>

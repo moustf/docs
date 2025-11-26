@@ -1,0 +1,1010 @@
+---
+title: Tool Node
+description: 'Execute reusable tool templates with parameter mapping and error handling'
+---
+
+## Overview
+
+Tool nodes execute pre-configured tool templates from your tool library. Unlike web tool nodes which define HTTP requests inline, tool nodes reference existing tools that can be reused across multiple agents and flows. This promotes consistency, maintainability, and reduces configuration time.
+
+**Key characteristic:** Tool nodes execute actions (API calls, database queries, external integrations) and then transition to the next node based on results.
+
+## When to Use
+
+Use tool nodes to:
+
+- Look up customer data from CRM systems
+- Check inventory, availability, or status
+- Submit forms or create records
+- Process payments or transactions
+- Send notifications (email, SMS, webhooks)
+- Retrieve data from databases
+- Execute business logic on external systems
+- Call any HTTP API with reusable configuration
+
+**Use Tool Node when:**
+
+- The tool will be used in multiple places
+- The tool needs comprehensive documentation
+- The tool requires consistent configuration
+- You want centralized tool management
+
+**Use Web Tool Node instead when:**
+
+- Making a one-off API call specific to this flow
+- Prototyping before creating a template
+- The API call is unlikely to be reused
+
+**[→ Compare: Web Tool Node](./web-tool-node)**
+
+---
+
+## Core Configuration
+
+### Basic Setup
+
+```typescript
+{
+  type: "tool",
+  label?: string,
+  description?: string,
+
+  // Tool configuration is stored in agentSettings.tools where tool.nodeId === node.id
+  // No tool reference fields (toolId, toolName, toolType) on the node itself
+
+  // Node-specific parameters (can override tool template parameters)
+  parameters: ToolParameter[],  // default: []
+
+  // Execution
+  timeout: number,  // milliseconds, default 30000
+
+  // Error handling
+  onErrorBehavior: "continue" | "retry" | "fail",  // default: "continue"
+  errorMessage?: string,
+
+  // Response handling
+  overrideResponse: boolean,  // default: false
+  customResponse?: string,
+  outputMapping: Record<string, string>,  // default: {}
+
+  // Variable extraction
+  extractVariables: ExtractVariablesConfig,
+
+  // Processing message
+  processingMessage?: string,
+  processingMessageType: "static" | "prompt",  // default: "static"
+
+  // Transitions
+  transitions: Transition[]
+}
+```
+
+<Info>
+**Tool Reference Architecture:** The tool itself (toolId, toolType, overrides, version) is stored in `agentSettings.tools` array with `tool.nodeId` matching this node's ID. The node only contains execution settings and parameter overrides.
+</Info>
+
+### Selecting a Tool
+
+1. Add a Tool Node to your flow
+2. Click **Select Tool** in the node configuration
+3. Choose from your tool library
+4. Tool details auto-populate (name, description, parameters)
+
+**What happens behind the scenes:**
+
+- Selecting a tool creates an entry in `agentSettings.tools` array
+- This entry has `nodeId` set to this node's ID to link them
+- Tool configuration (toolId, toolType, persistentId, version, overrides) is stored in that entry
+- The node itself only contains execution settings (timeout, error handling, output mapping, parameters)
+
+**Available tool types:**
+
+- **FUNCTION:** Server-side HTTP API requests (full override support)
+- **MCP:** Model Context Protocol tools (no overrides allowed)
+- **WEB_TOOL:** Browser-based tools for SDK deployments (limited overrides)
+
+**[→ Learn more about tool types and architecture/features/tools)**
+
+---
+
+## Parameter Mapping
+
+Map flow variables and static values to tool input parameters.
+
+### Static Values
+
+Hardcoded values that never change.
+
+```yaml
+Tool Node: Send_Welcome_Email
+  tool: SendGrid_Email
+
+  Parameters:
+    template_id: "welcome-v2"
+    from_email: "support@acme.com"
+    from_name: "Acme Support Team"
+```
+
+### Variable References
+
+Use data collected earlier in the flow using `{{variable_name}}` syntax.
+
+```yaml
+Tool Node: Send_Confirmation_Email
+  tool: SendGrid_Email
+
+  Parameters:
+    to_email: {{customer_email}}
+    to_name: {{customer_name}}
+    template_id: "order-confirmation"
+    order_id: {{order_id}}
+```
+
+### System Variables
+
+Reference built-in system variables.
+
+```yaml
+Tool Node: Log_Call_Event
+  tool: Analytics_Logger
+
+  Parameters:
+    caller_id: {{caller_id}}
+    call_id: {{call_id}}
+    timestamp: {{current_time}}
+    agent_id: {{agent_id}}
+    session_id: {{session_id}}
+```
+
+**[→ See all system variables: Variables Guide](../variables)**
+
+### Mixed Static and Variables
+
+Combine both for flexible configurations.
+
+```yaml
+Tool Node: CRM_Customer_Lookup
+  tool: Salesforce_Query
+
+  Parameters:
+    phone: {{caller_phone}}           # Variable
+    include_orders: true              # Static
+    fields: "name,email,account_id"   # Static
+    limit: 1                          # Static
+```
+
+### Parameter Types
+
+Tool parameters can have different data types:
+
+```typescript
+{
+  name: string,
+  value: string,  // Can contain {{variables}}
+  type: "string" | "number" | "boolean" | "object",
+  required: boolean
+}
+```
+
+**Example with mixed types:**
+
+```yaml
+Parameters:
+  customer_name: { { name } } # string
+  order_total: { { cart_total } } # number
+  send_confirmation: true # boolean
+  shipping_address: { { address_json } } # object
+```
+
+---
+
+## Output Mapping
+
+Extract data from tool responses into flow variables using JSON path syntax.
+
+### JSON Path Syntax
+
+Use `$.path.to.field` notation to reference fields in the response.
+
+**Tool response:**
+
+```json
+{
+  "success": true,
+  "data": {
+    "customer": {
+      "id": "CUST-12345",
+      "name": "John Smith",
+      "email": "john@example.com"
+    },
+    "account": {
+      "status": "active",
+      "balance": 1250.5,
+      "tier": "premium"
+    }
+  }
+}
+```
+
+**Output mapping:**
+
+```yaml
+Output Mapping:
+  customer_id: $.data.customer.id # "CUST-12345"
+  customer_name: $.data.customer.name # "John Smith"
+  customer_email: $.data.customer.email # "john@example.com"
+  account_status: $.data.account.status # "active"
+  account_balance: $.data.account.balance # 1250.50
+  membership_tier: $.data.account.tier # "premium"
+```
+
+### Using Extracted Variables
+
+Variables extracted via output mapping become available immediately in subsequent nodes.
+
+```yaml
+Tool Node: Lookup_Account
+  tool: CRM_Lookup
+  outputMapping:
+    customer_name: $.name
+    account_balance: $.balance
+
+Conversation Node: Discuss_Account
+  message: "Hello {{customer_name}}, I see your current balance is ${{account_balance}}."
+```
+
+### Array Access
+
+Access array elements by index.
+
+**Response:**
+
+```json
+{
+  "orders": [
+    { "id": "ORD-001", "total": 99.99 },
+    { "id": "ORD-002", "total": 149.99 }
+  ]
+}
+```
+
+**Mapping:**
+
+```yaml
+Output Mapping:
+  latest_order_id: $.orders[0].id # "ORD-001"
+  latest_order_total: $.orders[0].total # 99.99
+```
+
+### Nested Objects
+
+Navigate deeply nested structures.
+
+```yaml
+Output Mapping:
+  street: $.data.customer.address.street
+  city: $.data.customer.address.city
+  zip: $.data.customer.address.postal_code
+```
+
+---
+
+## Error Handling
+
+Configure how the flow responds when tool execution fails.
+
+### Continue (Recommended for Non-Critical Tools)
+
+Flow continues even if tool fails. Best for optional operations.
+
+```yaml
+Tool Node: Update_CRM_Notes
+  tool: CRM_Update_Notes
+
+  Error Handling:
+    onErrorBehavior: continue
+    errorMessage: "I wasn't able to update your notes, but let's continue."
+
+  Transitions:
+    - Always → Next_Step
+```
+
+**Use when:**
+
+- Tool is non-critical (analytics, logging)
+- Flow can proceed without tool result
+- Degraded experience is acceptable
+
+### Retry (For Intermittent Failures)
+
+Automatically retries failed tool calls.
+
+```yaml
+Tool Node: Check_Inventory
+  tool: Inventory_API
+
+  Error Handling:
+    onErrorBehavior: retry
+    retryAttempts: 2
+    retryDelay: 1000  # 1 second between retries
+    errorMessage: "I'm having trouble checking inventory. Let me try again..."
+
+  Transitions:
+    - Equation: {{inventory_available}} > 0 → In_Stock_Flow
+    - Always → Out_Of_Stock_Flow
+```
+
+**Use when:**
+
+- API has intermittent failures
+- Network issues are common
+- Tool is important but can fail temporarily
+
+### Fail (For Critical Operations)
+
+Stops flow execution and ends call when tool fails.
+
+```yaml
+Tool Node: Process_Payment
+  tool: Stripe_Charge
+
+  Error Handling:
+    onErrorBehavior: fail
+    errorMessage: "I'm unable to process your payment at this time. Please try again later or contact support."
+
+  Transitions:
+    - Equation: {{payment_status}} == "success" → Payment_Success
+```
+
+**Use when:**
+
+- Tool is critical to conversation
+- Cannot proceed without successful result
+- Failure requires human intervention
+
+### Error Messages
+
+Provide clear, user-friendly error messages.
+
+```yaml
+# ❌ Bad: Technical jargon
+errorMessage: "HTTP 500 Internal Server Error"
+
+# ✅ Good: User-friendly
+errorMessage: "I'm experiencing technical difficulties. Let me transfer you to a specialist who can help."
+```
+
+---
+
+## Response Handling
+
+### Default Behavior (Silent)
+
+By default, tool nodes execute silently—no message is spoken about the tool execution.
+
+```yaml
+Tool Node: Lookup_Customer
+  tool: CRM_Lookup
+  overrideResponse: false  # Default
+
+  # Tool executes, extracts variables, transitions to next node
+  # Agent says nothing about the tool call
+```
+
+### Custom Response Override
+
+Speak a custom message after tool execution using extracted variables.
+
+```yaml
+Tool Node: Lookup_Customer
+  tool: CRM_Lookup
+
+  Output Mapping:
+    customer_name: $.name
+    account_tier: $.tier
+
+  Response Override:
+    overrideResponse: true
+    customResponse: "Thank you, {{customer_name}}. I see you're a {{account_tier}} member."
+```
+
+**Variable interpolation:**
+
+- Use `{{variable_name}}` syntax
+- Variables from output mapping are available
+- Variables from earlier nodes are available
+- System variables are available
+
+### Processing Message
+
+Show message while tool executes (especially for slow APIs).
+
+```yaml
+Tool Node: Search_Knowledge_Base
+  tool: KB_Search
+
+  Processing Message:
+    message: "Let me search our knowledge base for that information..."
+    messageType: static
+
+  timeout: 15000  # 15 seconds
+```
+
+**Static vs Prompt:**
+
+**Static:** Exact message every time.
+
+```yaml
+processingMessage: 'Please hold while I check that for you...'
+processingMessageType: static
+```
+
+**Prompt:** AI generates contextual message.
+
+```yaml
+processingMessage: "Tell the user you're looking up their request and to please hold."
+processingMessageType: prompt
+```
+
+---
+
+## Variable Extraction
+
+In addition to output mapping (which extracts from tool responses), tool nodes support conversation-based variable extraction.
+
+### When to Use
+
+Use variable extraction when:
+
+- Tool requires user confirmation before executing
+- You want to ask questions before calling the tool
+- Tool needs additional context from conversation
+
+### Configuration
+
+```yaml
+Tool Node: Book_Appointment
+  tool: Calendar_API
+
+  Extract Variables:
+    enabled: true
+    variables:
+      - name: preferred_date
+        description: "Preferred appointment date"
+        extractionPrompt: "Extract date in YYYY-MM-DD format"
+        dataType: string
+        isRequired: true
+
+      - name: preferred_time
+        description: "Preferred time"
+        extractionPrompt: "Extract time in HH:MM format"
+        dataType: string
+        isRequired: true
+
+  Parameters:
+    customer_id: {{customer_id}}
+    date: {{preferred_date}}
+    time: {{preferred_time}}
+```
+
+**Note:** Variable extraction happens during conversation before tool execution. Most tool nodes use output mapping instead.
+
+---
+
+## Timeout Configuration
+
+Set maximum wait time for tool execution.
+
+```yaml
+Tool Node: External_API_Call
+  tool: Slow_API
+  timeout: 20000  # 20 seconds
+```
+
+**Recommendations:**
+
+- **Fast APIs (< 2s):** 5000ms
+- **Standard APIs:** 10000ms
+- **Slow operations:** 20000-30000ms
+- **Maximum allowed:** 30000ms (30 seconds)
+
+**When timeout occurs:**
+
+- Follows `onErrorBehavior` setting
+- Displays `errorMessage` if configured
+- Can continue, retry, or fail based on configuration
+
+<Warning>
+Long timeouts create poor user experience. Consider async tools or processing messages for slow operations.
+</Warning>
+
+---
+
+## Use Cases & Examples
+
+### Example 1: Customer Lookup
+
+**Scenario:** Look up customer by phone number.
+
+```yaml
+Tool Node: Lookup_Customer
+  tool: CRM_Customer_Lookup
+
+  Parameters:
+    phone_number: {{caller_id}}
+    include_history: true
+
+  Output Mapping:
+    customer_id: $.data.id
+    customer_name: $.data.name
+    customer_email: $.data.email
+    account_status: $.data.status
+    membership_tier: $.data.tier
+    last_order_date: $.data.last_order
+
+  Response Override:
+    overrideResponse: true
+    customResponse: "Welcome back, {{customer_name}}! I have your account details."
+
+  Error Handling:
+    onErrorBehavior: continue
+    errorMessage: "I'm having trouble accessing our customer database. Let's verify your information manually."
+
+  Transitions:
+    - Equation: {{account_status}} == "active" → Active_Account_Flow
+    - Equation: {{account_status}} == "suspended" → Suspended_Flow
+    - Always → New_Customer_Flow
+```
+
+### Example 2: Check Inventory
+
+**Scenario:** Verify product availability before taking order.
+
+```yaml
+Conversation Node: Collect_Product_Info
+  message: "What product are you interested in?"
+
+  Extract Variables:
+    - product_sku: "Extract product SKU or name"
+
+  Transitions:
+    - Always → Check_Stock
+
+Tool Node: Check_Stock
+  tool: Inventory_Check_API
+
+  Parameters:
+    sku: {{product_sku}}
+    warehouse: "primary"
+
+  Output Mapping:
+    stock_level: $.inventory.available
+    next_restock_date: $.inventory.next_shipment
+
+  Processing Message:
+    message: "Let me check if we have that in stock..."
+    messageType: static
+
+  Error Handling:
+    onErrorBehavior: retry
+    retryAttempts: 2
+
+  Transitions:
+    - Equation: {{stock_level}} > 0 → In_Stock_Flow
+    - Equation: {{stock_level}} == 0 → Out_Of_Stock_Flow
+```
+
+### Example 3: Process Payment
+
+**Scenario:** Charge customer credit card.
+
+```yaml
+Tool Node: Process_Payment
+  tool: Stripe_Create_Charge
+
+  Parameters:
+    amount: {{order_total}}
+    currency: "usd"
+    customer_id: {{stripe_customer_id}}
+    description: "Order #{{order_id}}"
+    receipt_email: {{customer_email}}
+
+  Output Mapping:
+    charge_id: $.id
+    payment_status: $.status
+    receipt_url: $.receipt_url
+
+  Processing Message:
+    message: "Processing your payment. Please do not hang up..."
+    messageType: static
+
+  Error Handling:
+    onErrorBehavior: fail
+    errorMessage: "Your payment could not be processed. Please contact your bank or try a different payment method."
+
+  Response Override:
+    overrideResponse: true
+    customResponse: "Your payment has been processed successfully. A receipt has been sent to {{customer_email}}."
+
+  timeout: 15000  # 15 seconds
+
+  Transitions:
+    - Equation: {{payment_status}} == "succeeded" → Payment_Success
+    - Always → Payment_Failed
+```
+
+### Example 4: Send Notification
+
+**Scenario:** Send confirmation email after booking.
+
+```yaml
+Tool Node: Send_Confirmation_Email
+  tool: SendGrid_Email
+
+  Parameters:
+    to: {{customer_email}}
+    template_id: "appointment-confirmation"
+    dynamic_data: {
+      customer_name: {{customer_name}},
+      appointment_date: {{appointment_date}},
+      appointment_time: {{appointment_time}},
+      location: {{appointment_location}}
+    }
+
+  Processing Message:
+    message: "I'm sending you a confirmation email now..."
+
+  Error Handling:
+    onErrorBehavior: continue
+    errorMessage: "I wasn't able to send the confirmation email, but your appointment is booked."
+
+  Transitions:
+    - Always → Appointment_Confirmed
+```
+
+### Example 5: Multi-Step Database Query
+
+**Scenario:** Look up customer, then fetch their orders.
+
+```yaml
+Tool Node: Lookup_Customer
+  tool: Database_Query_Customer
+  parameters:
+    phone: {{caller_phone}}
+  outputMapping:
+    customer_id: $.id
+  transitions:
+    - Always → Fetch_Orders
+
+Tool Node: Fetch_Orders
+  tool: Database_Query_Orders
+  parameters:
+    customer_id: {{customer_id}}
+    limit: 5
+  outputMapping:
+    order_count: $.total
+    latest_order_id: $.orders[0].id
+    latest_order_status: $.orders[0].status
+  transitions:
+    - Equation: {{order_count}} > 0 → Has_Orders_Flow
+    - Always → No_Orders_Flow
+```
+
+### Example 6: Conditional Tool Execution
+
+**Scenario:** Only call pricing API for premium members.
+
+```yaml
+Router Node: Check_Membership
+  transitions:
+    - Equation: {{membership_tier}} == "premium" → Get_Premium_Pricing
+    - Always → Get_Standard_Pricing
+
+Tool Node: Get_Premium_Pricing
+  tool: Pricing_API
+  parameters:
+    tier: "premium"
+    customer_id: {{customer_id}}
+  outputMapping:
+    discount_percentage: $.discount
+  transitions:
+    - Always → Display_Pricing
+
+Tool Node: Get_Standard_Pricing
+  tool: Pricing_API
+  parameters:
+    tier: "standard"
+  outputMapping:
+    discount_percentage: $.discount
+  transitions:
+    - Always → Display_Pricing
+```
+
+---
+
+## Web Tool Overrides
+
+Override tool configuration for specific contexts (e.g., web vs phone).
+
+### Configuration
+
+```yaml
+Tool Node: Contact_Form_Submit
+  tool: API_Submit_Form
+
+  Web Tools Overrides:
+    id: "tool-instance-uuid"
+    httpHeaders:
+      X-Client-Type: "web-sdk"
+      X-Browser-Info: "{{userAgent}}"
+    params:
+      source:
+        overrideValue: "web-chat"
+```
+
+**Use cases:**
+
+- Different headers for web vs phone contexts
+- Override API endpoints for testing
+- Customize tool behavior per deployment
+
+**[→ Learn more: Web Tools Guide/features/tools#web-tools)**
+
+---
+
+## Transitions
+
+Tool nodes support all transition types:
+
+### Natural Language
+
+Evaluate conversation context.
+
+```yaml
+Transitions:
+  - Natural Language: "User is satisfied with the result" → Continue_Flow
+  - Natural Language: "User wants to modify something" → Modify_Flow
+```
+
+**Note:** Tool nodes don't have conversations by default. Natural language transitions evaluate context from previous nodes.
+
+### Structured Equation
+
+Route based on extracted variables.
+
+```yaml
+Transitions:
+  - Equation: {{order_status}} == "completed" → Order_Complete
+  - Equation: {{order_status}} == "pending" → Order_Pending
+  - Equation: {{order_status}} == "failed" → Order_Failed
+```
+
+### Always
+
+Fallback transition.
+
+```yaml
+Transitions:
+  - Equation: {{success}} == true → Success_Path
+  - Always → Error_Path
+```
+
+**[→ Learn More: Transitions](../transitions)**
+
+---
+
+## Best Practices
+
+### ✅ Do's
+
+**Use tool templates for reusable operations**
+
+- Create templates for APIs used across multiple flows
+- Maintain consistency across agents
+- Update once, affects all usages
+
+**Map outputs to descriptive variable names**
+
+```yaml
+# ✅ Good
+outputMapping:
+  customer_full_name: $.name
+  account_balance_usd: $.balance
+
+# ❌ Bad
+outputMapping:
+  name: $.name
+  bal: $.balance
+```
+
+**Provide user-friendly error messages**
+
+```yaml
+# ✅ Good
+errorMessage: "I'm having trouble checking your account. Let me transfer you to someone who can help."
+
+# ❌ Bad
+errorMessage: "API error 500"
+```
+
+**Set realistic timeouts**
+
+- Don't make users wait unnecessarily
+- Balance user experience with API requirements
+- Use processing messages for slow operations
+
+**Test with actual API responses**
+
+- Verify output mapping JSON paths
+- Test error scenarios
+- Validate variable extraction
+
+**Use continue for non-critical tools**
+
+- Analytics and logging shouldn't block flows
+- Provide graceful degradation
+
+### ❌ Don'ts
+
+**Don't hardcode sensitive data in parameters**
+
+```yaml
+# ❌ Bad
+parameters:
+  api_key: "sk_live_1234567890"
+
+# ✅ Good
+parameters:
+  api_key: {{env.STRIPE_API_KEY}}
+```
+
+**Don't skip error handling**
+
+- Always configure onErrorBehavior
+- Provide error messages
+- Consider retry logic
+
+**Don't use tool nodes for one-off calls**
+
+- Use web tool nodes for single-use APIs
+- Reserve tool nodes for reusable templates
+
+**Don't make tools blocking unnecessarily**
+
+- Use continue when possible
+- Consider async tools for long operations
+- Provide processing messages
+
+**Don't forget to map critical outputs**
+
+- Extract all data you'll need downstream
+- Use descriptive variable names
+- Document what each variable contains
+
+---
+
+## Troubleshooting
+
+### Issue: Tool not appearing in selection
+
+**Solution:**
+
+1. Verify tool exists in tool library
+2. Check tool is active
+3. Refresh the page
+4. Verify tool is in current project
+
+### Issue: Parameters not being sent correctly
+
+**Solution:**
+
+1. Check variable names match exactly (case-sensitive)
+2. Verify variables exist (were extracted earlier)
+3. Review parameter type (string vs number vs boolean)
+4. Test with static values first
+
+### Issue: Output mapping not extracting variables
+
+**Solution:**
+
+1. Verify JSON path syntax: `$.path.to.field`
+2. Check actual API response format
+3. Test JSON path with tool response
+4. Ensure response contains expected fields
+
+### Issue: Tool timeout
+
+**Solution:**
+
+1. Increase timeout value
+2. Check API performance
+3. Add retry logic
+4. Consider async tools
+5. Add processing message
+
+### Issue: Variables not available in next node
+
+**Solution:**
+
+1. Verify output mapping is configured
+2. Check variable names match exactly
+3. Ensure tool completed successfully
+4. Review flow transitions
+
+---
+
+## Schema Reference
+
+```typescript
+{
+  type: "tool",
+  label?: string,
+  description?: string,
+
+  // Tool configuration stored in agentSettings.tools (not on node)
+  // Tool is linked via tool.nodeId === node.id
+
+  // Node-specific parameters
+  parameters: Array<{
+    name: string,
+    value: string,  // Supports {{variable}} syntax
+    type: "string" | "number" | "boolean" | "object",
+    required: boolean,
+    // Enhanced fields for custom parameters
+    description?: string,
+    dataType?: "string" | "number" | "boolean" | "array" | "object",
+    defaultValue?: string
+  }>,
+
+  // Execution settings
+  timeout: number,  // Default: 30000ms
+
+  // Variable extraction (optional)
+  extractVariables: {
+    enabled: boolean,
+    variables: Array<Variable>
+  },
+
+  // Response handling
+  overrideResponse: boolean,  // Default: false
+  customResponse?: string,
+  outputMapping: Record<string, string>,  // JSON path → variable name, default: {}
+
+  // Error handling
+  onErrorBehavior: "continue" | "retry" | "fail",  // Default: "continue"
+  errorMessage?: string,
+
+  // Processing message
+  processingMessage?: string,
+  processingMessageType: "static" | "prompt",
+
+  // Transitions
+  transitions: Transition[],
+
+  // Position
+  position: { x: number, y: number }
+}
+```
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Web Tool Node" icon="globe" href="./web-tool-node">
+    Make one-off API calls without templates
+  </Card>
+  <Card title="Create Tools" icon="plus" href="/features/tools">
+    Build reusable tool templates
+  </Card>
+  <Card title="Router Node" icon="route" href="./router-node">
+    Route based on tool results
+  </Card>
+  <Card title="Variables" icon="code" href="../variables">
+    Master variable usage and mapping
+  </Card>
+  <Card title="Transitions" icon="arrows-split-up-and-left" href="../transitions">
+    Control flow after tool execution
+  </Card>
+</CardGroup>
+```

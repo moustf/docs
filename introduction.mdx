@@ -1,14 +1,27 @@
 ---
 title: Introduction
-description: 'Welcome to Hamsa API docs! Build with our robust media-to-text APIs'
+description: 'Build powerful AI voice agents and leverage advanced media APIs with Hamsa'
 ---
 
-<CardGroup cols={2}>
+# Welcome to Hamsa
 
+Hamsa is a comprehensive platform for building intelligent voice solutions and leveraging advanced media processing APIs. Whether you're building AI voice agents for phone calls or integrating speech-to-text, text-to-speech, and translation capabilities, Hamsa provides the tools you need.
+
+## Platform Capabilities
+
+<CardGroup cols={2}>
+  <Card
+      title="Voice Agents"
+      icon="phone"
+      href="/agents/introduction"
+    >
+      <br />
+      Build, test, deploy, and monitor AI voice agents that handle phone calls naturally with advanced conversational capabilities.
+  </Card>
   <Card
       title="Speech to Text"
       icon="waveform"
-      href=""
+      href="/api-reference/endpoint/transcribe"
     >
       <br />
       Accurately transcribe Arabic speech into text, tailored for dialect variations.
@@ -16,7 +29,7 @@ description: 'Welcome to Hamsa API docs! Build with our robust media-to-text API
   <Card
       title="Text to Speech"
       icon="file-lines"
-      href=""
+      href="/api-reference/endpoint/generate-tts"
     >
       <br />
       Convert text into lifelike Arabic speech across dialects.
@@ -29,51 +42,169 @@ description: 'Welcome to Hamsa API docs! Build with our robust media-to-text API
       <br />
       Translate effortlessly between Arabic dialects, MSA, and English.
   </Card>
-  <Card
-      title="Speech to Speech"
-      icon="microchip-ai"
-      href=""
-    >
-      <br />
-      Engage in natural, seamless conversations with our voice agents.
-  </Card>
-
 </CardGroup>
 
-## Setting up
+---
 
-The first step to use the powerful and developer-friendly APIs of ours.
+## Voice Agents Platform
+
+Hamsa Telephony is a comprehensive platform for building, testing, deploying, and monitoring reliable AI voice agents. Create conversational AI that handles phone calls naturally, with advanced features for both simple and complex use cases.
+
+## What are Voice Agents?
+
+Voice agents are AI-powered conversational systems that interact with users over phone calls in natural language. They can:
+
+- Answer questions and provide information
+- Collect data from callers
+- Make decisions based on conversation context
+- Execute actions like transferring calls or sending SMS
+- Access your company's knowledge base
+- Integrate with your existing systems via tools and APIs
+
+## Key Capabilities
 
 <CardGroup cols={2}>
-  <Card
-    title="Authentication"
-    icon="unlock-keyhole"
-    href="auth"
-  >
-    <br />
-    Create an account on Hamsa dashboard and sign in to your account.
+  <Card title="Natural Conversations" icon="comments">
+    Support natural, human-like conversations in multiple languages with advanced speech recognition and synthesis
   </Card>
-  <Card
-    title="Create API Keys"
-    icon="key"
-    href="create-api-keys"
-  >
-    <br />
-    Create API keys to use for your transcription and other routes.
+  <Card title="Intelligent Decision Making" icon="brain">
+    Powered by leading LLM models (GPT-4, Claude, Gemini) for context understanding and intelligent responses
+  </Card>
+  <Card title="Flexible Architecture" icon="diagram-project">
+    Choose between simple single-prompt agents or powerful flow-based agents for complex workflows
+  </Card>
+  <Card title="Enterprise-Ready" icon="building">
+    Real-time monitoring, comprehensive logging, knowledge base integration, and webhook support
   </Card>
 </CardGroup>
 
-## Hamsa APIs
+## Two Approaches to Building Agents
 
-&nbsp;
+Hamsa offers two distinct approaches for building voice agents:
+
+### Single Prompt Agent
+
+Perfect for straightforward use cases with linear conversation flows.
+
+<Card title="Single Prompt Agent" icon="file-lines" href="/agents/single-prompt/overview">
+  Simple, fast, and effective for basic customer support, lead qualification, and information gathering
+</Card>
+
+**Best for:**
+
+- Simple information gathering
+- Basic customer support
+- Straightforward appointment booking
+- Quick prototypes and MVPs
+
+### Flow Agent
+
+Build sophisticated conversation flows with visual node-based editor.
+
+<Card title="Flow Agent" icon="diagram-nodes" href="/agents/flow-agent/overview">
+  Advanced workflows with 8 node types, conditional logic, and visual debugging
+</Card>
+
+**Best for:**
+
+- Multi-step processes with conditional logic
+- Complex customer service workflows
+- Advanced call routing and transfers
+- Integration-heavy applications
+
+## Quick Comparison
+
+| Feature               | Single Prompt | Flow Agent                 |
+| --------------------- | ------------- | -------------------------- |
+| **Setup Time**        | Minutes       | Hours                      |
+| **Visual Design**     | No            | Yes                        |
+| **Conditional Logic** | Limited       | Unlimited                  |
+| **DTMF Support**      | No            | Yes (3 features)           |
+| **Variable System**   | Basic         | Advanced (16+ system vars) |
+| **Agent Transfer**    | No            | Yes                        |
+| **Best For**          | Simple flows  | Complex workflows          |
+
+## Core Features
+
+### Knowledge Base Integration
+
+Upload documents, scrape websites, or add custom text to give your agents access to your company's information.
+
+<Card title="Learn More" icon="book" href="/features/knowledge-base">
+  Explore knowledge base features
+</Card>
+
+### Custom Tools & Functions
+
+Integrate with any API or system using custom tools, web hooks, or function calling.
+
+<Card title="Learn More" icon="wrench" href="/features/tools">
+  Explore tools and integrations
+</Card>
+
+### Real-time Testing
+
+Test agents in browser or via phone call with real-time logs and debugging.
+
+<Card title="Learn More" icon="vial" href="/features/testing">
+  Explore testing capabilities
+</Card>
+
+### DTMF Support (Flow Agents)
+
+Three distinct DTMF features for IVR menus, data collection, and global triggers.
+
+<Card title="Learn More" icon="phone" href="/agents/flow-agent/dtmf">
+  Explore DTMF features
+</Card>
+
+## Getting Started
+
+<Steps>
+  <Step title="Choose Your Agent Type">
+    Decide between Single Prompt or Flow Agent based on your use case complexity
+  </Step>
+  <Step title="Configure Settings">
+    Set up voice, language, LLM model, and behavior settings
+  </Step>
+  <Step title="Design Conversation">
+    Write prompts or design visual flow
+  </Step>
+  <Step title="Add Integrations">
+    Connect knowledge bases, tools, and webhooks
+  </Step>
+  <Step title="Test & Deploy">
+    Test thoroughly and assign phone numbers
+  </Step>
+</Steps>
+
+## Next Steps
 
 <CardGroup cols={2}>
-  <Card
-    title="Reference APIs"
-    icon="code"
-    href="api-reference/introduction"
-  >
-    <br />
-    Automatically generate endpoints from an OpenAPI spec
+  <Card title="Quick Start" icon="rocket" href="/quickstart">
+    Build your first agent in 10 minutes
+  </Card>
+  <Card title="Core Concepts" icon="lightbulb" href="/concepts">
+    Understand key concepts and terminology
+  </Card>
+  <Card title="Single Prompt Guide" icon="file-lines" href="/agents/single-prompt/overview">
+    Learn about single prompt agents
+  </Card>
+  <Card title="Flow Agent Guide" icon="diagram-nodes" href="/agents/flow-agent/overview">
+    Explore flow agent capabilities
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={3}>
+  <Card title="Documentation" icon="book" href="/introduction">
+    Browse complete documentation
+  </Card>
+  <Card title="Community" icon="users" href="https://community.hamsa.ai">
+    Join our community
+  </Card>
+  <Card title="Support" icon="headset" href="mailto:support@hamsa.ai">
+    Contact support
   </Card>
 </CardGroup>

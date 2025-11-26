@@ -1,3 +1,38 @@
-#navbar > div > div > div > div:nth-child(3) > div {
+#navbar>div>div>div>div:nth-child(3)>div {
   display: none !important;
+}
+
+/* Light mode: Use darker green background with white text for better contrast */
+[data-theme="light"] nav a[aria-current="page"],
+[data-theme="light"] nav a.active,
+[data-theme="light"] .sidebar a[aria-current="page"],
+[data-theme="light"] .sidebar a.active,
+[data-theme="light"] [style*="background"][style*="#B4FD83"],
+[data-theme="light"] [style*="background"][style*="rgb(180, 253, 131)"] {
+  background-color: #2D7A4F !important;
+  color: #ffffff !important;
+}
+
+/* Dark mode: Keep bright lime green with white text */
+[data-theme="dark"] nav a[aria-current="page"],
+[data-theme="dark"] nav a.active,
+[data-theme="dark"] .sidebar a[aria-current="page"],
+[data-theme="dark"] .sidebar a.active,
+[data-theme="dark"] [style*="background"][style*="#B4FD83"],
+[data-theme="dark"] [style*="background"][style*="rgb(180, 253, 131)"] {
+  background-color: #B4FD83 !important;
+  color: #1a1a1a !important;
+}
+
+/* Buttons and interactive elements */
+[data-theme="light"] button[class*="primary"],
+[data-theme="light"] .btn-primary {
+  background-color: #2D7A4F !important;
+  color: #ffffff !important;
+}
+
+[data-theme="dark"] button[class*="primary"],
+[data-theme="dark"] .btn-primary {
+  background-color: #B4FD83 !important;
+  color: #1a1a1a !important;
 }

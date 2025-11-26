@@ -1,0 +1,741 @@
+---
+title: Node Types Overview
+description: 'Complete guide to all 8 Flow Agent node types and when to use each'
+---
+
+## Overview
+
+Flow agents use nodes as building blocks to create sophisticated conversation workflows. Each node type serves a specific purpose, and understanding when to use each type is key to building effective flows.
+
+## All Node Types at a Glance
+
+| Node Type               | Primary Purpose        | Key Features                      | Common Use Cases                       |
+| ----------------------- | ---------------------- | --------------------------------- | -------------------------------------- |
+| **Start Node**          | Flow entry point       | Dual mode: conversation or tool   | Initial greeting, pre-fetch data       |
+| **Conversation Node**   | Natural dialogue       | Variable extraction, DTMF capture | Collect info, ask questions, explain   |
+| **Tool Node**           | Execute tool templates | Parameter mapping, error handling | API calls, database lookups            |
+| **Web Tool Node**       | One-off API calls      | Inline HTTP configuration         | Quick integrations, prototyping        |
+| **Router Node**         | Conditional branching  | Pure logic, no conversation       | Route based on data, decision trees    |
+| **Transfer Call Node**  | Phone transfer         | Warm/cold transfer to number      | Escalate to human, department routing  |
+| **Transfer Agent Node** | Agent handoff          | Switch to different Hamsa agent   | Specialist routing, language switching |
+| **End Call Node**       | Terminate call         | Final message, graceful exit      | Completion, timeout, error handling    |
+
+---
+
+## Start Node
+
+**Purpose:** Entry point for every flow. The first node executed when a call begins.
+
+### Two Operating Modes
+
+#### Conversation Mode (Default)
+
+Greets the caller and initiates dialogue.
+
+```yaml
+Start Node (Conversation):
+  message: "Thank you for calling Acme Corp. How can I help you today?"
+  messageType: prompt
+
+  Transitions:
+    - Natural Language: "User needs sales" → Sales_Department
+    - Natural Language: "User needs support" → Support_Department
+    - DTMF: key=1 → Sales_Department
+    - DTMF: key=2 → Support_Department
+```
+
+#### Tool Mode
+
+Executes a tool before any conversation, useful for pre-fetching caller data.
+
+```yaml
+Start Node (Tool):
+  subType: tool
+  tool: Lookup_Caller_Info
+  parameters:
+    phone_number: { { caller_id } }
+
+  Transitions:
+    - Always → Personalized_Greeting
+```
+
+**When to use:**
+
+- Conversation mode: Standard flows that start with a greeting
+- Tool mode: Pre-fetch customer data, check account status, log call start
+
+**[→ Full Documentation: Start Node](./start-node)**
+
+---
+
+## Conversation Node
+
+**Purpose:** The workhorse of flow agents. Used for natural dialogue with users.
+
+### Key Capabilities
+
+- **Dynamic or static messages:** AI-generated responses or fixed scripts
+- **Variable extraction:** Automatically capture data from conversation
+- **DTMF input capture:** Collect account numbers, PINs, phone numbers
+- **Skip response mode:** Speak without waiting for user input
+- **Block interruptions:** Prevent users from interrupting critical messages
+
+**Example - Information Gathering:**
+
+```yaml
+Conversation Node: Collect_Contact_Info
+  messageType: prompt
+  message: |
+    Ask the user for their name, email, and phone number.
+    Be friendly and explain we need this for follow-up.
+
+  Variable Extraction:
+    - customer_name: "Extract full name"
+    - customer_email: "Extract email address"
+    - customer_phone: "Extract 10-digit phone"
+
+  Transitions:
+    - Natural Language: "All info collected" → Next_Step
+    - Natural Language: "User declined" → Objection_Handler
+```
+
+**When to use:**
+
+- Greeting callers
+- Asking questions and collecting information
+- Providing explanations or instructions
+- Handling objections
+- Conducting surveys
+- Confirming understanding
+
+**[→ Full Documentation: Conversation Node](./conversation-node)**
+
+---
+
+## Tool Node
+
+**Purpose:** Execute reusable tool templates (API Request tools, MCP tools, Function tools).
+
+### Key Features
+
+- **Parameter mapping:** Map variables to tool inputs
+- **Error handling:** Continue, retry, or fail on errors
+- **Custom responses:** Override default tool responses
+- **Output mapping:** Extract data from responses into variables
+- **Processing messages:** Display messages while tool executes
+- **Timeout configuration:** Set max execution time
+
+**Example - Customer Lookup:**
+
+```yaml
+Tool Node: Lookup_Customer
+  tool: CRM_Customer_Lookup
+
+  Parameters:
+    phone_number: {{caller_phone}}
+    include_orders: true
+
+  Output Mapping:
+    customer_id: $.data.id
+    customer_name: $.data.full_name
+    account_status: $.data.status
+
+  Error Handling:
+    onErrorBehavior: continue
+    errorMessage: "I'm having trouble accessing your account right now."
+
+  Processing Message:
+    message: "Let me look up your account information..."
+    messageType: static
+
+  Transitions:
+    - Equation: {{account_status}} == "active" → Active_Flow
+    - Equation: {{account_status}} == "suspended" → Suspended_Flow
+    - Always → Default_Flow
+```
+
+**When to use:**
+
+- Database lookups
+- API integrations
+- Check availability, status, or inventory
+- Submit forms or create records
+- Retrieve customer data
+- Process payments
+- Send notifications
+
+**[→ Full Documentation: Tool Node](./tool-node)**
+
+---
+
+## Web Tool Node
+
+**Purpose:** Make one-off HTTP requests without creating a reusable tool template.
+
+### Key Features
+
+- **Inline configuration:** Define HTTP request directly in the node
+- **No template needed:** Perfect for single-use API calls
+- **Same capabilities as Tool Node:** Parameters, error handling, output mapping
+- **Rapid prototyping:** Test integrations before creating templates
+
+**Example - Weather API (One-off):**
+
+```yaml
+Web Tool Node: Check_Weather
+  method: GET
+  url: https://api.weather.com/v1/current
+
+  Query Parameters:
+    city: {{user_city}}
+    units: imperial
+
+  Headers:
+    X-API-Key: {{env.WEATHER_API_KEY}}
+
+  Output Mapping:
+    temperature: $.current.temp
+    conditions: $.current.conditions
+
+  Custom Response:
+    overrideResponse: true
+    customResponse: "It's currently {{temperature}} degrees with {{conditions}}."
+
+  Transitions:
+    - Always → Continue_Conversation
+```
+
+**When to use:**
+
+- Quick one-off integrations
+- Prototyping before creating tool templates
+- Flow-specific API calls unlikely to be reused
+- Testing API endpoints
+- Simple GET requests
+
+**When NOT to use:**
+
+- Tools needed across multiple agents (create a template instead)
+- Complex error handling requirements
+- Tools requiring extensive documentation
+
+**[→ Full Documentation: Web Tool Node](./web-tool-node)**
+
+---
+
+## Router Node
+
+**Purpose:** Pure conditional routing based on variables and equations—no conversation.
+
+### Key Features
+
+- **No conversation:** Instantly evaluates and transitions
+- **Multiple conditions:** Complex decision trees with AND/OR logic
+- **Variable-based routing:** Branch on extracted data
+- **High performance:** Fast evaluation, no LLM calls
+
+**Example - Lead Qualification Router:**
+
+```yaml
+Router Node: Qualify_Lead
+  label: "Route based on budget and decision maker"
+
+  Transitions:
+    - Structured Equation (Priority 1):
+        logic: all
+        conditions:
+          - {{budget_range}} >= 5000
+          - {{is_decision_maker}} == true
+          - {{timeline}} == "immediate"
+        → High_Priority_Sales
+
+    - Structured Equation (Priority 2):
+        logic: all
+        conditions:
+          - {{budget_range}} >= 1000
+          - {{budget_range}} < 5000
+        → Medium_Priority_Nurture
+
+    - Structured Equation (Priority 3):
+        logic: any
+        conditions:
+          - {{budget_range}} < 1000
+          - {{is_decision_maker}} == false
+        → Low_Priority_Followup
+
+    - Always → Default_Path
+```
+
+**When to use:**
+
+- Route based on extracted variables
+- Implement business logic
+- Create decision trees
+- A/B test different conversation paths
+- Route by time of day, caller type, account status
+- Split flows based on data (not conversation content)
+
+**When NOT to use:**
+
+- When conversation is needed to determine next step (use conversation node instead)
+- Simple single-condition routing (use conversation node with natural language transition)
+
+**[→ Full Documentation: Router Node](./router-node)**
+
+---
+
+## Transfer Call Node
+
+**Purpose:** Transfer the phone call to another phone number.
+
+### Key Features
+
+- **Warm transfer:** Announce transfer before connecting
+- **Cold transfer:** Immediate transfer without announcement
+- **Transfer message:** Customizable pre-transfer message
+- **Phone number validation:** E.164 format required
+- **Timeout configuration:** Set max wait time
+
+**Example - Transfer to Sales Team:**
+
+```yaml
+Transfer Call Node: Transfer_To_Sales
+  phoneNumber: +18005551234
+  transferType: warm
+
+  Transfer Message:
+    message: "Let me connect you with our sales team who can better assist you."
+    messageType: static
+
+  Timeout: 30000  # 30 seconds
+```
+
+**Example - Emergency Transfer (Global):**
+
+```yaml
+Transfer Call Node: Emergency_Transfer
+  isGlobal: true
+  globalConditionType: dtmf
+  globalDtmfKey: 0
+
+  phoneNumber: +18005550911
+  transferType: cold
+
+  Transfer Message:
+    message: "Transferring you to a specialist now."
+```
+
+**When to use:**
+
+- Escalate to human agents
+- Department-specific routing
+- After-hours transfer to answering service
+- Emergency or high-priority scenarios
+- Specialized support requiring human interaction
+
+**When NOT to use:**
+
+- Transferring to another Hamsa agent (use Transfer Agent Node instead for better experience)
+- When conversation can continue with AI
+
+**[→ Full Documentation: Transfer Call Node](./transfer-call-node)**
+
+---
+
+## Transfer Agent Node
+
+**Purpose:** Transfer to another Hamsa agent while maintaining conversation context.
+
+### Key Features
+
+- **Lower latency:** No phone transfer needed
+- **Context preservation:** Full conversation history passed
+- **Better reliability:** No call quality issues
+- **No repeated questions:** New agent has full context
+- **Seamless experience:** User doesn't realize they switched agents
+
+**Example - Language Switch:**
+
+```yaml
+Transfer Agent Node: Switch_To_Spanish
+  agentId: "spanish-support-agent-id"
+
+  Transfer Message:
+    message: "Let me connect you with our Spanish-speaking representative."
+    messageType: static
+
+  Timeout: 30000
+```
+
+**Example - Specialist Routing:**
+
+```yaml
+Conversation Node: Identify_Need
+  message: "Are you calling about technical support or billing?"
+
+  Transitions:
+    - Natural Language: "Technical issue" → Transfer_To_Tech
+    - Natural Language: "Billing question" → Transfer_To_Billing
+
+Transfer Agent Node: Transfer_To_Tech
+  agentId: "technical-support-agent"
+  transferMessage: "Let me connect you with our technical specialist."
+
+Transfer Agent Node: Transfer_To_Billing
+  agentId: "billing-support-agent"
+  transferMessage: "Let me connect you with our billing department."
+```
+
+**When to use:**
+
+- Route to specialized agents (tech support, billing, sales)
+- Language switching (English → Spanish → Mandarin)
+- Complexity escalation (simple → advanced agent)
+- Department routing within your AI system
+- Workflow hand-offs (qualification → closing)
+
+**Advantages over Transfer Call Node:**
+
+- **Faster:** No phone system involved
+- **Smarter:** New agent has full context
+- **Cheaper:** No telephony transfer costs
+- **Better UX:** No hold music or reconnection
+
+**[→ Full Documentation: Transfer Agent Node](./transfer-agent-node)**
+
+---
+
+## End Call Node
+
+**Purpose:** Gracefully terminate the conversation.
+
+### Key Features
+
+- **Final message:** Optional goodbye message
+- **Call reason tracking:** Mark why call ended
+- **Static or dynamic message:** Fixed script or AI-generated
+- **Clean termination:** Proper call cleanup
+
+**Example - Successful Completion:**
+
+```yaml
+End Call Node: Call_Complete
+  reason: completed
+
+  Final Message:
+    message: "Thank you for calling Acme Corp. Have a great day!"
+    messageType: static
+```
+
+**Example - Timeout Handling:**
+
+```yaml
+End Call Node: Timeout_End
+  reason: timeout
+
+  Final Message:
+    message: "I haven't heard from you in a while. Please call back when you're ready. Goodbye!"
+    messageType: static
+```
+
+**Example - Error Termination:**
+
+```yaml
+End Call Node: Error_End
+  reason: error
+
+  Final Message:
+    message: "I'm experiencing technical difficulties. Please try calling back in a few minutes."
+    messageType: static
+```
+
+**When to use:**
+
+- Successfully completed conversations
+- User requested to end call
+- Timeout scenarios (no user input)
+- Error scenarios requiring termination
+- After transfer (to ensure original call ends)
+
+**Reason Types:**
+
+- `completed`: Normal completion
+- `user_requested`: User asked to end call
+- `error`: System error occurred
+- `timeout`: User inactive too long
+
+**[→ Full Documentation: End Call Node](./end-call-node)**
+
+---
+
+## Node Selection Guide
+
+### Decision Tree: Which Node Should I Use?
+
+```
+Need to start the flow?
+  → START NODE
+
+Need to have a conversation?
+  → CONVERSATION NODE
+
+Need to call an API or execute a tool?
+  ├─ Using existing tool template?
+  │   → TOOL NODE
+  └─ One-off HTTP request?
+      → WEB TOOL NODE
+
+Need to route based on data without conversation?
+  → ROUTER NODE
+
+Need to transfer the call?
+  ├─ To phone number?
+  │   → TRANSFER CALL NODE
+  └─ To another Hamsa agent?
+      → TRANSFER AGENT NODE
+
+Need to end the call?
+  → END CALL NODE
+```
+
+---
+
+## Common Node Combinations
+
+### Pattern 1: Conversation → Tool → Conversation
+
+Collect information, call API, discuss results.
+
+```
+[Conversation: Ask for account number]
+  → [Tool: Lookup account]
+    → [Conversation: Discuss account details]
+```
+
+### Pattern 2: Tool → Router → Multiple Paths
+
+Fetch data, route based on results.
+
+```
+[Tool: Check inventory]
+  → [Router: In stock?]
+    ├─ Yes → [Conversation: Proceed with order]
+    └─ No → [Conversation: Suggest alternatives]
+```
+
+### Pattern 3: Conversation → Router → Transfer/End
+
+Qualify, route to appropriate endpoint.
+
+```
+[Conversation: Qualification questions]
+  → [Router: Decision tree]
+    ├─ High priority → [Transfer Agent: Sales specialist]
+    ├─ Medium priority → [Conversation: Self-service]
+    └─ Low priority → [End Call: Follow-up email]
+```
+
+### Pattern 4: Start (Tool) → Conversation
+
+Pre-fetch data, personalized greeting.
+
+```
+[Start (Tool mode): Lookup caller]
+  → [Conversation: "Welcome back, {{customer_name}}!"]
+```
+
+---
+
+## Best Practices
+
+### ✅ Do's
+
+**Keep nodes focused**
+
+- Each node should have one clear purpose
+- Split complex logic into multiple nodes
+
+**Use descriptive names**
+
+- `Collect_Contact_Info` not `Node_3`
+- `Transfer_To_Billing` not `Transfer_1`
+
+**Plan your flow first**
+
+- Sketch on paper or whiteboard
+- Identify all possible paths
+- Plan for error scenarios
+
+**Leverage the right node for the job**
+
+- Don't use conversation nodes for pure routing
+- Don't use router nodes when conversation is needed
+- Use web tool nodes for prototyping, tool nodes for production
+
+**Always provide fallback paths**
+
+- Use "always" transitions as safety nets
+- Handle error scenarios gracefully
+- Consider timeout scenarios
+
+### ❌ Don'ts
+
+**Don't create circular flows without exit conditions**
+
+- Every loop needs a way out
+- Consider max iteration limits
+
+**Don't skip error handling**
+
+- Plan for API failures
+- Handle timeout scenarios
+- Provide graceful degradation
+
+**Don't overuse web tool nodes in production**
+
+- Create templates for frequently used tools
+- Web tool nodes are for prototyping
+
+**Don't make nodes too complex**
+
+- If a conversation node needs >300 words, split it
+- If a router has >10 conditions, reconsider logic
+
+**Don't forget about the user experience**
+
+- Keep conversations natural
+- Don't over-complicate flows
+- Test with real users
+
+---
+
+## Advanced Patterns
+
+### Global Nodes for Common Functions
+
+Mark nodes as global to make them accessible from anywhere:
+
+```yaml
+# Global operator transfer (DTMF 0)
+Transfer Call Node (Global):
+  isGlobal: true
+  globalConditionType: dtmf
+  globalDtmfKey: 0
+  phoneNumber: +18005550100
+
+# Global menu repeat (DTMF 9)
+Conversation Node (Global):
+  isGlobal: true
+  globalConditionType: dtmf
+  globalDtmfKey: 9
+  message: "Main menu: Press 1 for Sales..."
+
+# Global emergency routing (Natural language)
+Transfer Call Node (Global):
+  isGlobal: true
+  globalConditionType: prompt
+  globalCondition: "User has an emergency or urgent safety issue"
+  phoneNumber: +18005550911
+```
+
+### Parallel Tool Execution
+
+Execute multiple tools simultaneously using multiple transitions from a single node.
+
+_Note: Current implementation processes sequentially, but structure supports parallel execution._
+
+### Progressive Disclosure
+
+Start with simple questions, progressively ask for more detail based on responses.
+
+```
+[Start: General inquiry]
+  → [Conversation: What type of issue?]
+    → [Router: Technical, Billing, or Other]
+      ├─ Technical → [Conversation: Hardware or Software?]
+      ├─ Billing → [Conversation: Payment or Invoice?]
+      └─ Other → [Conversation: General support]
+```
+
+---
+
+## Node Configuration Reference
+
+### Common Configuration Across All Nodes
+
+All nodes share these base configuration options:
+
+```typescript
+{
+  id: string,              // Unique identifier (UUID or NanoID)
+  type: NodeType,          // Node type (start, conversation, tool, etc.)
+  label?: string,          // Display label (max 100 chars)
+  description?: string,    // Internal description (max 500 chars)
+
+  // Global node settings
+  isGlobal: boolean,       // Make accessible from anywhere
+  globalCondition?: string,  // Natural language trigger
+  globalConditionType?: 'prompt' | 'dtmf',
+  globalDtmfKey?: '0'-'9' | '#' | '*',
+
+  // Advanced options
+  requiresDoubleConfirm: boolean,  // Require confirmation
+  skipResponse: boolean,           // Skip waiting for user input
+
+  // Position on canvas
+  position: { x: number, y: number },
+
+  // Transitions to other nodes
+  transitions: Transition[],
+}
+```
+
+---
+
+## Next Steps
+
+**Explore individual node types in detail:**
+
+<CardGroup cols={2}>
+  <Card title="Start Node" icon="play" href="./start-node">
+    Flow entry point with conversation or tool mode
+  </Card>
+  <Card title="Conversation Node" icon="comments" href="./conversation-node">
+    Natural dialogue with variable extraction
+  </Card>
+  <Card title="Tool Node" icon="wrench" href="./tool-node">
+    Execute reusable tool templates
+  </Card>
+  <Card title="Web Tool Node" icon="globe" href="./web-tool-node">
+    One-off API calls and integrations
+  </Card>
+  <Card title="Router Node" icon="route" href="./router-node">
+    Conditional routing based on logic
+  </Card>
+  <Card title="Transfer Call Node" icon="phone-arrow-up-right" href="./transfer-call-node">
+    Transfer to phone number
+  </Card>
+  <Card title="Transfer Agent Node" icon="user-group" href="./transfer-agent-node">
+    Switch to another Hamsa agent
+  </Card>
+  <Card title="End Call Node" icon="phone-slash" href="./end-call-node">
+    Gracefully terminate calls
+  </Card>
+</CardGroup>
+
+**Learn related concepts:**
+
+<CardGroup cols={2}>
+  <Card title="Transitions" icon="arrows-split-up-and-left" href="../transitions">
+    Control flow between nodes
+  </Card>
+  <Card title="Variables" icon="code" href="../variables">
+    Pass data between nodes
+  </Card>
+  <Card title="DTMF Features" icon="grid-2" href="../dtmf">
+    Keypad interactions and input capture
+  </Card>
+  <Card title="Global Nodes" icon="earth-americas" href="../global-nodes">
+    Accessible from anywhere in flow
+  </Card>
+</CardGroup>

@@ -1,0 +1,1148 @@
+---
+title: 'Outcome Parameters'
+description: 'Extract structured data from conversations using custom schema definitions'
+---
+
+## Overview
+
+Outcomes allow you to extract structured, formatted data from your AI agent conversations. Define a schema that specifies exactly what information to capture, and your agent will automatically extract and return that data in a consistent JSON format after each call.
+
+<Info>
+**Key Features:**
+- **Structured Data Extraction** - Convert free-form conversations to JSON
+- **Custom Schemas** - Define any data structure you need
+- **Type Safety** - Support for strings, numbers, booleans, objects, and arrays
+- **Visual Builder** - Create schemas without writing code
+- **JSON Editor** - Advanced users can edit raw JSON Schema
+- **Real-time Validation** - Catch errors before saving
+</Info>
+
+## How It Works
+
+The outcome system follows this process:
+
+1. **Define Schema** - Specify what data to extract (name, email, intent, etc.)
+2. **Configure Agent** - Add the schema to your agent's outcome settings
+3. **Conduct Call** - Agent has a conversation with the user
+4. **Extract Data** - AI analyzes the conversation against your schema
+5. **Return Results** - Structured data sent via webhook or available in call history
+
+<Note>
+Outcomes are sent when the call ends. The extracted data is available in the webhook `call.ended` event and in the call details page.
+</Note>
+
+## Creating an Outcome Schema
+
+### Using the Visual Builder
+
+The easiest way to create an outcome schema:
+
+1. Navigate to your agent's configuration
+2. Scroll to **Outcome** section
+3. Click **Configure Schema**
+4. Click **Add Parameter** to add a new field
+5. For each parameter, specify:
+   - **Name** - Field identifier (e.g., `customer_name`)
+   - **Type** - Data type (string, number, boolean, object, array)
+   - **Description** - What this field represents
+   - **Required** - Whether the field must be present
+
+### Basic Example: Customer Service
+
+Extract basic information from a customer service call:
+
+**Visual Builder Configuration:**
+
+| Name            | Type          | Description                    | Required |
+| --------------- | ------------- | ------------------------------ | -------- |
+| `customer_name` | String        | The customer's full name       | Yes      |
+| `email`         | String        | Customer's email address       | No       |
+| `issue_type`    | String (enum) | Type of issue                  | Yes      |
+| `resolved`      | Boolean       | Whether issue was resolved     | Yes      |
+| `notes`         | String        | Additional notes from the call | No       |
+
+**Generated JSON Schema:**
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "customer_name": {
+      "type": "string",
+      "description": "The customer's full name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Customer's email address"
+    },
+    "issue_type": {
+      "type": "string",
+      "description": "Type of issue",
+      "enum": ["billing", "technical", "account", "general"]
+    },
+    "resolved": {
+      "type": "boolean",
+      "description": "Whether issue was resolved"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes from the call"
+    }
+  },
+  "required": ["customer_name", "issue_type", "resolved"]
+}
+```
+
+**Example Outcome Result:**
+
+```json
+{
+  "customer_name": "John Smith",
+  "email": "john.smith@email.com",
+  "issue_type": "billing",
+  "resolved": true,
+  "notes": "Customer was concerned about unexpected charge. Explained the charge was for premium feature. Customer satisfied with explanation."
+}
+```
+
+## Supported Data Types
+
+### String
+
+Text data of any length.
+
+**Use Cases:**
+
+- Names, addresses, descriptions
+- Open-ended responses
+- Notes and comments
+
+**Example:**
+
+```json
+{
+  "name": {
+    "type": "string",
+    "description": "Customer's full name"
+  },
+  "feedback": {
+    "type": "string",
+    "description": "Customer feedback about the service"
+  }
+}
+```
+
+**Sample Output:**
+
+```json
+{
+  "name": "Sarah Johnson",
+  "feedback": "Great service, very helpful agent"
+}
+```
+
+### String with Enum
+
+String limited to specific values.
+
+**Use Cases:**
+
+- Categories, statuses, predefined options
+- Multiple choice responses
+- Classification fields
+
+**Example:**
+
+```json
+{
+  "priority": {
+    "type": "string",
+    "description": "Issue priority level",
+    "enum": ["low", "medium", "high", "urgent"]
+  },
+  "sentiment": {
+    "type": "string",
+    "description": "Customer sentiment",
+    "enum": ["positive", "neutral", "negative"]
+  }
+}
+```
+
+**Sample Output:**
+
+```json
+{
+  "priority": "high",
+  "sentiment": "negative"
+}
+```
+
+### Number
+
+Numeric values (integers or decimals).
+
+**Use Cases:**
+
+- Quantities, amounts, scores
+- Ratings, percentages
+- Measurements
+
+**Example:**
+
+```json
+{
+  "account_balance": {
+    "type": "number",
+    "description": "Customer's current account balance in dollars"
+  },
+  "satisfaction_score": {
+    "type": "number",
+    "description": "Satisfaction rating from 1-10"
+  },
+  "items_ordered": {
+    "type": "number",
+    "description": "Number of items in the order"
+  }
+}
+```
+
+**Sample Output:**
+
+```json
+{
+  "account_balance": 1234.56,
+  "satisfaction_score": 8,
+  "items_ordered": 3
+}
+```
+
+### Boolean
+
+True/false values.
+
+**Use Cases:**
+
+- Yes/no questions
+- Flags and indicators
+- Binary decisions
+
+**Example:**
+
+```json
+{
+  "resolved": {
+    "type": "boolean",
+    "description": "Whether the issue was resolved"
+  },
+  "requires_followup": {
+    "type": "boolean",
+    "description": "Whether a follow-up call is needed"
+  },
+  "customer_satisfied": {
+    "type": "boolean",
+    "description": "Whether customer expressed satisfaction"
+  }
+}
+```
+
+**Sample Output:**
+
+```json
+{
+  "resolved": true,
+  "requires_followup": false,
+  "customer_satisfied": true
+}
+```
+
+### Object
+
+Nested structure with multiple fields.
+
+**Use Cases:**
+
+- Grouped related data
+- Complex entities
+- Hierarchical information
+
+**Example:**
+
+```json
+{
+  "customer": {
+    "type": "object",
+    "description": "Customer information",
+    "properties": {
+      "name": {
+        "type": "string",
+        "description": "Full name"
+      },
+      "phone": {
+        "type": "string",
+        "description": "Phone number"
+      },
+      "email": {
+        "type": "string",
+        "description": "Email address"
+      }
+    },
+    "required": ["name"]
+  },
+  "address": {
+    "type": "object",
+    "description": "Shipping address",
+    "properties": {
+      "street": {
+        "type": "string",
+        "description": "Street address"
+      },
+      "city": {
+        "type": "string",
+        "description": "City"
+      },
+      "state": {
+        "type": "string",
+        "description": "State or province"
+      },
+      "zip": {
+        "type": "string",
+        "description": "Postal code"
+      }
+    },
+    "required": ["street", "city"]
+  }
+}
+```
+
+**Sample Output:**
+
+```json
+{
+  "customer": {
+    "name": "John Smith",
+    "phone": "+1-415-555-2671",
+    "email": "john@example.com"
+  },
+  "address": {
+    "street": "123 Main St",
+    "city": "San Francisco",
+    "state": "CA",
+    "zip": "94102"
+  }
+}
+```
+
+### Array
+
+List of items (can be objects, strings, numbers, etc.).
+
+**Use Cases:**
+
+- Multiple items of the same type
+- Lists and collections
+- Repeated data
+
+**Example:**
+
+```json
+{
+  "topics_discussed": {
+    "type": "array",
+    "description": "List of topics covered in the call",
+    "items": {
+      "type": "string"
+    }
+  },
+  "products_ordered": {
+    "type": "array",
+    "description": "Products in the order",
+    "items": {
+      "type": "object",
+      "properties": {
+        "product_name": {
+          "type": "string",
+          "description": "Name of the product"
+        },
+        "quantity": {
+          "type": "number",
+          "description": "Quantity ordered"
+        },
+        "price": {
+          "type": "number",
+          "description": "Price per unit"
+        }
+      },
+      "required": ["product_name", "quantity"]
+    }
+  }
+}
+```
+
+**Sample Output:**
+
+```json
+{
+  "topics_discussed": [
+    "billing question",
+    "account upgrade",
+    "technical support"
+  ],
+  "products_ordered": [
+    {
+      "product_name": "Premium Plan",
+      "quantity": 1,
+      "price": 29.99
+    },
+    {
+      "product_name": "Extra Storage",
+      "quantity": 2,
+      "price": 9.99
+    }
+  ]
+}
+```
+
+## Common Use Cases
+
+### Sales Call Qualification
+
+Extract lead information and qualify prospects:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "lead_name": {
+      "type": "string",
+      "description": "Full name of the prospect"
+    },
+    "company_name": {
+      "type": "string",
+      "description": "Company the prospect works for"
+    },
+    "job_title": {
+      "type": "string",
+      "description": "Prospect's job title"
+    },
+    "company_size": {
+      "type": "string",
+      "description": "Number of employees",
+      "enum": ["1-10", "11-50", "51-200", "201-500", "500+"]
+    },
+    "budget": {
+      "type": "string",
+      "description": "Budget range",
+      "enum": ["< $1k", "$1k-$5k", "$5k-$10k", "$10k+"]
+    },
+    "timeline": {
+      "type": "string",
+      "description": "When they plan to purchase",
+      "enum": ["immediate", "1-3 months", "3-6 months", "6+ months"]
+    },
+    "pain_points": {
+      "type": "array",
+      "description": "Problems they're trying to solve",
+      "items": {
+        "type": "string"
+      }
+    },
+    "qualified": {
+      "type": "boolean",
+      "description": "Whether lead meets qualification criteria"
+    },
+    "next_steps": {
+      "type": "string",
+      "description": "What happens next"
+    }
+  },
+  "required": ["lead_name", "qualified"]
+}
+```
+
+### Appointment Scheduling
+
+Capture appointment details:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "patient_name": {
+      "type": "string",
+      "description": "Patient's full name"
+    },
+    "phone_number": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "appointment_date": {
+      "type": "string",
+      "description": "Preferred appointment date (YYYY-MM-DD)"
+    },
+    "appointment_time": {
+      "type": "string",
+      "description": "Preferred time slot",
+      "enum": ["morning", "afternoon", "evening"]
+    },
+    "appointment_type": {
+      "type": "string",
+      "description": "Type of appointment",
+      "enum": ["checkup", "consultation", "followup", "emergency"]
+    },
+    "symptoms": {
+      "type": "string",
+      "description": "Description of symptoms or reason for visit"
+    },
+    "insurance_provider": {
+      "type": "string",
+      "description": "Insurance company name"
+    },
+    "new_patient": {
+      "type": "boolean",
+      "description": "Whether this is a new patient"
+    },
+    "confirmed": {
+      "type": "boolean",
+      "description": "Whether appointment was confirmed"
+    }
+  },
+  "required": ["patient_name", "phone_number", "appointment_date", "confirmed"]
+}
+```
+
+### Customer Feedback Collection
+
+Gather structured feedback:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "overall_rating": {
+      "type": "number",
+      "description": "Overall satisfaction rating (1-5)"
+    },
+    "service_rating": {
+      "type": "number",
+      "description": "Service quality rating (1-5)"
+    },
+    "product_rating": {
+      "type": "number",
+      "description": "Product quality rating (1-5)"
+    },
+    "would_recommend": {
+      "type": "boolean",
+      "description": "Whether customer would recommend to others"
+    },
+    "positive_aspects": {
+      "type": "array",
+      "description": "What the customer liked",
+      "items": {
+        "type": "string"
+      }
+    },
+    "negative_aspects": {
+      "type": "array",
+      "description": "What needs improvement",
+      "items": {
+        "type": "string"
+      }
+    },
+    "additional_comments": {
+      "type": "string",
+      "description": "Any additional feedback"
+    },
+    "contact_for_followup": {
+      "type": "boolean",
+      "description": "Whether customer wants follow-up contact"
+    }
+  },
+  "required": ["overall_rating"]
+}
+```
+
+### Order Processing
+
+Extract order details from conversations:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "customer": {
+      "type": "object",
+      "description": "Customer information",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number"
+        }
+      },
+      "required": ["name"]
+    },
+    "items": {
+      "type": "array",
+      "description": "Items in the order",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "description": "Product SKU or ID"
+          },
+          "product_name": {
+            "type": "string",
+            "description": "Product name"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "Quantity ordered"
+          },
+          "price": {
+            "type": "number",
+            "description": "Price per unit"
+          }
+        },
+        "required": ["product_name", "quantity"]
+      }
+    },
+    "shipping_address": {
+      "type": "object",
+      "description": "Delivery address",
+      "properties": {
+        "street": {
+          "type": "string",
+          "description": "Street address"
+        },
+        "city": {
+          "type": "string",
+          "description": "City"
+        },
+        "state": {
+          "type": "string",
+          "description": "State"
+        },
+        "zip": {
+          "type": "string",
+          "description": "ZIP code"
+        }
+      },
+      "required": ["street", "city", "zip"]
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "How customer will pay",
+      "enum": ["credit_card", "debit_card", "cash_on_delivery", "bank_transfer"]
+    },
+    "total_amount": {
+      "type": "number",
+      "description": "Total order amount"
+    },
+    "order_confirmed": {
+      "type": "boolean",
+      "description": "Whether order was confirmed"
+    }
+  },
+  "required": ["customer", "items", "order_confirmed"]
+}
+```
+
+## Using the JSON Editor
+
+For advanced users, the JSON editor provides direct access to the schema:
+
+### Switching to JSON Mode
+
+1. In the outcome configuration, click the **JSON** tab
+2. Edit the raw JSON schema directly
+3. Schema is validated in real-time
+4. Errors are highlighted with detailed messages
+
+### JSON Schema Requirements
+
+Your schema must follow these rules:
+
+<Warning>
+**Required Structure:**
+- Root must be `type: "object"`
+- Must have `properties` object
+- Must have `required` array
+- Only supported types: `string`, `number`, `boolean`, `object`, `array`
+</Warning>
+
+**Valid Schema:**
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "field_name": {
+      "type": "string",
+      "description": "Description of the field"
+    }
+  },
+  "required": ["field_name"]
+}
+```
+
+**Invalid Schemas:**
+
+```json
+// ❌ Root is not an object
+{
+  "type": "array",
+  "items": {...}
+}
+
+// ❌ Missing properties
+{
+  "type": "object",
+  "required": ["name"]
+}
+
+// ❌ Missing description
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    }
+  },
+  "required": []
+}
+
+// ❌ Unsupported type
+{
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "date",
+      "description": "A date field"
+    }
+  },
+  "required": []
+}
+```
+
+### Allowed Keys by Type
+
+Different property types support different configuration keys:
+
+**String Properties:**
+
+```json
+{
+  "type": "string",
+  "description": "Required for all types",
+  "enum": ["value1", "value2"] // Optional: limit to specific values
+}
+```
+
+**Object Properties:**
+
+```json
+{
+  "type": "object",
+  "description": "Required for all types",
+  "properties": {...},  // Nested properties
+  "required": [...]     // Required nested fields
+}
+```
+
+**Array Properties:**
+
+```json
+{
+  "type": "array",
+  "description": "Required for all types",
+  "items": {...}  // Schema for array items
+}
+```
+
+**Number and Boolean:**
+
+```json
+{
+  "type": "number", // or "boolean"
+  "description": "Required for all types"
+  // No additional keys allowed
+}
+```
+
+## Validation and Error Handling
+
+### Common Validation Errors
+
+**Duplicate Property Names:**
+
+```json
+// ❌ Error: Duplicate key "name"
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "First name"
+    },
+    "name": {
+      "type": "string",
+      "description": "Last name"
+    }
+  },
+  "required": []
+}
+
+// ✅ Fixed: Use unique names
+{
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "description": "First name"
+    },
+    "last_name": {
+      "type": "string",
+      "description": "Last name"
+    }
+  },
+  "required": []
+}
+```
+
+**Missing Descriptions:**
+
+```json
+// ❌ Error: Description required
+{
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string"
+    }
+  },
+  "required": []
+}
+
+// ✅ Fixed: Add description
+{
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Customer's email address"
+    }
+  },
+  "required": []
+}
+```
+
+**Unsupported Keys:**
+
+```json
+// ❌ Error: "minLength" not supported
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Customer name",
+      "minLength": 1,
+      "maxLength": 100
+    }
+  },
+  "required": []
+}
+
+// ✅ Fixed: Remove unsupported keys
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Customer name (1-100 characters)"
+    }
+  },
+  "required": []
+}
+```
+
+## Best Practices
+
+### Naming Conventions
+
+Use clear, consistent field names:
+
+```json
+✅ Good Names:
+- "customer_name"
+- "email_address"
+- "is_resolved"
+- "account_balance"
+- "order_items"
+
+❌ Bad Names:
+- "n" (too short, unclear)
+- "customerNameValue" (inconsistent casing)
+- "data" (too generic)
+- "field1" (not descriptive)
+```
+
+### Description Quality
+
+Write helpful descriptions:
+
+```json
+✅ Good Descriptions:
+{
+  "email": {
+    "type": "string",
+    "description": "Customer's email address for order confirmation"
+  },
+  "priority": {
+    "type": "string",
+    "description": "Urgency level based on customer's needs and issue severity",
+    "enum": ["low", "medium", "high", "urgent"]
+  }
+}
+
+❌ Bad Descriptions:
+{
+  "email": {
+    "type": "string",
+    "description": "Email"  // Too brief
+  },
+  "priority": {
+    "type": "string",
+    "description": "The priority"  // Not informative
+  }
+}
+```
+
+### Required Fields
+
+Only mark fields as required if they're essential:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "customer_name": {
+      "type": "string",
+      "description": "Customer's full name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Email address (optional if not provided)"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Phone number (optional if not provided)"
+    },
+    "issue_resolved": {
+      "type": "boolean",
+      "description": "Whether the issue was resolved"
+    }
+  },
+  "required": ["customer_name", "issue_resolved"]
+  // Email and phone are optional - customer might not share them
+}
+```
+
+### Schema Organization
+
+For complex schemas, group related fields:
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "customer": {
+      "type": "object",
+      "description": "Customer information",
+      "properties": {
+        "name": { "type": "string", "description": "Full name" },
+        "email": { "type": "string", "description": "Email address" },
+        "phone": { "type": "string", "description": "Phone number" }
+      },
+      "required": ["name"]
+    },
+    "issue": {
+      "type": "object",
+      "description": "Issue details",
+      "properties": {
+        "type": { "type": "string", "description": "Category of issue" },
+        "description": {
+          "type": "string",
+          "description": "Detailed description"
+        },
+        "resolved": { "type": "boolean", "description": "Resolution status" }
+      },
+      "required": ["type", "resolved"]
+    }
+  },
+  "required": ["customer", "issue"]
+}
+```
+
+## Accessing Outcome Results
+
+### Via Webhooks
+
+Outcome data is sent in the `call.ended` webhook event:
+
+```json
+{
+  "eventType": "call.ended",
+  "callId": "call_uuid_12345",
+  "timestamp": "2024-01-15T14:35:00.000Z",
+  "data": {
+    "callDuration": 180,
+    "outcomeResult": {
+      "customer_name": "Jane Smith",
+      "email": "jane@example.com",
+      "issue_type": "billing",
+      "resolved": true,
+      "notes": "Customer inquired about recent charge. Explained it was for annual subscription renewal. Customer satisfied."
+    }
+  }
+}
+```
+
+### Via Call History
+
+View outcome results in the dashboard:
+
+1. Navigate to **Call History**
+2. Click on a call to view details
+3. Switch to the **Outcome** tab
+4. See extracted data in formatted view
+
+### Via API
+
+Retrieve outcome data programmatically:
+
+```bash
+curl -X GET https://api.tryhamsa.com/v1/calls/{callId} \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+Response includes `outcomeResult`:
+
+```json
+{
+  "id": "call_uuid_12345",
+  "startedAt": "2024-01-15T14:30:00.000Z",
+  "endedAt": "2024-01-15T14:35:00.000Z",
+  "duration": 300,
+  "transcription": [...],
+  "outcomeResult": {
+    "customer_name": "Jane Smith",
+    "email": "jane@example.com",
+    "issue_type": "billing",
+    "resolved": true
+  }
+}
+```
+
+## Troubleshooting
+
+### Schema Validation Fails
+
+**Error:** "Schema incomplete" or validation errors
+
+**Common Causes:**
+
+- Missing required fields
+- Invalid JSON syntax
+- Unsupported property types
+- Duplicate property names
+
+**Solution:**
+
+1. Check the error message for specific issues
+2. Verify all properties have descriptions
+3. Ensure root is type "object"
+4. Confirm no duplicate keys exist
+
+### Missing Outcome Data
+
+**Problem:** Outcome result is empty or incomplete
+
+**Possible Causes:**
+
+1. Agent didn't gather required information during call
+2. Required fields couldn't be determined from conversation
+3. Call ended prematurely
+
+**Solution:**
+
+- Review the call transcript
+- Ensure agent asks for required information
+- Make fewer fields required if data often missing
+- Add prompts to agent instructions to gather specific data
+
+Example agent instruction:
+
+```
+Before ending the call, make sure you have collected:
+- Customer's full name
+- Their email address
+- The type of issue they're experiencing
+- Whether their issue was resolved
+```
+
+### Incorrect Data Types
+
+**Problem:** Numbers extracted as strings, or booleans as strings
+
+**Cause:** Schema type doesn't match extracted data
+
+**Solution:** Ensure your schema types match the expected data:
+
+```json
+// ✅ Correct types
+{
+  "age": {
+    "type": "number",  // Will be extracted as: 25
+    "description": "Customer's age"
+  },
+  "is_member": {
+    "type": "boolean",  // Will be extracted as: true
+    "description": "Whether customer is a member"
+  }
+}
+
+// ❌ Wrong types
+{
+  "age": {
+    "type": "string",  // Will be extracted as: "25"
+    "description": "Customer's age"
+  }
+}
+```
+
+## Related Features
+
+- [Webhooks](/features/webhooks) - Receive outcome data in real-time
+- [Agents](/agents/introduction) - Configure agents to extract outcomes
+- [Call History](/dashboard/call-history) - View outcome results
+- [Tools](/features/tools) - Use outcomes with external APIs
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Schema Examples" icon="code" href="https://github.com/hamsa/outcome-examples">
+    Sample schemas for common use cases
+  </Card>
+  <Card title="Contact Support" icon="headset" href="mailto:support@tryhamsa.com">
+    Get help with complex schemas
+  </Card>
+</CardGroup>

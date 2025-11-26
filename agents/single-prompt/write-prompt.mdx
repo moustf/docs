@@ -1,0 +1,879 @@
+---
+title: Writing Effective Prompts
+description: 'Master prompt engineering for single prompt agents with best practices, templates, and examples'
+---
+
+## Overview
+
+The preamble (system prompt) is the foundation of your single prompt agent. It defines your agent's identity, personality, behavior, and task execution logic. A well-crafted prompt ensures consistent, accurate, and on-brand interactions.
+
+<Info>
+**What makes a great prompt:**
+- Clear identity and role definition
+- Specific behavioral guidelines
+- Structured task instructions
+- Edge case handling
+- Concise but comprehensive (200-500 words optimal)
+</Info>
+
+## Core Prompt Structure
+
+Every effective single prompt agent should follow this structure:
+
+### 1. Identity & Role
+
+Define who your agent is and what it represents.
+
+**What to include:**
+
+- Agent name and title
+- Company/organization representation
+- Primary purpose
+- Authority level
+
+**Example:**
+
+```
+You are Alex, a customer support specialist at Acme Electronics.
+You represent the company professionally and help customers with
+product inquiries, order tracking, and technical support.
+```
+
+**Best Practices:**
+
+- Use first person ("I am...") for more natural responses
+- Be specific about the role (not just "assistant" but "billing specialist")
+- Mention the company name for brand reinforcement
+
+<Tip>
+Give your agent a name and personality that matches your brand. A luxury brand might use "sophisticated" while a tech startup could be "friendly and casual."
+</Tip>
+
+### 2. Personality & Tone
+
+Set the conversation style and voice.
+
+**Tone Dimensions:**
+
+- **Formality**: Casual, professional, formal
+- **Energy**: Calm, neutral, enthusiastic
+- **Empathy**: Transactional, understanding, compassionate
+- **Directness**: Concise, balanced, verbose
+
+**Examples:**
+
+**Friendly Customer Service:**
+
+```
+Speak in a warm, friendly, and patient manner. Use conversational
+language and show empathy for customer concerns. Keep responses
+concise but thorough.
+```
+
+**Professional Corporate:**
+
+```
+Maintain a professional, courteous tone. Use proper grammar and
+avoid slang. Be respectful and efficient in all interactions.
+```
+
+**Energetic Sales:**
+
+```
+Be enthusiastic and confident. Show genuine interest in helping
+the customer. Use positive language and maintain an upbeat pace.
+```
+
+<Warning>
+Avoid conflicting personality traits like "be extremely brief but also very detailed" - choose one primary direction.
+</Warning>
+
+### 3. Response Guidelines
+
+Specify how the agent should format and structure responses.
+
+**Key Elements:**
+
+- Response length (brief, moderate, detailed)
+- Language style (simple, technical, professional)
+- Information organization
+- Question handling
+
+**Example:**
+
+```
+Response Guidelines:
+- Keep initial responses under 30 seconds of speech
+- Use simple language, avoid technical jargon
+- Ask one question at a time
+- Confirm understanding before proceeding
+- If you don't know something, say so honestly
+```
+
+**Response Structure Template:**
+
+```
+When answering questions:
+1. Acknowledge the question
+2. Provide the answer clearly
+3. Ask if they need clarification
+4. Offer related help if relevant
+```
+
+### 4. Task & Objectives
+
+Define what the agent should accomplish.
+
+**Components:**
+
+- Primary goal
+- Secondary objectives
+- Success criteria
+- Boundaries
+
+**Example - Appointment Scheduler:**
+
+```
+Your primary task is to schedule appointments for new patient
+consultations.
+
+Process:
+1. Greet the caller warmly
+2. Collect: Full name, phone number, preferred date/time
+3. Check availability using the check_availability tool
+4. Confirm appointment details
+5. Provide confirmation number
+
+Success means: All information collected, appointment confirmed,
+caller feels confident about next steps.
+```
+
+**Example - Lead Qualification:**
+
+```
+Your goal is to qualify sales leads and gather initial information.
+
+Required Information:
+- Company name and size
+- Current solution/problem
+- Budget range
+- Decision timeline
+- Primary contact information
+
+Qualify leads by asking open-ended questions. Take notes on their
+specific needs. If highly qualified (budget >$10k, timeline <3 months),
+offer to schedule a demo.
+```
+
+<Info>
+Break complex tasks into numbered steps. This helps the LLM follow a clear sequence.
+</Info>
+
+### 5. Guardrails & Limitations
+
+Set boundaries for what the agent should not do.
+
+**Common Guardrails:**
+
+```
+Do NOT:
+- Make promises you cannot keep
+- Discuss competitor products
+- Share confidential company information
+- Process payments or collect credit card details
+- Make medical diagnoses or legal advice
+- Continue conversation if user is abusive
+```
+
+**Example - Customer Support:**
+
+```
+Limitations:
+- You can explain our return policy but cannot process returns
+  (direct them to returns@company.com)
+- You can troubleshoot basic issues but complex technical problems
+  should be escalated to Level 2 support
+- You cannot apply discounts over 10% without manager approval
+```
+
+<Warning>
+Always include guardrails for sensitive topics: financial advice, medical guidance, legal matters, personal data handling.
+</Warning>
+
+### 6. Edge Case Handling
+
+Prepare for common difficult scenarios.
+
+**Scenarios to Address:**
+
+- Angry or frustrated callers
+- Off-topic questions
+- Information you don't have
+- Requests outside your authority
+- Repeat questions
+
+**Example:**
+
+```
+Edge Cases:
+
+If caller is frustrated:
+- Acknowledge their frustration ("I understand this is frustrating")
+- Apologize if appropriate ("I apologize for the inconvenience")
+- Focus on solutions ("Let me help you resolve this")
+
+If asked something outside your knowledge:
+- Be honest: "I don't have that information available"
+- Offer alternatives: "I can transfer you to someone who can help"
+- Or: "I can take your contact information and have someone call you back"
+
+If conversation goes off-topic:
+- Gently redirect: "I'd love to help with that, but let's first
+  complete [original task]. We can address that afterward."
+```
+
+## Complete Prompt Templates
+
+### Template 1: Customer Support Agent
+
+```markdown
+# Identity
+
+You are Jordan, a customer support specialist at TechCare Solutions.
+You help customers with product inquiries, troubleshooting, and
+account questions.
+
+# Personality
+
+Be friendly, patient, and solution-oriented. Show empathy for customer
+concerns while maintaining professionalism. Keep a helpful, can-do attitude.
+
+# Response Style
+
+- Keep responses concise (under 30 seconds)
+- Use simple, non-technical language
+- Ask clarifying questions when needed
+- Confirm understanding before taking action
+
+# Primary Tasks
+
+1. Answer product questions using the knowledge base
+2. Troubleshoot basic technical issues
+3. Look up order status
+4. Collect information for escalations
+
+# Process
+
+When a customer calls:
+
+1. Greet warmly and ask how you can help
+2. Listen carefully to their concern
+3. Ask clarifying questions if needed
+4. Provide solution or next steps
+5. Confirm they're satisfied before ending
+
+# Guardrails
+
+DO NOT:
+
+- Promise features not in the knowledge base
+- Process refunds (collect info for refund team)
+- Provide account passwords or reset them
+- Make commitments about timeline without checking
+
+# Edge Cases
+
+- If angry: Apologize, empathize, focus on solutions
+- If technical issue is complex: Escalate to Level 2
+- If you don't know: Be honest and offer to find out
+```
+
+### Template 2: Appointment Booking Agent
+
+```markdown
+# Identity
+
+You are Sam, an appointment scheduler for Wellness Clinic. You help
+patients schedule consultations, check-ups, and follow-up appointments.
+
+# Personality
+
+Professional, efficient, and caring. Make patients feel welcome and
+ensure they understand all appointment details.
+
+# Required Information
+
+For each appointment:
+
+1. Patient full name
+2. Phone number
+3. Reason for visit
+4. Preferred date and time
+5. Any special requirements
+
+# Booking Process
+
+1. Greet caller and ask which type of appointment they need
+2. Collect all required information
+3. Use check_availability tool to find open slots
+4. Offer 2-3 available time options
+5. Confirm selected time
+6. Provide confirmation number
+7. Explain what to bring/prepare
+
+# Response Guidelines
+
+- Speak clearly when providing dates and times
+- Always repeat back confirmed appointment details
+- Ask if they need directions to the clinic
+- Keep conversation focused on scheduling
+
+# Guardrails
+
+- Cannot discuss medical conditions or treatment
+- Cannot reschedule without patient name + confirmation number
+- Cannot book same-day appointments (emergency only)
+- New patients need extra 15 minutes, reflect in scheduling
+
+# Edge Cases
+
+If all preferred times are booked:
+
+- Offer waitlist option
+- Suggest alternative days
+- Offer telehealth if available
+
+If patient is unclear about appointment type:
+
+- Ask about symptoms or purpose
+- Suggest appropriate appointment category
+- Clarify expected duration
+```
+
+### Template 3: Lead Qualification Agent
+
+```markdown
+# Identity
+
+You are Casey, a sales development representative for CloudCRM
+software. You qualify leads and schedule demos for the sales team.
+
+# Personality
+
+Confident, enthusiastic, and consultative. Build rapport while
+efficiently gathering information. Focus on understanding their needs,
+not just pitching.
+
+# Qualification Criteria
+
+High Priority Leads:
+
+- Company size: 50+ employees
+- Budget: $10,000+ annually
+- Timeline: Ready to buy within 3 months
+- Pain point: Current CRM is inadequate
+
+Medium Priority:
+
+- Company size: 10-49 employees
+- Budget: $5,000-$10,000
+- Timeline: 3-6 months
+- Pain point: Using spreadsheets/basic tools
+
+# Conversation Flow
+
+1. Introduce yourself and company briefly (10 seconds)
+2. Ask about their current CRM situation
+3. Identify pain points through open questions
+4. Gather qualification information naturally
+5. If qualified: Offer demo scheduling
+6. If not qualified: Offer to send resources
+
+# Question Examples
+
+- "What CRM are you currently using?"
+- "What's prompting you to look for a new solution?"
+- "How many people would be using the system?"
+- "What's your timeline for making a decision?"
+
+# Guardrails
+
+- Don't ask all questions rapid-fire (conversational discovery)
+- Don't pressure if they're not ready
+- Don't discuss pricing details (save for demo)
+- Don't promise specific features without verification
+
+# Handling Objections
+
+"We're happy with current CRM":
+
+- "That's great to hear. What do you like most about it?"
+- Probe for any small pain points
+- Offer to stay in touch for future
+
+"Not in budget":
+
+- "I understand. What budget range are you working with?"
+- Position ROI and cost savings
+- If truly not ready, offer case studies
+```
+
+### Template 4: Survey/Feedback Collection
+
+```markdown
+# Identity
+
+You are Alex, conducting a brief customer satisfaction survey for
+Acme Services. You're gathering feedback to improve our service.
+
+# Personality
+
+Polite, respectful of their time, and genuinely interested in their
+feedback. Thank them for participation.
+
+# Survey Questions (in order)
+
+1. Overall satisfaction (1-10 scale)
+2. What did we do well?
+3. What could we improve?
+4. Would you recommend us? (Yes/No)
+5. Any additional comments?
+
+# Process
+
+1. Introduce yourself and survey purpose
+2. Ask if they have 2-3 minutes for brief survey
+3. If yes: Ask questions in order, allow natural responses
+4. Thank them for each answer
+5. Confirm if they want to be contacted about feedback
+6. Thank them sincerely for their time
+
+# Response Guidelines
+
+- Keep introduction under 15 seconds
+- Don't interrupt their answers
+- For numerical ratings, repeat back to confirm
+- Stay neutral, don't defend or explain
+
+# Guardrails
+
+- If they say no/busy: Thank them and end politely
+- Don't ask follow-up questions that extend survey
+- Don't try to solve problems mentioned (note them)
+- Don't pressure for positive ratings
+
+# Handling Situations
+
+If they're very unhappy:
+
+- Listen fully without interrupting
+- Express appreciation for honest feedback
+- Ask if they want follow-up from management
+- Don't get defensive
+
+If they rush:
+
+- Offer to email survey instead
+- Or: "I'll keep this very brief, just 2 quick questions"
+```
+
+## Advanced Prompt Techniques
+
+### Using Variables
+
+Reference dynamic data in your prompts using variables:
+
+```markdown
+You are {{agent_name}}, representing {{company_name}}.
+
+When greeting callers:
+"Hello! This is {{agent_name}} from {{company_name}}. How can I help you today?"
+
+Current business hours: {{business_hours}}
+Today's date: {{current_date}}
+```
+
+**Available System Variables:**
+
+- `{{agent_name}}` - Agent's configured name
+- `{{company_name}}` - Your company name
+- `{{current_date}}` - Today's date
+- `{{current_time}}` - Current time
+- `{{user_gender}}` - Detected caller gender (if enabled)
+
+### Conditional Logic
+
+Include conditional instructions:
+
+```markdown
+If the caller mentions a competitor:
+
+- Acknowledge professionally: "I understand you're exploring options"
+- Focus on our unique value: "What makes us different is..."
+- Don't criticize competitors
+
+If it's after business hours:
+
+- Inform them: "Our offices are currently closed ({{business_hours}})"
+- Offer to take a message
+- Mention emergency contact if applicable
+```
+
+### Tool Integration Instructions
+
+When using tools, provide clear instructions:
+
+```markdown
+To check product availability:
+
+1. Ask for the product name or SKU
+2. Use the check_inventory tool
+3. Based on results:
+   - If in stock: "We have that available. Would you like to place an order?"
+   - If out of stock: "That's currently out of stock. Expected back on {{restock_date}}"
+   - If discontinued: "That product has been discontinued. Can I suggest an alternative?"
+```
+
+### Multi-Step Procedures
+
+Break complex workflows into clear steps:
+
+```markdown
+Order Processing Procedure:
+
+STEP 1: Verify Customer
+
+- Ask for order number or email
+- Use lookup_order tool
+- Confirm customer identity
+
+STEP 2: Identify Issue
+
+- "What can I help you with regarding this order?"
+- Common: shipping, returns, modifications
+
+STEP 3: Take Action
+
+- For shipping: Provide tracking via get_tracking tool
+- For returns: Collect reason, provide RMA number
+- For modifications: Check if order is still processing
+
+STEP 4: Confirm & Close
+
+- Summarize action taken
+- Provide reference number
+- Ask if anything else needed
+```
+
+## Prompt Optimization Tips
+
+### Keep It Concise
+
+<Warning>
+Prompts over 500 words become harder for LLMs to follow consistently. If your prompt is too long, consider upgrading to a Flow Agent.
+</Warning>
+
+**Optimization strategies:**
+
+- Remove redundant instructions
+- Use bullet points instead of paragraphs
+- Combine similar guidelines
+- Move detailed information to knowledge base
+
+**Before (verbose):**
+
+```
+When a customer asks about shipping, you should first determine
+what they need to know about shipping. They might be asking about
+shipping costs, or they might be asking about shipping times, or
+they could be asking about international shipping options. Each
+of these requires a different response...
+```
+
+**After (concise):**
+
+```
+Shipping Questions:
+- Cost: Use pricing_tool for exact quote
+- Time: 3-5 business days domestic, 7-14 international
+- International: Available to Canada/Mexico only
+```
+
+### Prioritize Instructions
+
+Put most important instructions first:
+
+```markdown
+# CRITICAL RULES (Always Follow)
+
+1. Never collect credit card information
+2. Escalate all billing disputes immediately
+3. Verify identity before discussing account details
+
+# General Guidelines
+
+- Be friendly and professional
+- Keep responses under 30 seconds
+- Use caller's name when known
+```
+
+### Use Examples
+
+LLMs learn well from examples:
+
+```markdown
+When greeting callers, use this style:
+✓ "Hi! This is Jordan from TechCare. How can I help you today?"
+✓ "Hello! You've reached TechCare support. I'm Jordan. What brings you in?"
+
+Avoid:
+✗ "TechCare Support, please hold."
+✗ "State your issue."
+```
+
+### Test and Iterate
+
+<Tip>
+Your first prompt is never perfect. Test with real scenarios and refine based on actual conversations.
+</Tip>
+
+**Testing checklist:**
+
+- [ ] Test happy path (normal conversation)
+- [ ] Test edge cases (angry customer, off-topic)
+- [ ] Test with minimal information from caller
+- [ ] Test interruptions and corrections
+- [ ] Test with background noise
+- [ ] Test tool usage if applicable
+
+## Common Prompt Mistakes
+
+### 1. Too Vague
+
+**Bad:**
+
+```
+You are a helpful assistant. Answer questions.
+```
+
+**Good:**
+
+```
+You are a customer support specialist for Acme Corp. Help customers
+with product questions, order tracking, and returns. Be friendly and
+efficient. Use the knowledge base for product details.
+```
+
+### 2. Conflicting Instructions
+
+**Bad:**
+
+```
+Be extremely concise and brief. Provide detailed, comprehensive answers
+with lots of context and examples.
+```
+
+**Good:**
+
+```
+Give concise answers (2-3 sentences). If the customer wants more detail,
+offer to elaborate: "Would you like me to explain that further?"
+```
+
+### 3. No Edge Case Handling
+
+**Bad:**
+
+```
+Answer customer questions about products.
+```
+
+**Good:**
+
+```
+Answer product questions using the knowledge base. If information isn't
+in the knowledge base, say: "I don't have that specific information.
+Let me connect you with a specialist who can help."
+```
+
+### 4. Assuming Context
+
+**Bad:**
+
+```
+Process the return using the standard procedure.
+```
+
+**Good:**
+
+```
+Return Process:
+1. Collect order number and reason
+2. Verify order is within 30-day return window
+3. Provide RMA number from generate_rma tool
+4. Explain return shipping instructions
+```
+
+### 5. Over-Constraining
+
+**Bad:**
+
+```
+Always respond with exactly 3 sentences. Every sentence must be between
+10-15 words. Never use contractions. Always end with a question.
+```
+
+**Good:**
+
+```
+Keep responses conversational and concise. Typically 2-4 sentences.
+Ask clarifying questions when needed.
+```
+
+## Industry-Specific Examples
+
+### Healthcare/Medical
+
+```markdown
+You are a patient coordinator at City Medical Center. You handle
+appointment scheduling, insurance verification, and general inquiries.
+
+HIPAA Compliance:
+
+- Never discuss patient medical information over the phone
+- Verify patient identity before accessing records
+- Don't leave detailed voicemails (callback number only)
+
+Be compassionate and patient. Many callers may be stressed or anxious
+about medical appointments.
+```
+
+### Financial Services
+
+```markdown
+You are a banking assistant for SecureBank. You help with account
+inquiries, transaction history, and general banking questions.
+
+Security Requirements:
+
+- Verify caller identity using last 4 of SSN + ZIP code
+- Never provide account balances without verification
+- Suspicious activity = immediate transfer to fraud department
+
+Regulatory Compliance:
+
+- Don't provide investment advice
+- Don't promise specific financial outcomes
+- Direct tax questions to tax professionals
+```
+
+### E-commerce/Retail
+
+```markdown
+You are a shopping assistant for FashionStore. Help customers find
+products, check order status, and handle simple returns.
+
+Sales Approach:
+
+- Ask about style preferences and occasion
+- Suggest complementary items when appropriate
+- Mention current promotions if relevant
+
+Returns & Exchanges:
+
+- Items can be returned within 30 days with tags
+- Free return shipping on orders over $50
+- Exchanges process faster than return + new order
+```
+
+### Real Estate
+
+```markdown
+You are a showing coordinator for HomeFinders Realty. You schedule
+property viewings and answer basic property questions.
+
+Scheduling Guidelines:
+
+- Viewings available Tuesday-Sunday, 9 AM - 6 PM
+- Minimum 24-hour notice required
+- Collect: Name, phone, email, property address, preferred time
+
+Information Boundaries:
+
+- Provide basic property details (beds, baths, sqft, price)
+- Detailed negotiations = transfer to listing agent
+- Financing questions = refer to mortgage specialist
+```
+
+## Troubleshooting Guide
+
+### Agent is too verbose
+
+**Solution:** Add explicit length constraints
+
+```
+Keep responses under 25 seconds of speaking time. Typically 2-3 sentences.
+```
+
+### Agent goes off-topic
+
+**Solution:** Add focus guardrails
+
+```
+Stay focused on [specific task]. If conversation drifts, gently redirect:
+"I'd be happy to discuss that, but let's first complete [main task]."
+```
+
+### Agent doesn't use tools
+
+**Solution:** Add explicit tool instructions
+
+```
+When asked about [X], ALWAYS use the [tool_name] tool. Example:
+Customer: "What's my order status?"
+You: Use lookup_order tool with their order number, then share results.
+```
+
+### Inconsistent personality
+
+**Solution:** Add response examples
+
+```
+Tone examples:
+✓ "I'd be happy to help you with that!"
+✓ "Great question! Here's what I can tell you..."
+✗ "Negative. Request denied."
+✗ "I suppose I could check on that."
+```
+
+### Doesn't handle silence well
+
+**Solution:** Add timeout guidance
+
+```
+If the caller is silent for a few seconds:
+- First time: "Are you still there? I'm here to help."
+- Still silent: "I'll give you a moment to gather your information."
+- Extended silence: "Feel free to call back when you're ready. Have a great day!"
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Voice Settings" href="./voice-settings">
+    Configure voice, language, and speech parameters
+  </Card>
+  <Card title="Call Behavior" href="./call-behavior">
+    Set up response timing and interaction controls
+  </Card>
+  <Card title="Intelligence Features" href="./intelligence-features">
+    Enable smart features like gender detection and smart call end
+  </Card>
+  <Card title="Knowledge Base" href="/features/knowledge-base">
+    Add reference materials for your agent
+  </Card>
+</CardGroup>
+
+---
+
+**Ready to go deeper?** Check out **[Flow Agent Overview](../flow-agent/overview)** for complex multi-node conversation flows.

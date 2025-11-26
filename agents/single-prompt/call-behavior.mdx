@@ -1,0 +1,1037 @@
+---
+title: Call Behavior Settings
+description: 'Configure response timing, interruptions, timeouts, and call duration controls for optimal conversation flow'
+---
+
+## Overview
+
+Call behavior settings control the timing, flow, and interaction dynamics of your voice agent conversations. These settings directly impact caller experience, conversation efficiency, and perceived naturalness of your AI agent.
+
+<Info>
+**Key Call Behavior Settings:**
+- Response delay (how quickly agent responds)
+- Interruption handling (can users interrupt?)
+- User inactivity timeout (handling silent callers)
+- Max call duration (preventing runaway calls)
+- Background ambient sound
+- Thinking voice (natural pauses)
+</Info>
+
+## Response Delay
+
+### What is Response Delay?
+
+Response delay determines how long the agent waits after detecting that the user has stopped speaking before generating a response.
+
+**Technical Definition:**
+The minimum number of milliseconds between when the system detects speech has ended and when it begins processing the response.
+
+### Configuration
+
+**Range:** 100ms - 1500ms
+**Default:** 400ms
+**Increment:** 100ms
+
+**To configure:**
+
+1. Open **Call Settings** section
+2. Locate **Response Delay** slider
+3. Adjust value (shows in milliseconds)
+4. Current value displays next to slider
+5. Save changes
+
+### Impact on Conversation Flow
+
+**Lower Values (100-300ms):**
+
+✅ **Advantages:**
+
+- Very responsive, snappy conversations
+- Feels more dynamic and engaging
+- Efficient for simple Q&A
+- Better for impatient callers
+
+⚠️ **Disadvantages:**
+
+- May cut off users who pause naturally
+- Can interrupt multi-part questions
+- Feels rushed for some users
+- May miss end of long answers
+
+**Medium Values (400-600ms):**
+
+✅ **Advantages:**
+
+- Balanced, natural conversation pace
+- Allows brief pauses without cutting off
+- Works for most use cases
+- Professional feel
+
+⚠️ **Disadvantages:**
+
+- May feel slightly slow for rapid exchanges
+- Not ideal for very simple interactions
+
+**Higher Values (700-1500ms):**
+
+✅ **Advantages:**
+
+- Very thoughtful, deliberate responses
+- Great for users who speak slowly or pause
+- Better for complex topics requiring thought
+- Comfortable for elderly or non-native speakers
+
+⚠️ **Disadvantages:**
+
+- Can feel slow or unresponsive
+- Inefficient for simple questions
+- May frustrate fast-paced callers
+
+<Tip>
+Start with the default 400ms. Adjust based on testing with your actual target audience and use case.
+</Tip>
+
+### Response Delay by Use Case
+
+**Customer Support (Quick Inquiries)**
+
+- **Recommended:** 300-400ms
+- **Reasoning:** Efficiency matters, questions are usually straightforward
+- **Example:** "What are your hours?" → Quick response expected
+
+**Technical Support (Complex Troubleshooting)**
+
+- **Recommended:** 500-700ms
+- **Reasoning:** Users need time to describe issues, check things
+- **Example:** "My device shows error X when I..." → User may pause to read error
+
+**Sales Calls**
+
+- **Recommended:** 300-500ms
+- **Reasoning:** Dynamic conversation, but allow for objection handling
+- **Example:** Balance between energy and letting prospects speak
+
+**Healthcare/Medical Scheduling**
+
+- **Recommended:** 600-800ms
+- **Reasoning:** Callers may be elderly, anxious, or need time to find information
+- **Example:** "Let me find my insurance card..." → Needs patience
+
+**Surveys/Feedback Collection**
+
+- **Recommended:** 700-1000ms
+- **Reasoning:** People need time to think about answers
+- **Example:** "On a scale of 1-10..." → Requires contemplation
+
+**Appointment Booking**
+
+- **Recommended:** 400-600ms
+- **Reasoning:** Moderate pace for checking calendars
+- **Example:** "Let me check my calendar..." → Brief pause acceptable
+
+**Legal/Compliance Information**
+
+- **Recommended:** 600-900ms
+- **Reasoning:** Complex information, users may need to take notes
+- **Example:** Delivering important terms → Don't rush
+
+### Testing Response Delay
+
+**Test Scenarios:**
+
+1. **Natural Pausers:** Have someone who pauses mid-sentence test
+2. **Fast Talkers:** Have rapid speakers test for cut-offs
+3. **Question Sequences:** "I have two questions..." (does it wait?)
+4. **Listing Items:** "I need help with X, Y, and Z" (catches all three?)
+5. **Thinking Out Loud:** "So I'm wondering..." (patient enough?)
+
+<Warning>
+Response delay is highly subjective. What feels natural to you may feel slow or fast to your callers. Always test with real users from your target demographic.
+</Warning>
+
+## Interruption Handling
+
+### What is Interruption?
+
+Interruption handling determines whether users can speak while the agent is speaking, cutting off the agent's response.
+
+**Enabled (Default):** Users can interrupt the agent naturally
+**Disabled:** Agent completes full response before listening again
+
+### Configuration
+
+**To enable/disable:**
+
+1. Open **Call Settings** section
+2. Find **Interrupt** toggle
+3. Toggle on (enabled) or off (disabled)
+4. Save changes
+
+### When Interruptions are Enabled
+
+**Behavior:**
+
+- Agent speaks response
+- User starts speaking
+- Agent immediately stops and listens
+- Agent acknowledges interruption (optional)
+- User completes their input
+- Agent responds to new input
+
+**Example Flow:**
+
+```
+Agent: "Our business hours are Monday through Friday, 9 AM to—"
+User: "Actually, I need weekend hours"
+Agent: [stops speaking] "For weekend hours, we're open Saturday..."
+```
+
+✅ **Best For:**
+
+- Customer service conversations
+- Sales calls (engagement is key)
+- Support where users may have urgent questions
+- Natural, human-like conversations
+- Interactive Q&A sessions
+
+✅ **Advantages:**
+
+- Natural conversation flow
+- Users don't have to wait for full response
+- Better for correcting misunderstandings
+- More engaging experience
+
+⚠️ **Considerations:**
+
+- Agent may be cut off before delivering full message
+- Important information could be missed
+- May be interrupted by background noise
+
+### When Interruptions are Disabled
+
+**Behavior:**
+
+- Agent speaks complete response
+- User speaking during this time is ignored
+- After agent finishes, system listens for user input
+- User must wait for agent to complete
+
+**Example Flow:**
+
+```
+Agent: "Our business hours are Monday through Friday, 9 AM to 6 PM,
+       and Saturday 10 AM to 4 PM. We're closed on Sundays."
+User: [tries to speak but agent continues]
+Agent: [finishes complete response]
+System: [now listening for user input]
+User: "What about holidays?"
+```
+
+✅ **Best For:**
+
+- Critical information delivery
+- Legal disclaimers
+- Compliance statements
+- Step-by-step instructions
+- Confirmation of important actions
+- Medical information
+- Safety warnings
+
+✅ **Advantages:**
+
+- Ensures complete information delivery
+- No partial messages
+- Better for structured scripts
+- Clearer for complex multi-step instructions
+
+⚠️ **Considerations:**
+
+- Feels less natural
+- Frustrating if agent is verbose
+- Users may want to interject
+- Less engaging conversation
+
+<Note>
+You can disable interrupts globally but still allow them for specific situations in your prompt. Example: "Users cannot interrupt normally, but if they say 'stop' or 'wait', acknowledge immediately."
+</Note>
+
+### Mixed Approach (Prompt-Based)
+
+Even with interrupts enabled, you can guide behavior in your prompt:
+
+```markdown
+# Interruption Handling
+
+Allow users to interrupt naturally during normal conversation.
+
+However, for critical information, say:
+"Let me share some important information - I'll need about 30 seconds."
+
+Then deliver the critical information. Users are less likely to interrupt
+when they know it's important and time-bounded.
+```
+
+### Interruption Handling by Use Case
+
+| Use Case            | Recommendation | Reasoning                                         |
+| ------------------- | -------------- | ------------------------------------------------- |
+| Customer Support    | **Enabled**    | Natural conversation, user needs matter most      |
+| Sales Calls         | **Enabled**    | Engagement is critical, handle objections quickly |
+| Technical Support   | **Enabled**    | User may need to clarify or correct               |
+| Appointment Booking | **Enabled**    | User may realize conflict mid-confirmation        |
+| Surveys             | **Disabled**   | Complete each question clearly                    |
+| Legal/Compliance    | **Disabled**   | Must deliver full disclaimers                     |
+| Medical Information | **Disabled**   | Critical safety information                       |
+| IVR Menu            | **Disabled**   | User needs to hear all options                    |
+| Announcements       | **Disabled**   | Important broadcast information                   |
+| Emergency Alerts    | **Disabled**   | Critical instructions must be heard               |
+
+<Tip>
+For most conversational agents, keep interrupts **enabled** for a natural experience. Only disable for specific compliance or information delivery scenarios.
+</Tip>
+
+## User Inactivity Timeout
+
+### What is Inactivity Timeout?
+
+The number of seconds of silence before the agent proactively reaches out to check if the user is still there.
+
+**Purpose:** Handle situations where:
+
+- User stepped away
+- User is confused or doesn't know what to say
+- Connection issues
+- User is multitasking (looking for information)
+
+### Configuration
+
+**Range:** 5-30 seconds
+**Default:** 15 seconds
+**Increment:** 1 second
+
+**To configure:**
+
+1. Open **Call Settings** section
+2. Locate **User Inactivity Timeout** slider
+3. Adjust value (shows in seconds)
+4. Save changes
+
+### How It Works
+
+**Flow:**
+
+1. User stops speaking
+2. Agent responds (if applicable)
+3. Silence begins
+4. After [timeout] seconds of silence:
+
+   - Agent proactively asks if user is still there
+   - "Are you still there?"
+   - "Is there anything else I can help with?"
+   - "I'm here whenever you're ready."
+
+5. If user responds: Continue conversation
+6. If still silent: Repeat or end call (configurable in prompt)
+
+### Timeout Duration Guidelines
+
+**Short Timeouts (5-10 seconds):**
+
+✅ **Good For:**
+
+- High-volume call centers
+- Simple transactional interactions
+- Efficient, quick exchanges
+- Queue management scenarios
+
+⚠️ **Watch Out:**
+
+- May feel rushed
+- Not enough time to look up information
+- Frustrating for multi-tasking users
+
+**Medium Timeouts (15-20 seconds):**
+
+✅ **Good For:**
+
+- General customer service
+- Balanced approach
+- Most business use cases
+- Default recommendation
+
+⚠️ **Watch Out:**
+
+- May be too long for simple interactions
+- May be too short for complex lookups
+
+**Long Timeouts (25-30 seconds):**
+
+✅ **Good For:**
+
+- Complex information gathering (user checking documents)
+- Elderly or deliberate callers
+- Healthcare/medical (finding insurance cards)
+- Technical support (checking error messages)
+
+⚠️ **Watch Out:**
+
+- Very long silence can feel awkward
+- Inefficient for simple calls
+- May indicate dropped connection
+
+<Warning>
+Don't set timeout too short (&lt;10s) unless you have a specific reason. Users often need time to check calendars, find information, or think about responses.
+</Warning>
+
+### Inactivity Timeout by Use Case
+
+**Customer Support (General)**
+
+- **Recommended:** 15-20 seconds
+- **Reasoning:** Balanced patience, not too rushed
+- **Poke Message:** "I'm still here if you need anything else."
+
+**Technical Support**
+
+- **Recommended:** 20-30 seconds
+- **Reasoning:** Users may be checking error messages, cables, settings
+- **Poke Message:** "Take your time. Let me know when you're ready."
+
+**Appointment Booking**
+
+- **Recommended:** 15-25 seconds
+- **Reasoning:** Users checking calendars
+- **Poke Message:** "I'll wait while you check your schedule."
+
+**Sales/Lead Qualification**
+
+- **Recommended:** 10-15 seconds
+- **Reasoning:** Keep momentum, but allow thinking
+- **Poke Message:** "Do you have any questions I can answer?"
+
+**Surveys**
+
+- **Recommended:** 20-30 seconds
+- **Reasoning:** People need time to think about ratings/feedback
+- **Poke Message:** "Take your time to think about your answer."
+
+**Quick Info Lookup**
+
+- **Recommended:** 5-10 seconds
+- **Reasoning:** Simple questions, quick answers
+- **Poke Message:** "Is there anything else you need?"
+
+### Customizing Poke Messages
+
+Define how your agent handles silence in your prompt:
+
+```markdown
+# Handling Silence
+
+After 15 seconds of silence:
+First time: "I'm still here. Take your time if you're looking something up."
+Still silent: "No rush! I'm here whenever you're ready."
+Extended silence (30s+): "I'll let you go for now. Feel free to call back anytime!"
+
+Then end the call gracefully.
+```
+
+**Poke Message Best Practices:**
+
+- Be reassuring, not demanding
+- Acknowledge they may be busy ("looking something up")
+- Offer to wait or call back
+- Don't make user feel bad about silence
+
+<Tip>
+Use the `pokeMessages` array in your configuration to define multiple poke messages. The system will use them in sequence for repeated silence periods.
+</Tip>
+
+## Max Call Duration
+
+### What is Max Call Duration?
+
+The maximum length of time (in seconds) a call can last before being automatically terminated.
+
+**Purpose:**
+
+- Prevent runaway costs
+- Handle stuck calls
+- Set clear boundaries
+- Protect against infinite loops
+
+### Configuration
+
+**Range:** 30-600 seconds (0.5 - 10 minutes)
+**Default:** 300 seconds (5 minutes)
+**Increment:** 10 seconds
+
+**To configure:**
+
+1. Open **Call Settings** section
+2. Locate **Max Call Duration** slider
+3. Adjust value (shows in seconds)
+4. Save changes
+
+### How It Works
+
+**Flow:**
+
+1. Call begins
+2. Timer starts
+3. At [max duration - 30s]: Agent warns (optional via prompt)
+   - "We have about 30 seconds left. Is there anything else?"
+4. At [max duration]: Call ends with farewell message
+5. Call terminates gracefully
+
+<Info>
+Max call duration is a safety net, not a target. Most calls should end naturally via Smart Call End or user ending the conversation.
+</Info>
+
+### Duration Guidelines by Use Case
+
+**Quick Transactions (30-120 seconds)**
+
+- **Use Cases:** Balance check, hours lookup, simple FAQ
+- **Why:** Simple information, in and out
+- **Example:** "What are your hours?" → 45 second call
+
+**Standard Conversations (120-300 seconds)**
+
+- **Use Cases:** Customer support, appointment booking, basic troubleshooting
+- **Why:** Moderate complexity, multiple steps
+- **Example:** Schedule appointment → 2-3 minute call
+
+**Extended Support (300-600 seconds)**
+
+- **Use Cases:** Technical troubleshooting, detailed sales, consultations
+- **Why:** Complex issues require time
+- **Example:** Troubleshoot device → 5-7 minute call
+
+**Surveys/Feedback (120-240 seconds)**
+
+- **Use Cases:** Customer satisfaction surveys, feedback collection
+- **Why:** Multiple questions, time to think
+- **Example:** 10-question survey → 3-4 minutes
+
+<Warning>
+Setting max duration too low creates poor user experience. Set it 20-30% higher than your expected average call duration to allow for edge cases.
+</Warning>
+
+### Max Duration Recommendations
+
+| Use Case             | Recommended Max | Average Expected | Buffer |
+| -------------------- | --------------- | ---------------- | ------ |
+| Balance/Hours Check  | 60s             | 30-40s           | 2x     |
+| Simple FAQ           | 90s             | 45-60s           | 1.5x   |
+| Appointment Booking  | 240s            | 120-180s         | 1.3x   |
+| Customer Support     | 360s            | 180-240s         | 1.5x   |
+| Technical Support    | 480s            | 240-360s         | 1.3x   |
+| Sales Qualification  | 300s            | 180-240s         | 1.3x   |
+| Detailed Survey      | 300s            | 180-240s         | 1.3x   |
+| Complex Consultation | 600s            | 360-480s         | 1.3x   |
+
+### Handling Max Duration in Prompts
+
+Prepare for approaching time limit:
+
+```markdown
+# Max Call Duration Handling
+
+The system will notify you when 60 seconds remain.
+
+At that point:
+"I want to make sure I help you before our time is up. What's the most
+important thing I can help you with right now?"
+
+If user has additional needs:
+"I can schedule a callback or transfer you to someone who can continue
+helping you. Which would you prefer?"
+
+At max duration:
+"I need to wrap up our call now. Here's a summary of what we covered: [brief summary]
+Thank you for calling!"
+```
+
+<Tip>
+Always provide a graceful exit before max duration. Users shouldn't feel abruptly cut off.
+</Tip>
+
+### Monitoring Call Duration
+
+Use analytics to optimize max duration:
+
+**Metrics to track:**
+
+- Average call duration
+- % of calls hitting max duration
+- Completion rate vs. duration
+- User satisfaction vs. duration
+
+**Optimization:**
+
+- If &gt;5% of calls hit max: Increase limit
+- If average is &lt;50% of max: Consider decreasing for efficiency
+- If abandonment increases near max: Add warning prompts
+
+## Background Noise (Ambient Sound)
+
+### What is Background Noise?
+
+Adds subtle ambient sound to the agent's audio to create a more human, realistic environment.
+
+**Purpose:**
+
+- Reduce "dead air" feeling
+- Simulate call center environment
+- Make AI feel more human
+- Provide auditory continuity
+
+### Configuration
+
+**Options:**
+
+- **Disabled (Default):** Pure AI voice, no background
+- **Enabled:** Subtle background ambiance
+
+**To enable:**
+
+1. Open **Call Settings** section
+2. Find **Ambient Sound** toggle
+3. Enable or disable
+4. Save changes
+
+### When to Use Background Noise
+
+✅ **Good Use Cases:**
+
+**Call Center Simulation**
+
+- Agent positioned as call center representative
+- Simulates realistic environment
+- Reduces AI "uncanny valley"
+
+**Brand Consistency**
+
+- Match existing IVR or call center sound
+- Consistent experience across channels
+
+**Reducing Dead Air**
+
+- Some users find complete silence uncomfortable
+- Gentle background provides continuity
+
+⚠️ **Avoid Background Noise When:**
+
+**Professional/Premium Brands**
+
+- High-end brands may want "perfect" audio
+- Background noise can seem cheap
+
+**Technical Clarity Required**
+
+- Medical information
+- Legal disclaimers
+- Complex instructions
+
+**Using Noise Cancellation**
+
+- Creates processing artifacts
+- Conflicts with noise removal
+
+**International Calls**
+
+- Poor connections already have noise
+- Adding more degrades quality
+
+<Warning>
+Do not enable both Background Noise and Noise Cancellation. They conflict and create audio artifacts.
+</Warning>
+
+### Background Noise Characteristics
+
+**Sound Type:**
+
+- Subtle office ambiance
+- Very low volume (not distracting)
+- Consistent throughout call
+- No specific identifiable sounds
+
+**Volume:**
+
+- Mixed at -30dB to -40dB below voice
+- Barely noticeable but present
+- Never interferes with speech clarity
+
+<Note>
+Background noise is subtle by design. If you can clearly hear it, it's too loud. It should be almost subliminal.
+</Note>
+
+## Thinking Voice
+
+### What is Thinking Voice?
+
+Adds natural pauses and verbal fillers to make the agent sound more human and thoughtful.
+
+**Examples:**
+
+- "Hmm..."
+- "Let me see..."
+- "Okay..."
+- "Ah, yes..."
+- Natural pauses before responses
+
+### Configuration
+
+**Options:**
+
+- **Disabled (Default):** Direct, efficient responses
+- **Enabled:** Natural pauses and fillers
+
+**To enable:**
+
+1. Open **Call Settings** section
+2. Find **Thinking Voice** toggle
+3. Enable or disable
+4. Save changes
+
+### How Thinking Voice Works
+
+**Without Thinking Voice:**
+
+```
+User: "What are your hours?"
+Agent: [immediate] "We're open Monday through Friday 9 AM to 6 PM."
+```
+
+**With Thinking Voice:**
+
+```
+User: "What are your hours?"
+Agent: [brief pause] "Let me check that for you...
+       We're open Monday through Friday, 9 AM to 6 PM."
+```
+
+### Benefits of Thinking Voice
+
+✅ **Advantages:**
+
+**More Human-Like**
+
+- Mimics natural human behavior
+- People pause before answering
+- Reduces "AI" feeling
+
+**Gives Processing Time**
+
+- Makes latency feel intentional
+- Covers technical delays gracefully
+- Users more patient when agent "thinks"
+
+**Better Conversation Flow**
+
+- Natural transitions between topics
+- Less jarring subject changes
+- Feels more thoughtful
+
+**Reduces Pressure**
+
+- Users don't feel rushed
+- Comfortable pauses in conversation
+- Time to process information
+
+⚠️ **Disadvantages:**
+
+**Slower Conversations**
+
+- Adds 1-3 seconds per response
+- Less efficient
+- Longer call durations
+
+**May Seem Less Professional**
+
+- Some contexts demand crisp responses
+- Can seem uncertain or hesitant
+- May reduce authority perception
+
+**Not Suitable for All Use Cases**
+
+- Technical information delivery
+- Time-sensitive scenarios
+- High-volume quick transactions
+
+### Thinking Voice by Use Case
+
+| Use Case                  | Recommendation  | Reasoning                   |
+| ------------------------- | --------------- | --------------------------- |
+| Friendly Customer Support | ✅ **Enabled**  | Natural, human conversation |
+| Corporate Helpdesk        | ❌ **Disabled** | Professional, efficient     |
+| Healthcare Scheduling     | ✅ **Enabled**  | Warm, caring approach       |
+| Technical Support         | ❌ **Disabled** | Clarity and precision       |
+| Sales Calls               | ✅ **Enabled**  | Natural rapport building    |
+| Legal Information         | ❌ **Disabled** | Authority and confidence    |
+| Surveys                   | ✅ **Enabled**  | Casual, comfortable         |
+| Emergency/Urgent          | ❌ **Disabled** | Direct, immediate           |
+| Appointment Reminders     | ❌ **Disabled** | Clear, concise              |
+| Lead Qualification        | ✅ **Enabled**  | Conversational discovery    |
+
+<Tip>
+Enable Thinking Voice for conversational, relationship-focused interactions. Disable for professional, information-delivery scenarios.
+</Tip>
+
+### Combining Thinking Voice with Other Settings
+
+**Natural Conversation Setup:**
+
+```
+Response Delay: 500-600ms
+Interrupt: Enabled
+Thinking Voice: Enabled
+Background Noise: Optional
+```
+
+Creates very human-like, natural conversation.
+
+**Efficient Professional Setup:**
+
+```
+Response Delay: 300-400ms
+Interrupt: Disabled (for important info)
+Thinking Voice: Disabled
+Background Noise: Disabled
+```
+
+Creates crisp, professional, efficient interaction.
+
+## Call Behavior Presets
+
+### Preset 1: Friendly Customer Service
+
+**Configuration:**
+
+```
+Response Delay: 400ms
+Interrupt: Enabled
+Inactivity Timeout: 20s
+Max Call Duration: 360s (6 minutes)
+Background Noise: Optional
+Thinking Voice: Enabled
+```
+
+**Best For:** General customer support, hospitality, retail
+
+### Preset 2: Professional Corporate
+
+**Configuration:**
+
+```
+Response Delay: 500ms
+Interrupt: Disabled (for critical info)
+Inactivity Timeout: 15s
+Max Call Duration: 300s (5 minutes)
+Background Noise: Disabled
+Thinking Voice: Disabled
+```
+
+**Best For:** Corporate helpdesk, financial services, legal
+
+### Preset 3: Fast-Paced Sales
+
+**Configuration:**
+
+```
+Response Delay: 300ms
+Interrupt: Enabled
+Inactivity Timeout: 10s
+Max Call Duration: 300s (5 minutes)
+Background Noise: Disabled
+Thinking Voice: Disabled
+```
+
+**Best For:** Sales calls, lead qualification, outbound
+
+### Preset 4: Patient Healthcare
+
+**Configuration:**
+
+```
+Response Delay: 700ms
+Interrupt: Disabled
+Inactivity Timeout: 30s
+Max Call Duration: 480s (8 minutes)
+Background Noise: Disabled
+Thinking Voice: Enabled
+```
+
+**Best For:** Healthcare, elderly care, complex scheduling
+
+### Preset 5: Technical Support
+
+**Configuration:**
+
+```
+Response Delay: 600ms
+Interrupt: Enabled
+Inactivity Timeout: 25s
+Max Call Duration: 600s (10 minutes)
+Background Noise: Disabled
+Thinking Voice: Disabled
+```
+
+**Best For:** Technical troubleshooting, IT support
+
+## Testing Call Behavior
+
+### Test Scenarios
+
+**Scenario 1: Interruption Test**
+
+1. Have agent give long response
+2. Interrupt mid-sentence
+3. Verify agent stops and listens
+4. Verify it responds to interruption
+
+**Scenario 2: Silence Test**
+
+1. Don't respond after agent speaks
+2. Wait for inactivity timeout
+3. Verify poke message triggers
+4. Verify handling of continued silence
+
+**Scenario 3: Long Call Test**
+
+1. Engage in conversation
+2. Approach max duration
+3. Verify warning (if configured)
+4. Verify graceful end at max duration
+
+**Scenario 4: Response Timing Test**
+
+1. Ask questions with different natural pauses
+2. Check for premature responses
+3. Check for awkwardly long waits
+4. Adjust response delay accordingly
+
+**Scenario 5: Multi-Part Question Test**
+
+1. Ask: "I have two questions about X and Y"
+2. Verify agent waits for complete question
+3. Verify agent addresses both parts
+
+### Measuring Success
+
+**Key Metrics:**
+
+**Completion Rate**
+
+- % of calls where task is completed
+- Higher = better configuration
+
+**Average Call Duration**
+
+- Should match expected duration for use case
+- Too long = inefficient
+- Too short = rushed/incomplete
+
+**Abandonment Rate**
+
+- % of callers who hang up mid-call
+- High abandonment may indicate poor timing
+
+**User Satisfaction**
+
+- Post-call surveys
+- Feedback on conversation flow
+- Natural vs. robotic feel
+
+**Repeat Questions**
+
+- If users frequently repeat themselves
+- May indicate response delay too short
+
+<Tip>
+Track these metrics in your analytics dashboard and adjust settings based on real data, not assumptions.
+</Tip>
+
+## Troubleshooting Common Issues
+
+### Agent Cuts Off Users Mid-Sentence
+
+**Problem:** Agent responds before user finishes speaking
+
+**Solution:**
+
+- Increase Response Delay (+100-200ms)
+- Test with users who speak slowly or pause
+- Verify no echo/feedback creating false endpoints
+
+### Agent Feels Unresponsive
+
+**Problem:** Long pauses after user speaks
+
+**Solution:**
+
+- Decrease Response Delay (-100-200ms)
+- Check LLM latency (may be model issue)
+- Verify adequate server resources
+
+### Users Complain About Being Rushed
+
+**Problem:** Not enough time to think or respond
+
+**Solution:**
+
+- Increase Inactivity Timeout (+5-10s)
+- Enable Thinking Voice for more natural pace
+- Increase Response Delay slightly
+
+### Calls Frequently Hit Max Duration
+
+**Problem:** >5% of calls reaching time limit
+
+**Solution:**
+
+- Increase Max Call Duration (+60-120s)
+- Review if agent is too verbose
+- Check for conversation loops
+
+### Users Interrupt Constantly
+
+**Problem:** Frequent interruptions disrupting flow
+
+**Solution:**
+
+- Shorten agent responses in prompt
+- Keep responses to 20-30 seconds max
+- Use "Let me share important info" for critical sections
+
+### Poke Messages Feel Annoying
+
+**Problem:** Users react negatively to timeout prompts
+
+**Solution:**
+
+- Increase Inactivity Timeout
+- Soften poke message language
+- Reduce frequency of repeat pokes
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Intelligence Features" href="./intelligence-features">
+    Enable smart features like gender detection and smart call end
+  </Card>
+  <Card title="Write Effective Prompts" href="./write-prompt">
+    Optimize your agent's instructions for better behavior
+  </Card>
+  <Card title="Voice Settings" href="./voice-settings">
+    Choose the right voice and language settings
+  </Card>
+  <Card title="Testing Agents" href="/features/testing">
+    Comprehensive testing before production
+  </Card>
+</CardGroup>
+
+---
+
+**Need advanced control?** Explore **[Flow Agent Call Settings](../flow-agent/global-settings)** for node-level behavior customization.

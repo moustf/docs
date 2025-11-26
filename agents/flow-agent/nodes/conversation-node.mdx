@@ -1,0 +1,534 @@
+---
+title: Conversation Node
+description: 'Natural dialogue with users - the most commonly used node type'
+---
+
+## Overview
+
+The conversation node is the most commonly used node type in flow agents. It's designed for having natural conversations with users, where the AI listens, understands, and responds based on its prompt and context.
+
+**Key characteristic:** When inside a conversation node, the agent focuses on dialogue without calling tools or performing actions (unless configured otherwise).
+
+## When to Use
+
+Use conversation nodes to:
+
+- Greet callers and establish rapport
+- Ask questions and collect information
+- Provide information or explanations
+- Handle objections or concerns
+- Confirm understanding or intent
+- Give instructions or directions
+- Conduct surveys or questionnaires
+
+## Core Configuration
+
+### Message Type
+
+Choose how the agent's response is generated:
+
+#### **Prompt (Dynamic)**
+
+The agent generates responses dynamically based on the prompt and conversation context.
+
+**Best for:**
+
+- Natural conversations
+- Handling varied user inputs
+- Adaptive responses
+- Complex scenarios
+
+**Example:**
+
+```
+Prompt: "Ask the user for their name and phone number.
+Be friendly and explain we need this for follow-up."
+```
+
+Agent might say:
+
+- "Hi! To help you better, could I get your name and phone number?"
+- "Great! And what's the best number to reach you at?"
+
+#### **Static (Fixed Message)**
+
+The agent speaks a predetermined message exactly as written.
+
+**Best for:**
+
+- Consistent greetings
+- Legal disclaimers
+- Scripted announcements
+- Confirmation messages
+
+**Example:**
+
+```
+Static Message: "Thank you for calling Acme Corp.
+This call may be recorded for quality assurance."
+```
+
+Agent says exactly this, every time.
+
+### Node Prompt
+
+The instructions that guide the agent's behavior within this specific node.
+
+**Structure your prompt:**
+
+```
+## Objective
+[What should this node accomplish?]
+
+## Context
+[What information does the agent have at this point?]
+
+## Instructions
+[How should the agent behave? What to ask?]
+
+## Constraints
+[What should the agent NOT do or say?]
+
+## Success Criteria
+[When is this node's job complete?]
+```
+
+**Best Practices:**
+
+- **Keep it focused:** 100-200 words per node
+- **Be specific:** Clear objectives and instructions
+- **Reference variables:** Use {{variable_name}} syntax
+- **Avoid overlap:** Each node should have distinct purpose
+- **Consider transitions:** Prompt should align with transition conditions
+
+**Example - Information Gathering Node:**
+
+```
+## Objective
+Collect the customer's appointment preferences.
+
+## Instructions
+- Ask what service they're interested in
+- Ask for their preferred date and time
+- Confirm availability exists before moving forward
+- Be friendly and accommoding
+
+## Constraints
+- Don't book the appointment yet (that's the next node)
+- Don't ask for payment information
+
+## Use Variables
+- Reference {{customer_name}} if already collected
+```
+
+## Advanced Features
+
+### Variable Extraction
+
+Automatically extract and store data from the conversation into variables.
+
+**How to configure:**
+
+1. Enable "Extract Variables"
+2. Define variable name(s) to extract
+3. Optionally provide extraction instructions
+
+**Example:**
+
+```
+Variable Name: customer_name
+Extraction Prompt: "Extract the customer's full name from the conversation"
+
+Variable Name: appointment_date
+Extraction Prompt: "Extract the requested appointment date in YYYY-MM-DD format"
+```
+
+**Extracted variables become available to:**
+
+- Subsequent nodes in the flow
+- Tool parameters
+- Transition conditions
+- Other prompts using {{variable_name}}
+
+**[→ Learn More: Variable System](../variables)**
+
+### DTMF Input Capture
+
+Collect sequences of phone keypad digits (account numbers, PINs, confirmation codes).
+
+**How to configure:**
+
+1. Enable "DTMF Input Capture"
+2. Set variable name (required)
+3. Configure completion conditions (optional):
+   - **Digit Limit**: Stop after X digits (1-20)
+   - **Termination Key**: Stop when user presses # or \*
+   - **Timeout**: Stop after X seconds of no input (1-30)
+
+**Example - Account Number Collection:**
+
+```
+Message: "Please enter your 10-digit account number followed by the pound key"
+
+DTMF Settings:
+- Variable Name: account_number
+- Digit Limit: 10
+- Termination Key: #
+- Timeout: 15 seconds
+```
+
+**Captured variable usage:**
+
+```
+Next node prompt: "Thank you! I'm looking up account {{account_number}} now..."
+Tool parameter: account_id = {{account_number}}
+```
+
+**[→ Learn More: DTMF Features](../dtmf)**
+
+### Skip Response
+
+Automatically transition to next node after agent finishes speaking, without waiting for user input.
+
+**When enabled:**
+
+- Agent speaks its message
+- No conversation happens (agent doesn't listen)
+- Immediately transitions via single edge
+
+**Use cases:**
+
+- Announcement before tool execution: "Let me check that for you..."
+- Farewell message before ending: "Thank you for calling. Goodbye!"
+- Context before transfer: "Let me transfer you to our specialist..."
+- Transition messaging: "Great! Now let's move to the next step..."
+
+**Configuration:**
+
+- Toggle "Skip Response" on
+- Connect single transition edge
+- No conditions needed (always transitions)
+
+**Example Flow:**
+
+```
+[Collect Info Node]
+  → "Let me look that up..." (Skip Response ON)
+    → [Tool Node: Database Lookup]
+      → "I found your account!" (Skip Response ON)
+        → [Continue Conversation]
+```
+
+### Model Settings Override
+
+Override the global LLM model settings for this specific node.
+
+**Why override?**
+
+- **Cost optimization:** Use cheaper models for simple nodes
+- **Performance tuning:** Use stronger models for complex reasoning
+- **Speed vs quality:** Fast models for confirmations, slow for analysis
+
+**Configurable options:**
+
+- **Provider:** OpenAI, Anthropic, Groq, etc.
+- **Model:** GPT-4, Claude, etc.
+- **Temperature:** 0 (deterministic) to 2 (creative)
+- **Max Tokens:** Response length limit
+- **Top P, Frequency Penalty, Presence Penalty:** Fine-tuning
+
+**Example use case:**
+
+```
+Simple confirmation node → GPT-3.5 (fast, cheap)
+Complex problem-solving node → GPT-4 (smart, expensive)
+```
+
+### Voice Settings Override
+
+Override the global voice settings for this specific node.
+
+**Why override?**
+
+- Different personality for different stages
+- Emphasis for important information
+- Character changes (receptionist vs specialist)
+
+**Configurable options:**
+
+- **Provider:** Different TTS provider
+- **Voice:** Different voice entirely
+- **Speed:** Faster for excitement, slower for serious topics
+- **Pitch:** Higher/lower pitch adjustments
+- **Stability:** More/less variation
+- **Similarity:** Voice consistency
+
+**Example:**
+
+```
+Main conversation → Professional male voice
+Urgent warning → Slower, deeper voice for emphasis
+Confirmation → Friendly, upbeat voice
+```
+
+### Transcriber Settings Override
+
+Override speech recognition settings for this specific node.
+
+**Why override?**
+
+- Different language/dialect for specific nodes
+- Adjusted endpointing for expected pauses
+- Different models for technical terms
+
+**Configurable options:**
+
+- **Provider:** Deepgram, OpenAI, AssemblyAI
+- **Model:** Different STT models
+- **Language:** Switch languages mid-call
+- **Endpointing:** How long to wait before considering speech finished
+- **VAD Threshold:** Voice activity detection sensitivity
+
+## Transitions
+
+Conversation nodes support all transition types:
+
+### 1. Natural Language Transitions
+
+```
+Condition: "User confirmed they want to book appointment"
+→ Next Node: Book_Appointment
+```
+
+### 2. Structured Equation Transitions
+
+```
+Condition: {{user_age}} >= 18
+→ Next Node: Adult_Workflow
+```
+
+### 3. DTMF Transitions
+
+```
+Simple DTMF: Press 1 for Sales
+→ Next Node: Sales_Department
+```
+
+### 4. Always Transition
+
+```
+Fallback if no other conditions met
+→ Next Node: Default_Path
+```
+
+**[→ Learn More: Transition Conditions](../transitions)**
+
+## Global Node Configuration
+
+Any conversation node can be made **global**, meaning it's accessible from anywhere in the flow.
+
+**Global trigger types:**
+
+### Prompt-Based Global Trigger
+
+```
+Global Condition: "User wants to speak to a human operator"
+```
+
+Accessible from any node when user expresses this intent.
+
+### DTMF Global Trigger
+
+```
+Global DTMF Key: 0
+```
+
+Accessible from any node when user presses 0.
+
+**Common global conversation nodes:**
+
+- "Speak to operator" (DTMF 0 or natural language)
+- "Repeat main menu" (DTMF 9)
+- "Emergency support" (natural language or DTMF \*)
+- "Return to start" (DTMF #)
+
+**[→ Learn More: Global Nodes](../global-nodes)**
+
+## Examples
+
+### Example 1: Greeting Node (Static)
+
+```yaml
+Type: Conversation Node
+Message Type: Static
+Message: "Thank you for calling Acme Corporation. How can I help you today?"
+Skip Response: OFF
+Transitions:
+  - Natural Language: "User states their reason for calling" → Route_Call
+```
+
+### Example 2: Information Gathering (Dynamic)
+
+```yaml
+Type: Conversation Node
+Message Type: Prompt
+Prompt: |
+  ## Objective
+  Collect customer name, email, and phone number
+
+  ## Instructions
+  - Ask for full name first
+  - Then ask for email address
+  - Finally ask for phone number
+  - Confirm you have the correct information
+  - Be friendly and patient
+
+  ## Validation
+  - Ensure email contains @
+  - Ensure phone is 10 digits
+  - Repeat back for confirmation
+
+Variable Extraction:
+  - customer_name: "Extract full name"
+  - customer_email: "Extract email address"
+  - customer_phone: "Extract 10-digit phone number"
+
+Transitions:
+  - Natural Language: "All information collected and confirmed" → Next_Step
+  - Natural Language: "User refused to provide info" → Objection_Handler
+```
+
+### Example 3: Account Number Entry (DTMF)
+
+```yaml
+Type: Conversation Node
+Message Type: Static
+Message: 'Please enter your 8-digit account number followed by the pound key'
+
+DTMF Input Capture:
+  Enabled: true
+  Variable Name: account_number
+  Digit Limit: 8
+  Termination Key: #
+  Timeout: 20 seconds
+
+Skip Response: OFF
+Transitions:
+  - Always → Verify_Account (Tool Node)
+```
+
+### Example 4: Pre-Transfer Announcement (Skip Response)
+
+```yaml
+Type: Conversation Node
+Message Type: Static
+Message: 'Perfect! Let me transfer you to our billing specialist. Please hold.'
+Skip Response: ON
+
+Transitions:
+  - Always → Transfer_To_Billing
+```
+
+### Example 5: Complex Qualification (Model Override)
+
+```yaml
+Type: Conversation Node
+Message Type: Prompt
+Prompt: |
+  ## Objective
+  Qualify the lead's needs and budget
+
+  ## Instructions
+  - Ask about their business size
+  - Understand their current challenges
+  - Determine budget range
+  - Assess decision-making timeline
+  - Be consultative, not pushy
+
+Model Override:
+  Provider: OpenAI
+  Model: gpt-4
+  Temperature: 0.7
+
+Variable Extraction:
+  - company_size: "Number of employees"
+  - budget_range: "Monthly budget in dollars"
+  - timeline: "When they want to start"
+  - decision_maker: "Are they the decision maker? yes/no"
+
+Transitions:
+  - Equation: {{budget_range}} > 5000 AND {{decision_maker}} == "yes" → High_Priority_Path
+  - Equation: {{budget_range}} > 1000 → Medium_Priority_Path
+  - Always → Low_Priority_Path
+```
+
+## Best Practices
+
+### ✅ Do's
+
+- **Keep prompts focused** - One clear objective per node
+- **Use variables** - Reference context from previous nodes
+- **Test transitions** - Verify all paths work correctly
+- **Extract data** - Capture important information automatically
+- **Name descriptively** - "Collect_Customer_Info" not "Node_4"
+- **Consider fallbacks** - Always provide a default transition path
+
+### ❌ Don'ts
+
+- **Don't overload** - Too many tasks in one node confuses the agent
+- **Don't repeat** - Information collected in previous nodes doesn't need restating
+- **Don't block unnecessarily** - Let users interrupt unless critical
+- **Don't skip validation** - Test DTMF and extraction thoroughly
+- **Don't create circular logic** - Ensure conversation can progress
+- **Don't ignore errors** - Plan for what happens when things go wrong
+
+## Troubleshooting
+
+### Agent not following prompt instructions
+
+**Solution:**
+
+- Simplify prompt, be more explicit
+- Add fine-tune examples
+- Use stronger LLM model
+- Split into multiple smaller nodes
+
+### Variable extraction not working
+
+**Solution:**
+
+- Make variable names more descriptive
+- Provide clearer extraction instructions
+- Ensure conversation contains the data
+- Check variable reference syntax {{var_name}}
+
+### DTMF not capturing correctly
+
+**Solution:**
+
+- Verify digit limit is appropriate
+- Test with different phones/providers
+- Increase timeout for slower users
+- Ensure variable name is valid (snake_case)
+
+### Transitions not triggering
+
+**Solution:**
+
+- Review transition conditions carefully
+- Test with actual user phrases
+- Check variable availability
+- Ensure equation syntax is correct
+- Add fallback "always" transition
+
+## Next Steps
+
+- **[Tool Node](./tool-node)** - Execute functions and API calls
+- **[Router Node](./router-node)** - Pure logic branching
+- **[Transfer Nodes](./transfer-call-node)** - Call and agent transfers
+- **[Transition Conditions](../transitions)** - Control conversation flow
+- **[Variable System](../variables)** - Pass data between nodes
+
+---
+
+**Questions?** Check out **[Debugging Guide](../debugging)** for troubleshooting tips.

@@ -1,0 +1,552 @@
+---
+title: 'Voice Cloning'
+description: 'Create custom AI voices from your own audio samples'
+---
+
+## Overview
+
+Voice Cloning allows you to create custom AI voices that match specific tones, accents, or brand identities. Upload audio samples or record your voice, and our system generates a unique AI voice you can use in your agents.
+
+<Info>
+**Voice Cloning Features:**
+- Create unlimited custom voices
+- Upload audio files or record directly
+- Support for multiple languages and dialects
+- Preview voices before finalizing
+- Full integration with agent voice selection
+</Info>
+
+## How Voice Cloning Works
+
+1. **Provide Audio Sample** - Upload or record voice audio
+2. **Configure Voice Details** - Name, tags, language, dialect
+3. **Processing** - System analyzes and creates AI voice model
+4. **Preview & Test** - Generate TTS preview to hear result
+5. **Use in Agents** - Select custom voice like any library voice
+
+<Note>
+Voice cloning quality depends on audio sample quality. Clear, noise-free recordings produce the best results.
+</Note>
+
+## Creating a Custom Voice
+
+### Step 1: Voice Details
+
+#### Basic Information
+
+**Name** (Required)
+
+- Descriptive name for your voice
+- Example: "Customer Service - Sarah", "Sales - Professional Male"
+- Max 100 characters
+- Helps identify voice in library
+
+**Description** (Optional)
+
+- Additional context about the voice
+- Use case or characteristics
+- Not visible to end users
+
+**Language** (Required)
+Choose the primary language:
+
+- **English** - For English-speaking markets
+- **Arabic** - For Arabic-speaking markets
+
+<Warning>
+Select the language that matches how the voice will be used. This affects pronunciation and natural speech patterns.
+</Warning>
+
+#### Dialect Selection
+
+**For Arabic Voices:**
+Choose specific regional dialect:
+
+- Egyptian (EG)
+- Jordanian (JO)
+- Saudi Arabian (SA)
+- UAE (AE)
+- Gulf
+- Levantine
+- North African
+
+**For English Voices:**
+Dialect not required - English voices adapt to general pronunciation.
+
+<Note>
+Selecting the correct dialect ensures natural pronunciation of regional expressions and accents.
+</Note>
+
+#### Voice Tags (Required)
+
+Select exactly **2 tags** - one from each category:
+
+**Gender:**
+
+- **Male** - Masculine voice
+- **Female** - Feminine voice
+
+**Style:**
+
+- **Conversational** - Natural, friendly tone for dialogues
+- **Narrator** - Clear, articulate tone for announcements
+
+**Why tags matter:**
+
+- Help organize your custom voices
+- Enable filtering in voice library
+- Communicate voice characteristics to team
+- Match voices to use cases
+
+#### Cover Image (Optional)
+
+Upload a visual representation:
+
+- **Formats**: JPG, JPEG, PNG
+- **Max Size**: 5 MB
+- **Recommended**: Professional headshot or brand logo
+- **Usage**: Displays in voice cards
+
+<Tip>
+Use consistent cover images across custom voices for easy brand recognition.
+</Tip>
+
+### Step 2: Input Audio
+
+Choose how to provide your voice sample:
+
+#### Option A: Upload Audio File
+
+**Supported Formats:**
+
+- MP3
+- WAV
+- WebM
+- OGG
+- AAC
+- M4A
+- FLAC
+
+**Requirements:**
+
+- **Max File Size**: 32 MB
+- **Quality**: Clear, noise-free audio
+- **Duration**: Recommended 30-90 seconds
+- **Content**: Natural speech, varied sentences
+
+**Upload Process:**
+
+1. Click **Upload** tab
+2. Drag and drop audio file or click to browse
+3. Wait for upload (progress bar shown)
+4. File validated automatically
+
+**Best Practices for Uploaded Audio:**
+
+- Use high-quality recording equipment
+- Record in quiet environment
+- Avoid background noise and echo
+- Include varied speech patterns
+- Speak naturally at normal pace
+- Include different sentence types (questions, statements)
+
+#### Option B: Record Voice
+
+Record directly in the browser:
+
+**Requirements:**
+
+- **Duration**: 3-9 seconds
+- **Format**: WAV (automatic)
+- **Microphone**: Required
+
+**Recording Process:**
+
+1. Click **Record** tab
+2. Grant microphone permission
+3. Click **Start Recording**
+4. Speak naturally for 3-9 seconds
+5. Click **Stop Recording**
+6. Review recording
+7. Re-record if needed
+
+**Recording Tips:**
+
+- Use good quality microphone
+- Minimize background noise
+- Speak at natural pace
+- Include varied inflection
+- Say 2-3 complete sentences
+- Don't rush or speak too slowly
+
+<Warning>
+**Recording Length:**
+- Minimum: 3 seconds (validation error if shorter)
+- Maximum: 9 seconds (recording stops automatically)
+- Sweet spot: 5-7 seconds for best results
+</Warning>
+
+### Step 3: Generate TTS Preview
+
+Before finalizing, preview how your custom voice sounds:
+
+**Preview Process:**
+
+1. Enter sample text (minimum 5 words)
+2. Click **Generate Preview**
+3. System processes voice sample
+4. Audio preview generates (10-30 seconds)
+5. Click play to listen
+6. Regenerate with different text if needed
+
+**Preview Text Suggestions:**
+
+```
+"Hello, thank you for calling. How can I help you today?"
+
+"Welcome to Acme Corporation. I'm here to assist with any questions you may have."
+
+"Your order has been confirmed and will ship within two business days."
+```
+
+<Tip>
+Use text that matches your actual agent scripts to hear how the voice will sound in real conversations.
+</Tip>
+
+**Preview Validation:**
+
+- Text must contain at least 5 words
+- Word count displayed in real-time
+- "✓ Valid" indicator when requirements met
+
+**Preview Status:**
+
+- **Generating Preview...** - Processing voice sample
+- **Preview Ready** - Audio ready to play
+- **Preview Failed** - Error occurred, try again
+
+### Step 4: Create Voice
+
+Once satisfied with the preview:
+
+1. Click **Create** button
+2. Voice processes (usually 30-60 seconds)
+3. Success message appears
+4. Voice added to "My Voices" library
+5. Available immediately in agent voice selection
+
+<Check>
+Voice created successfully! You can now use it in your agents.
+</Check>
+
+## Audio Quality Requirements
+
+### Recording Environment
+
+**Ideal:**
+
+- Quiet room with minimal echo
+- Sound-dampening materials (curtains, furniture)
+- Closed windows and doors
+- No HVAC or fan noise
+
+**Avoid:**
+
+- Outdoor recordings
+- Rooms with hard surfaces (echo)
+- Areas with background conversations
+- Near computers or electronics (buzz/hum)
+
+### Microphone Selection
+
+**Good Options:**
+
+- USB condenser microphone
+- Headset with noise cancellation
+- Dedicated podcasting microphone
+- Laptop built-in mic (in quiet environment)
+
+**Poor Options:**
+
+- Phone speakerphone
+- Far-field microphones
+- Low-quality earbuds
+- Heavily compressed audio sources
+
+### Audio Sample Content
+
+**Include variety:**
+
+- Questions ("How can I help you today?")
+- Statements ("Your order has shipped")
+- Different emotions (friendly, professional, reassuring)
+- Various sentence lengths
+- Natural pauses and inflection
+
+**Avoid:**
+
+- Monotone speech
+- Reading lists or numbers only
+- Repetitive phrases
+- Shouting or whispering
+- Background music or effects
+
+## Managing Custom Voices
+
+### Viewing Custom Voices
+
+1. Navigate to **Voices** in sidebar
+2. Click **My Voices** tab
+3. All custom voices display here
+4. Same features as library voices (preview, favorite, etc.)
+
+### Using Custom Voices
+
+Custom voices work identically to library voices:
+
+**In Single Prompt Agents:**
+
+1. Open agent settings
+2. Navigate to Voice Settings
+3. Click Select Voice
+4. Go to "My Voices" tab
+5. Select your custom voice
+
+**In Flow Agents:**
+
+- Available in global voice settings
+- Can be used in node-level voice overrides
+- Appears in all voice selectors
+
+### Deleting Custom Voices
+
+<Warning>
+Deleting a custom voice is permanent and cannot be undone.
+</Warning>
+
+**Before deleting:**
+
+- Remove voice from all agents using it
+- Export/save audio sample if you want to recreate later
+- Consider deactivating instead of deleting
+
+**Delete Process:**
+
+1. Find voice in "My Voices" tab
+2. Click voice actions menu (⋮)
+3. Select **Delete Voice**
+4. Confirm deletion
+5. Voice removed from library
+
+**What happens to agents:**
+
+- Agents using deleted voice will show error
+- Must select new voice for affected agents
+- Previous calls with that voice remain in history
+
+## Voice Cloning Best Practices
+
+### Sample Selection
+
+**For customer service voices:**
+
+- Friendly, helpful tone
+- Clear enunciation
+- Moderate pace
+- Warm inflection
+
+**For sales voices:**
+
+- Confident, enthusiastic
+- Engaging energy
+- Natural variation
+- Professional but personable
+
+**For technical support:**
+
+- Clear, methodical pace
+- Patient tone
+- Reassuring demeanor
+- Precise pronunciation
+
+### Multi-Voice Strategy
+
+Create voice variations for different scenarios:
+
+**Example: Customer Service Department**
+
+```
+Voice 1: "Customer Service - Friendly Female"
+- Tag: Female, Conversational
+- Use: General inquiries, warm greeting
+
+Voice 2: "Customer Service - Professional Male"
+- Tag: Male, Narrator
+- Use: Account information, formal communications
+
+Voice 3: "Customer Service - Calm Female"
+- Tag: Female, Conversational
+- Use: Complaint handling, de-escalation
+```
+
+### Language and Dialect Matching
+
+**For Arabic markets:**
+
+- Egyptian: Broad Middle East appeal
+- Gulf (Saudi, UAE): GCC business markets
+- Levantine: Jordan, Syria, Lebanon regions
+- Use dialect matching target customer base
+
+**For English markets:**
+
+- Clear, neutral accent for international
+- Regional accents for local businesses
+- Professional pronunciation for all markets
+
+### Testing Custom Voices
+
+**Before deploying:**
+
+1. **Preview Testing** - Generate multiple TTS previews with different scripts
+2. **Agent Testing** - Use in test agent with actual conversation flow
+3. **Team Review** - Have colleagues listen and provide feedback
+4. **A/B Testing** - Compare with library voices
+5. **Live Testing** - Deploy to small percentage of calls first
+
+**Quality Checklist:**
+
+- [ ] Pronunciation is clear and natural
+- [ ] Pace is appropriate for use case
+- [ ] Tone matches brand personality
+- [ ] No robotic or artificial sound
+- [ ] Handles varied sentence types well
+- [ ] Emotional range is appropriate
+- [ ] Consistent quality across different texts
+
+## Common Issues
+
+### "Recording too short" error
+
+**Problem:** Recording is less than 3 seconds
+**Solution:**
+
+- Record longer sample (5-7 seconds recommended)
+- Speak 2-3 complete sentences
+- Don't rush through the recording
+
+### "Audio file too large" error
+
+**Problem:** File exceeds 32 MB
+**Solution:**
+
+- Compress audio file
+- Use MP3 format with lower bitrate
+- Trim unnecessary silence
+- Use online audio compression tool
+
+### "Preview generation failed"
+
+**Problem:** TTS preview won't generate
+**Possible causes:**
+
+- Audio quality too low
+- Audio sample too short/long
+- Server processing issue
+
+**Solutions:**
+
+- Try uploading different audio sample
+- Ensure clean, clear recording
+- Check file format is supported
+- Try again (temporary issue)
+
+### Voice sounds robotic or unnatural
+
+**Problem:** Generated voice doesn't sound natural
+**Causes:**
+
+- Low-quality audio sample
+- Background noise in recording
+- Insufficient audio variation
+- Overly monotone source
+
+**Solutions:**
+
+- Re-record in quieter environment
+- Use better microphone
+- Include more natural speech variation
+- Speak with natural inflection
+
+### Can't find custom voice in agent
+
+**Problem:** Created voice doesn't appear in voice selector
+**Solutions:**
+
+- Check "My Voices" tab specifically
+- Refresh browser page
+- Verify voice creation completed successfully
+- Check project selection is correct
+
+## Voice Cloning Limits
+
+**Per Account:**
+
+- Unlimited custom voices
+- 32 MB max file size per upload
+- 3-9 seconds for direct recording
+
+**Processing Time:**
+
+- Voice creation: 30-60 seconds
+- TTS preview generation: 10-30 seconds
+
+**Storage:**
+
+- Custom voices stored permanently
+- Cover images: 5 MB max each
+
+## Advanced Features
+
+### Instant Voice (Beta)
+
+Premium feature for voice isolation and enhancement:
+
+**Features:**
+
+- Removes background noise from samples
+- Enhances voice clarity
+- Improves consistency
+- Better quality with less-than-perfect recordings
+
+<Note>
+Instant Voice is a premium beta feature. Contact sales for access.
+</Note>
+
+### Voice Versioning
+
+Create multiple versions of same voice:
+
+**Use case:** Update voice without losing original
+
+1. Create new voice with same base audio
+2. Use different tags or names to distinguish
+3. Test new version before switching agents
+4. Keep old version as backup
+
+## Related Documentation
+
+<CardGroup cols={2}>
+  <Card title="Voice Library" href="./voices">
+    Browse and select from pre-built AI voices
+  </Card>
+  <Card title="Single Prompt Voice Settings" href="/agents/single-prompt/voice-settings">
+    Configure voice in Single Prompt Agents
+  </Card>
+  <Card title="Flow Agent Voice Settings" href="/agents/flow-agent/global-settings">
+    Set up voices in Flow Agents
+  </Card>
+  <Card title="Testing Agents" href="./testing">
+    Test your custom voice in real calls
+  </Card>
+</CardGroup>
