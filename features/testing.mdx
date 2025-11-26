@@ -1,0 +1,767 @@
+---
+title: 'Testing & Debugging'
+description: 'Test calls, simulate scenarios, and debug your voice agents'
+---
+
+## Overview
+
+Thorough testing is essential before deploying voice agents to production. Hamsa provides multiple testing methods to validate conversation flows, debug issues, and ensure quality experiences for your callers.
+
+<Info>
+**Testing Methods Available:**
+- **Browser Testing** - Quick testing with microphone in your browser
+- **Phone Testing** - Real phone call testing with actual voice quality
+- **Call Simulation** - Automated test scenarios with assertions
+- **Live Call Monitoring** - Real-time debugging during actual calls
+</Info>
+
+## Browser Testing
+
+Test your agent directly in your browser without making phone calls.
+
+### How to Start Browser Testing
+
+<Steps>
+  <Step title="Open Test Panel">
+    Navigate to your agent and click **Test Agent** in the top right corner
+  </Step>
+  <Step title="Allow Microphone">
+    Grant browser permission to access your microphone when prompted
+  </Step>
+  <Step title="Start Conversation">
+    Click **Start Test** to begin the conversation
+  </Step>
+  <Step title="Interact with Agent">
+    Speak naturally with your agent as a real caller would
+  </Step>
+</Steps>
+
+### Browser Testing Features
+
+**Real-time Transcript**
+
+- View live transcription of both sides of the conversation
+- See what the agent is hearing and saying
+- Identify transcription accuracy issues
+
+**Variable Inspector**
+
+- Monitor all variables in real-time
+- See when variables are extracted
+- Verify variable values match expectations
+
+**Node Flow Visualization** (Flow Agents)
+
+- Watch nodes activate in real-time
+- See transition paths taken
+- Identify unexpected routing
+
+**Logs Panel**
+
+- View detailed execution logs
+- See tool calls and responses
+- Debug errors and warnings
+
+### Browser Testing Limitations
+
+<Warning>
+**Not Representative of Phone Quality:**
+- Different audio codecs than phone networks
+- Less background noise
+- Better audio quality than actual calls
+- No telephony-specific issues (echo, latency)
+</Warning>
+
+**When to use browser testing:**
+
+- ✅ Quick iteration during development
+- ✅ Testing conversation logic and flow
+- ✅ Validating variable extraction
+- ✅ Checking tool integrations
+
+**When NOT to rely solely on browser testing:**
+
+- ❌ Final quality assurance
+- ❌ Voice quality validation
+- ❌ DTMF testing (use phone instead)
+- ❌ Real-world network conditions
+
+## Phone Testing
+
+Test your agent with actual phone calls to validate production-ready quality.
+
+### How to Test via Phone
+
+<Steps>
+  <Step title="Navigate to Phone Test">
+    In your agent, click **Test via Phone** button
+  </Step>
+  <Step title="Enter Phone Number">
+    Enter your phone number in international format: `+1XXXXXXXXXX`
+  </Step>
+  <Step title="Initiate Call">
+    Click **Call Me** to receive a test call
+  </Step>
+  <Step title="Test Scenarios">
+    Run through your test scenarios as a real caller would
+  </Step>
+</Steps>
+
+### Phone Number Formats
+
+**Correct formats:**
+
+```
++14155552671  (US)
++442071234567 (UK)
++966501234567 (Saudi Arabia)
++61412345678  (Australia)
+```
+
+**Incorrect formats:**
+
+```
+❌ 4155552671       (missing country code)
+❌ +1-415-555-2671  (contains dashes)
+❌ (415) 555-2671   (contains formatting)
+```
+
+### What to Test via Phone
+
+**Voice Quality**
+
+- Clarity and naturalness
+- Speaking pace and tone
+- Pronunciation of domain-specific terms
+- Background noise handling
+
+**DTMF Functionality**
+
+- Menu navigation (Press 1, Press 2, etc.)
+- DTMF input capture (account numbers, PINs)
+- Global DTMF triggers
+- Termination keys (#, \*)
+
+**Real-World Scenarios**
+
+- Background noise (test from various environments)
+- Network latency and call quality
+- Interruption handling
+- Silence detection and timeout behavior
+
+**Edge Cases**
+
+- Unclear speech or heavy accents
+- Multiple speakers on speakerphone
+- Loud background environments
+- Poor network connections
+
+### Phone Testing Best Practices
+
+<Accordion title="Test from Multiple Locations">
+  Test calls from different:
+  - Geographic locations
+  - Network types (WiFi calling, cellular, landline)
+  - Devices (iPhone, Android, landline)
+  - Carriers (different mobile providers)
+
+This reveals network-specific issues that may not appear in browser testing.
+</Accordion>
+
+<Accordion title="Test with Real Users">
+  Have colleagues or beta users test:
+  - Natural conversation patterns differ from developers
+  - Unexpected questions and responses
+  - Different speech patterns and accents
+  - Various use cases you may not have considered
+</Accordion>
+
+<Accordion title="Record Test Calls">
+  Keep recordings of test calls:
+  - Review problematic interactions
+  - Share with team for feedback
+  - Document bugs with examples
+  - Create regression test scenarios
+</Accordion>
+
+## Test Scenarios
+
+Create comprehensive test scenarios to validate all agent capabilities.
+
+### Creating Test Scenarios
+
+**Happy Path Scenarios**
+Test the ideal conversation flow:
+
+```yaml
+Scenario: Successful Appointment Booking
+Steps: 1. Agent greets caller
+  2. Caller states they want to book appointment
+  3. Agent asks for preferred date
+  4. Caller provides date
+  5. Agent asks for preferred time
+  6. Caller provides time
+  7. Agent confirms booking
+  8. Call ends successfully
+
+Expected Variables:
+  - appointment_date: '2024-02-15'
+  - appointment_time: '14:00'
+  - booking_confirmed: true
+```
+
+**Error Handling Scenarios**
+Test recovery from issues:
+
+```yaml
+Scenario: Invalid Date Handling
+Steps: 1. Agent asks for appointment date
+  2. Caller provides past date
+  3. Agent recognizes invalid date
+  4. Agent asks for future date
+  5. Caller provides valid date
+  6. Agent proceeds with booking
+
+Expected Behavior:
+  - Agent validates date is in future
+  - Agent politely requests correction
+  - Agent retries up to 3 times
+  - Agent offers human transfer after 3 failures
+```
+
+**Edge Case Scenarios**
+Test unusual but possible situations:
+
+```yaml
+Scenario: Multi-Speaker Call
+Steps: 1. Agent greets first caller
+  2. Second person interrupts
+  3. Agent handles multiple voices
+  4. Agent directs question to specific person
+  5. Agent collects information correctly
+
+Expected Behavior:
+  - Speaker identification works
+  - Agent doesn't confuse speakers
+  - Variables extracted from correct speaker
+```
+
+### Test Scenario Template
+
+Use this template to create comprehensive test scenarios:
+
+```markdown
+## Test Scenario: [Scenario Name]
+
+**Objective:** [What this test validates]
+
+**Prerequisites:**
+
+- Agent configuration: [specific settings]
+- Required tools: [list tools needed]
+- Test data: [any required test data]
+
+**Steps:**
+
+1. [Step 1]
+2. [Step 2]
+3. [Step 3]
+
+**Expected Results:**
+
+- [Expected behavior 1]
+- [Expected behavior 2]
+
+**Variables to Verify:**
+
+- {{variable_1}}: [expected value]
+- {{variable_2}}: [expected value]
+
+**Success Criteria:**
+
+- [ ] Agent responds correctly to all inputs
+- [ ] All variables extracted accurately
+- [ ] Tools called with correct parameters
+- [ ] Conversation flows naturally
+```
+
+## Debugging Agents
+
+### Real-Time Debugging
+
+**Live Call Logs**
+Monitor active calls in real-time:
+
+1. Navigate to **Live Calls** dashboard
+2. Select an active call
+3. View real-time transcript and events
+4. Monitor variable values
+5. See tool execution and responses
+
+**What you can see:**
+
+- Complete conversation transcript
+- All extracted variables
+- Tool calls and responses
+- Errors and warnings
+- Node transitions (Flow Agents)
+
+### Call History Analysis
+
+Review completed calls to identify issues:
+
+<Steps>
+  <Step title="Open Call History">
+    Navigate to **Call History** page
+  </Step>
+  <Step title="Find Problematic Call">
+    Use filters to find calls with issues:
+    - Filter by agent
+    - Filter by date/time
+    - Filter by duration
+    - Search by phone number
+  </Step>
+  <Step title="Analyze Call Details">
+    Open call details to review:
+    - Complete transcript
+    - Variable extraction results
+    - Tool execution logs
+    - Error messages
+  </Step>
+  <Step title="Identify Root Cause">
+    Look for patterns:
+    - Where did conversation go wrong?
+    - What variables failed to extract?
+    - Which tools returned errors?
+    - What was user's intent?
+  </Step>
+</Steps>
+
+### Common Debugging Scenarios
+
+<AccordionGroup>
+  <Accordion title="Agent Not Understanding User">
+    **Symptoms:**
+    - Agent asks user to repeat frequently
+    - Agent misinterprets clear statements
+    - Wrong variables extracted
+
+    **Debugging steps:**
+    1. Check transcript accuracy
+    2. Verify STT (Speech-to-Text) quality
+    3. Test with different voices/accents
+    4. Adjust prompt clarity
+    5. Improve extraction instructions
+
+    **Solutions:**
+    - Enable noise cancellation
+    - Adjust microphone sensitivity
+    - Rephrase prompts for clarity
+    - Add examples to extraction instructions
+
+  </Accordion>
+
+  <Accordion title="Variables Not Extracting">
+    **Symptoms:**
+    - Variables remain empty
+    - Wrong data extracted
+    - Inconsistent extraction
+
+    **Debugging steps:**
+    1. Review extraction instructions
+    2. Check conversation transcript
+    3. Verify variable names match
+    4. Test extraction isolation
+
+    **Solutions:**
+    - Make extraction instructions more specific
+    - Provide examples in extraction prompt
+    - Break complex extractions into steps
+    - Add validation after extraction
+
+  </Accordion>
+
+  <Accordion title="Tool Calls Failing">
+    **Symptoms:**
+    - Tools timing out
+    - Error responses
+    - Wrong parameters passed
+
+    **Debugging steps:**
+    1. Check tool logs in call history
+    2. Verify API endpoint accessibility
+    3. Validate parameter values
+    4. Test tool directly via API
+
+    **Solutions:**
+    - Increase timeout settings
+    - Fix API authentication
+    - Correct parameter mapping
+    - Add error handling in flow
+
+  </Accordion>
+
+  <Accordion title="Unexpected Flow Transitions">
+    **Symptoms:**
+    - Agent goes to wrong node
+    - Skips expected nodes
+    - Gets stuck in loops
+
+    **Debugging steps:**
+    1. Review transition conditions
+    2. Check variable values
+    3. Verify transition priorities
+    4. Trace flow in visualization
+
+    **Solutions:**
+    - Adjust transition conditions
+    - Fix variable extraction
+    - Reorder transitions
+    - Add fallback transitions
+
+  </Accordion>
+</AccordionGroup>
+
+## Testing Checklist
+
+Use this checklist before deploying to production:
+
+### Conversation Quality
+
+- [ ] **Agent greets caller naturally**
+
+  - Professional and on-brand
+  - Clear and easy to understand
+  - Sets proper expectations
+
+- [ ] **Agent handles common questions**
+
+  - Test top 10 FAQ scenarios
+  - Verify accurate responses
+  - Check knowledge base retrieval
+
+- [ ] **Agent manages conversation flow**
+
+  - Doesn't interrupt inappropriately
+  - Handles user interruptions gracefully
+  - Asks clarifying questions when needed
+  - Confirms understanding
+
+- [ ] **Agent concludes calls appropriately**
+  - Provides summary when relevant
+  - Thanks caller
+  - Offers next steps
+  - Ends call cleanly
+
+### Technical Validation
+
+- [ ] **Variable extraction works**
+
+  - All required variables captured
+  - Format validation working
+  - Default values applied correctly
+  - Variables persist through flow
+
+- [ ] **DTMF functionality tested**
+
+  - Menu navigation works
+  - Input capture accurate
+  - Global triggers respond
+  - Termination keys work
+
+- [ ] **Tool integrations validated**
+
+  - All tools callable
+  - Parameters passed correctly
+  - Responses handled properly
+  - Errors managed gracefully
+
+- [ ] **Webhooks functioning**
+  - Webhook URL receives events
+  - Authentication working
+  - Payload format correct
+  - Error handling tested
+
+### Voice & Audio
+
+- [ ] **Voice quality acceptable**
+
+  - Clear and natural
+  - Appropriate pace
+  - Correct pronunciation
+  - No artifacts or glitches
+
+- [ ] **Audio settings optimized**
+
+  - Response delay appropriate
+  - Interruption handling working
+  - Silence detection accurate
+  - Timeout values reasonable
+
+- [ ] **Background noise handled**
+  - Noise cancellation effective
+  - Agent heard in noisy environments
+  - User heard with background noise
+
+### Error Handling
+
+- [ ] **Invalid input handled**
+
+  - Agent asks for clarification
+  - Provides examples
+  - Limits retry attempts
+  - Offers human transfer
+
+- [ ] **System errors managed**
+
+  - API failures handled gracefully
+  - Timeout errors communicated
+  - Network issues don't crash call
+  - Fallback responses available
+
+- [ ] **Edge cases covered**
+  - Empty responses handled
+  - Very long responses managed
+  - Multiple speakers handled
+  - Call transfers working
+
+## Performance Testing
+
+### Load Testing
+
+Test agent performance under load:
+
+**Metrics to measure:**
+
+- Concurrent call capacity
+- Response latency under load
+- Tool call success rate
+- Variable extraction accuracy
+- Call completion rate
+
+**Load testing approach:**
+
+```yaml
+Test Configuration:
+  Concurrent calls: Start with 10, increase to 100
+  Duration: 30 minutes per load level
+  Call types: Mix of scenarios
+
+Metrics to track:
+  - Average response time
+  - P95 response time
+  - Error rate
+  - Tool timeout rate
+  - Call drop rate
+
+Success criteria:
+  - <5% error rate at target load
+  - <2s average response time
+  - <1% call drop rate
+```
+
+### Stress Testing
+
+Find breaking points:
+
+1. **Gradually increase load** beyond expected capacity
+2. **Monitor degradation** of service quality
+3. **Identify bottlenecks** (LLM, STT/TTS, tools, network)
+4. **Document thresholds** where issues appear
+5. **Plan scaling** based on findings
+
+## Automated Testing
+
+### Test Automation Strategy
+
+Create automated test suites for regression testing:
+
+**Unit Tests**
+Test individual components:
+
+- Variable extraction logic
+- Tool parameter mapping
+- Transition conditions
+- Validation rules
+
+**Integration Tests**
+Test component interactions:
+
+- Node-to-node transitions
+- Variable passing between nodes
+- Tool call chains
+- Webhook delivery
+
+**End-to-End Tests**
+Test complete scenarios:
+
+- Full conversation flows
+- Multi-node paths
+- Complex decision trees
+- Error recovery flows
+
+### Testing Tools & Frameworks
+
+<CardGroup cols={2}>
+  <Card title="Postman" icon="rocket">
+    Test API endpoints and webhooks
+  </Card>
+  <Card title="Artillery" icon="chart-line">
+    Load testing for voice agents
+  </Card>
+  <Card title="Pytest" icon="python">
+    Automated test suites
+  </Card>
+  <Card title="Twilio Test Credentials" icon="phone">
+    Test telephony without charges
+  </Card>
+</CardGroup>
+
+## Monitoring Production Calls
+
+### Setting Up Monitoring
+
+**Key metrics to monitor:**
+
+- Call success rate
+- Average call duration
+- Variable extraction success rate
+- Tool call success rate
+- Error frequency
+- User satisfaction scores
+
+**Alerting thresholds:**
+
+```yaml
+Alerts:
+  Critical:
+    - Error rate > 10% over 5 minutes
+    - Call completion rate < 80%
+    - Tool timeout rate > 15%
+
+  Warning:
+    - Average call duration > 2x baseline
+    - Variable extraction < 90% success
+    - Response time > 3 seconds
+```
+
+### Continuous Improvement
+
+Use monitoring data to improve agents:
+
+1. **Review failed calls weekly**
+
+   - Identify common failure patterns
+   - Update prompts to handle issues
+   - Improve error handling
+
+2. **Analyze transcripts**
+
+   - Find misunderstood phrases
+   - Identify missing knowledge
+   - Discover new use cases
+
+3. **Track variable extraction**
+
+   - Improve low-performing extractions
+   - Add validation for common errors
+   - Simplify complex extractions
+
+4. **Optimize tool calls**
+   - Reduce unnecessary calls
+   - Improve parameter accuracy
+   - Handle failures better
+
+## Best Practices
+
+<Tip>
+**Test Early, Test Often**
+- Test after every significant change
+- Maintain a suite of regression tests
+- Test with real users before launch
+- Continue testing in production
+</Tip>
+
+**Testing Principles:**
+
+1. **Test like a user, not a developer**
+
+   - Use natural language
+   - Make realistic requests
+   - Include unexpected inputs
+   - Test unhappy paths
+
+2. **Document everything**
+
+   - Record test scenarios
+   - Note issues found
+   - Track resolutions
+   - Maintain test history
+
+3. **Test incrementally**
+
+   - Start with browser testing
+   - Progress to phone testing
+   - Validate with real users
+   - Monitor in production
+
+4. **Automate what you can**
+   - Regression test suites
+   - Load testing scripts
+   - Monitoring alerts
+   - Report generation
+
+## Troubleshooting Testing Issues
+
+### Browser Test Not Working
+
+**Issue:** Cannot start browser test
+
+**Solutions:**
+
+- Check microphone permissions in browser
+- Try different browser (Chrome, Firefox, Safari)
+- Disable browser extensions
+- Clear cache and cookies
+- Check network connectivity
+
+### Phone Test Not Connecting
+
+**Issue:** Test call doesn't arrive
+
+**Solutions:**
+
+- Verify phone number format (+1XXXXXXXXXX)
+- Check workspace has calling credits
+- Ensure phone number is assigned to agent
+- Try browser test first
+- Check phone signal strength
+
+### Inconsistent Test Results
+
+**Issue:** Same test produces different outcomes
+
+**Solutions:**
+
+- LLM responses are non-deterministic
+- Lower temperature setting for consistency
+- Add explicit validation steps
+- Test multiple times to identify patterns
+- Use more specific prompts
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Live Calls" href="/dashboard/live-calls">
+    Monitor active calls in real-time
+  </Card>
+  <Card title="Call History" href="/dashboard/call-history">
+    Analyze completed call recordings
+  </Card>
+  <Card title="Performance Metrics" href="/dashboard/performance">
+    Track agent performance over time
+  </Card>
+  <Card title="Webhooks" href="/features/webhooks">
+    Set up event notifications
+  </Card>
+</CardGroup>

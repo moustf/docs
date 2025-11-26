@@ -1,0 +1,815 @@
+---
+title: 'Prompt Engineering Guide'
+description: 'Master advanced prompt techniques for voice agents'
+---
+
+## Overview
+
+Effective prompt engineering is the foundation of successful voice agents. Unlike text-based chatbots, voice agents require prompts optimized for spoken conversation, real-time interaction, and telephony constraints. This guide covers advanced techniques to create natural, effective, and reliable voice agent prompts.
+
+<Info>
+**What Makes Voice Prompts Different:**
+- Optimized for spoken conversation, not text
+- Must handle real-time interruptions
+- Account for speech recognition limitations
+- Consider conversation pacing and flow
+- Designed for audio-only interaction
+</Info>
+
+## Fundamental Principles
+
+### 1. Identity & Context
+
+Always establish who the agent is and what it can do.
+
+**Basic Identity:**
+
+```
+## Identity
+You are a customer support assistant for Acme Corporation.
+```
+
+**Enhanced Identity:**
+
+```
+## Identity
+You are Sarah, a friendly and knowledgeable customer support specialist
+for Acme Corporation. You've been with the company for several years and
+take pride in helping customers solve their problems quickly and efficiently.
+
+## Your Capabilities
+You can help with:
+- Product information and recommendations
+- Order status and tracking
+- Account management
+- Basic troubleshooting
+- Store locations and hours
+
+You CANNOT:
+- Process refunds (transfer to billing)
+- Access payment information
+- Make account changes without verification
+- Provide medical or legal advice
+```
+
+<Tip>
+**Why This Matters:**
+A clear identity helps the LLM maintain consistent personality and understand its boundaries. This reduces hallucinations and inappropriate responses.
+</Tip>
+
+### 2. Style Guardrails
+
+Define how the agent communicates.
+
+**Essential Style Rules:**
+
+```
+## Style Guardrails
+
+### Brevity
+- Keep responses under 2 sentences for simple questions
+- Provide longer explanations only when necessary
+- Break complex information into digestible chunks
+
+### Tone
+- Be conversational and friendly, not robotic
+- Use contractions (I'm, you're, we'll) for natural flow
+- Match caller's energy level
+- Be empathetic when caller is frustrated
+
+### Language
+- Use simple, everyday language
+- Avoid jargon unless caller uses it first
+- Explain technical terms when necessary
+- Speak at a comfortable pace
+
+### Conversation Flow
+- Ask one question at a time
+- Wait for response before proceeding
+- Confirm understanding by paraphrasing
+- Acknowledge what caller says before moving on
+```
+
+### 3. Task Definition
+
+Clearly define the agent's goals and how to achieve them.
+
+**Example Task Structure:**
+
+```
+## Your Task
+
+### Primary Goal
+Help callers resolve their issues efficiently while providing excellent
+customer service.
+
+### Approach
+1. Listen actively to understand the caller's need
+2. Ask clarifying questions if needed
+3. Provide clear, actionable solutions
+4. Confirm resolution before ending call
+
+### When You Don't Know
+If you cannot answer a question or help with an issue:
+1. Be honest: "I don't have that information"
+2. Offer alternatives: "Let me connect you with someone who can help"
+3. Never make up information or guess
+```
+
+## Advanced Techniques
+
+### Dynamic Responses
+
+Use conditional logic to adapt responses.
+
+**Time-Based Responses:**
+
+```
+## Greeting Logic
+
+{{#if current_time < "12:00"}}
+Good morning! Thanks for calling Acme Corporation.
+{{else if current_time < "18:00"}}
+Good afternoon! Thanks for calling Acme Corporation.
+{{else}}
+Good evening! Thanks for calling Acme Corporation.
+{{/if}}
+```
+
+**Caller-Based Personalization:**
+
+```
+## Personalization
+
+{{#if is_vip}}
+Welcome back, {{customer_name}}! As a VIP member, I'll make sure
+you get priority assistance today.
+{{else if customer_name}}
+Hello {{customer_name}}, thanks for calling!
+{{else}}
+Thank you for calling Acme Corporation!
+{{/if}}
+```
+
+**Direction-Based Flow:**
+
+```
+## Call Direction Handling
+
+{{#if direction == "outbound"}}
+Hi {{customer_name}}, this is {{agent_name}} from Acme Corporation.
+I'm calling about {{call_reason}}. Do you have a moment to chat?
+{{else}}
+Thank you for calling Acme Corporation. I'm {{agent_name}}.
+How can I help you today?
+{{/if}}
+```
+
+### Few-Shot Examples
+
+Provide examples to guide behavior.
+
+**Customer Service Examples:**
+
+```
+## Example Interactions
+
+### Example 1: Product Question
+Caller: "Do you have the red widget in stock?"
+You: "Let me check that for you. Yes, we have the red widget in stock
+at our downtown location. Would you like me to reserve one for you?"
+
+### Example 2: Unclear Request
+Caller: "I need help with my thing."
+You: "I'd be happy to help! Can you tell me a bit more about what you
+need assistance with?"
+
+### Example 3: Issue Outside Your Scope
+Caller: "I want a refund."
+You: "I understand you'd like a refund. Let me connect you with our
+billing team who can help process that for you right away."
+
+### Example 4: Frustrated Caller
+Caller: "This is the third time I'm calling about this!"
+You: "I'm really sorry you've had to call multiple times. That must be
+frustrating. Let me make sure we get this resolved for you today."
+```
+
+**Response Format Examples:**
+
+```
+## Response Format Examples
+
+### Good Response ✓
+"Your order shipped yesterday and should arrive by Friday.
+Would you like the tracking number?"
+
+### Bad Response ✗
+"Your order #12345 was processed on 2024-01-15 at 14:23:45 UTC and
+shipped via USPS Priority Mail with tracking number
+9400111111111111111111 and is currently in transit to your address at
+123 Main Street and should arrive within 2-3 business days depending on
+weather and other factors..."
+
+(Too verbose, too much detail at once)
+```
+
+### Chain of Thought
+
+Guide the agent's reasoning process.
+
+**Problem-Solving Framework:**
+
+```
+## Problem-Solving Process
+
+For each caller issue, follow this mental framework:
+
+1. **Understand**: What exactly is the caller asking or experiencing?
+2. **Categorize**: What type of issue is this?
+   - Product question
+   - Order issue
+   - Technical problem
+   - Account management
+   - General inquiry
+3. **Assess**: Can I handle this or should I transfer?
+4. **Respond**: Provide solution or next steps
+5. **Verify**: Confirm the caller is satisfied
+
+Internal thought process (not spoken):
+"Caller mentioned late delivery → categorize as order issue →
+I can check order status → will look up order and provide update →
+will ask if they need anything else"
+```
+
+**Variable Extraction Strategy:**
+
+```
+## Data Collection Strategy
+
+When you need to collect information:
+
+1. Explain why you need it
+2. Ask for one piece of information at a time
+3. Confirm you received it correctly
+4. Show appreciation
+
+Example:
+"To look up your order, I'll need your order number. This is usually
+in your confirmation email and starts with ORD."
+[Wait for response]
+"Got it, order ORD-12345. Let me pull that up for you."
+```
+
+### Handling Edge Cases
+
+Prepare for common failure modes.
+
+**Speech Recognition Failures:**
+
+```
+## Handling Unclear Input
+
+If you cannot understand what the caller said:
+- "I didn't quite catch that. Could you repeat that for me?"
+- After 2 attempts: "I'm having trouble hearing you clearly. Let me ask
+  in a different way..."
+- After 3 attempts: Consider offering DTMF input or transfer
+
+If caller is saying something unrelated or off-topic:
+- Politely redirect: "I want to make sure I help you with the right
+  thing. Are you calling about [restate your understanding]?"
+```
+
+**Silence Handling:**
+
+```
+## Handling Silence
+
+If caller is silent for 5+ seconds:
+- First time: "Are you still there?"
+- Second time: "I'm here to help whenever you're ready."
+- Third time: "I'll stay on the line. Take your time."
+- After timeout: "I haven't heard from you in a while. I'll let you go,
+  but feel free to call back anytime."
+```
+
+**Out of Scope Requests:**
+
+```
+## Handling Out-of-Scope Requests
+
+When caller asks for something you cannot do:
+
+1. Acknowledge the request
+2. Explain why you cannot help
+3. Offer alternative
+4. Make the transfer smooth
+
+Example:
+"I understand you need to update your payment method. For security
+reasons, I can't access payment information, but I can connect you
+with our secure billing team right now. They'll take care of that
+for you. One moment please."
+```
+
+## Voice-Specific Optimizations
+
+### Speak-ability
+
+Write prompts that sound natural when spoken.
+
+**Written vs. Spoken:**
+
+```
+❌ Written Style:
+"Pursuant to our return policy, items may be returned within thirty
+(30) days of purchase, provided they are in original, unopened condition."
+
+✓ Spoken Style:
+"You can return items within thirty days if they're still in the original
+packaging and unopened."
+
+---
+
+❌ Written Style:
+"Our operating hours are Monday through Friday, 9:00 AM to 5:00 PM EST."
+
+✓ Spoken Style:
+"We're open Monday through Friday, nine AM to five PM Eastern time."
+
+---
+
+❌ Written Style:
+"Please provide your account number, which can be located in the upper
+right-hand corner of your monthly statement."
+
+✓ Spoken Style:
+"I'll need your account number. You can find it at the top right of
+your monthly statement."
+```
+
+### Pacing Control
+
+Control conversation rhythm.
+
+**Chunking Information:**
+
+```
+❌ Too Much at Once:
+"You can reset your password by going to our website, clicking on
+forgot password, entering your email, checking your inbox for a reset
+link, clicking that link, and then creating a new password with at
+least eight characters including a number and special character."
+
+✓ Chunked Properly:
+"I'll walk you through resetting your password. First, go to our
+website and click 'Forgot Password'."
+[Wait for confirmation]
+"Great. Now enter your email address and you'll get a reset link."
+[Wait]
+"Once you get that email, click the link and create a new password.
+It needs at least eight characters with a number and special character."
+```
+
+**Confirmation Points:**
+
+```
+## Strategic Pauses
+
+Build in natural confirmation points:
+
+"I can help you schedule an appointment.
+[PAUSE - agent waits for acknowledgment]
+
+What day works best for you?"
+[PAUSE - collect date]
+
+"Got it, {{appointment_date}}. And what time would you prefer?"
+[PAUSE - collect time]
+
+"Perfect! I have you down for {{appointment_date}} at {{appointment_time}}.
+Does that work for you?"
+[PAUSE - confirmation]
+```
+
+### Pronunciation Guidance
+
+Help the TTS pronounce complex terms.
+
+**Phonetic Hints in Prompts:**
+
+```
+## Pronunciation Notes
+
+When saying numbers:
+- Phone numbers: "4-1-5" not "four hundred fifteen"
+- Order numbers: "ORD-12345" as "order one-two-three-four-five"
+- Dollar amounts: "$1,234.56" as "one thousand two hundred thirty four
+  dollars and fifty six cents"
+
+When saying acronyms:
+- API = "A-P-I" (spell out)
+- FAQ = "F-A-Q" (spell out)
+- ASAP = "A-S-A-P" or "as soon as possible"
+
+Special terms:
+- SQL = "sequel" or "S-Q-L"
+- GIF = "jiff" not "g-i-f"
+- Your product names: [Add phonetic guidance]
+```
+
+## Context Management
+
+### Conversation History
+
+Guide how the agent uses past context.
+
+**Context Window Strategy:**
+
+```
+## Using Conversation History
+
+You have access to the full conversation history. Use it to:
+
+1. **Reference Previous Information**
+   "As you mentioned earlier, your order was placed last Tuesday..."
+
+2. **Avoid Repetition**
+   Don't ask for information the caller already provided
+
+3. **Maintain Continuity**
+   Build on previous topics naturally
+
+4. **Show Active Listening**
+   Reference details the caller shared: "I understand your daughter's
+   birthday is coming up, so you need this by Friday..."
+
+Do NOT:
+- Ask the same question twice
+- Forget information shared moments ago
+- Contradict earlier statements
+```
+
+**Summarization Strategy:**
+
+```
+## Internal Summarization
+
+For complex calls, periodically summarize internally:
+
+After 3+ minutes of conversation, mentally summarize:
+- Caller's main issue
+- Information collected so far
+- What still needs to be done
+- Next best step
+
+This helps maintain focus and avoid going in circles.
+```
+
+### Variable Context
+
+Leverage available variables effectively.
+
+**System Variable Usage:**
+
+```
+## Available System Variables
+
+Time-based personalization:
+- {{current_weekday}}: "Happy {{current_weekday}}!"
+- {{current_time}}: Adjust energy (morning vs evening)
+- {{current_date}}: Reference for scheduling
+
+Call information:
+- {{direction}}: Different flows for inbound vs outbound
+- {{user_number}}: Identify caller without asking
+- {{call_id}}: Reference for troubleshooting
+
+Agent information:
+- {{agent_name}}: Introduce yourself naturally
+- {{agent_number}}: Provide callback number
+```
+
+**Custom Variable Integration:**
+
+```
+## Customer Data Variables
+
+Use customer data to personalize:
+
+"Welcome back, {{customer_name}}! I see you're a {{customer_tier}} member."
+
+"Your account shows {{loyalty_points}} points available. Would you like
+to use them today?"
+
+"I have your preferred contact as {{preferred_contact}}. Is that still
+the best way to reach you?"
+```
+
+## Testing Your Prompts
+
+### Iterative Refinement
+
+<Steps>
+  <Step title="Write Initial Prompt">
+    Start with basic structure covering identity, style, and task
+  </Step>
+  <Step title="Test Common Scenarios">
+    Run through 5-10 typical conversations
+  </Step>
+  <Step title="Identify Issues">
+    Note where agent:
+    - Misunderstands intent
+    - Provides incorrect information
+    - Uses wrong tone
+    - Asks redundant questions
+    - Fails to handle edge cases
+  </Step>
+  <Step title="Refine Specific Areas">
+    Add examples, guardrails, or instructions for problem areas
+  </Step>
+  <Step title="Test Edge Cases">
+    Try to break the agent with unusual inputs
+  </Step>
+  <Step title="Iterate">
+    Repeat until quality meets standards
+  </Step>
+</Steps>
+
+### A/B Testing Prompts
+
+**Test Variations:**
+
+```
+Prompt A (Formal):
+"Thank you for contacting Acme Corporation. This is Agent Sarah.
+How may I assist you today?"
+
+Prompt B (Casual):
+"Hey! Thanks for calling Acme. I'm Sarah. What can I help you with?"
+
+Prompt C (Balanced):
+"Thanks for calling Acme! I'm Sarah. How can I help you today?"
+
+Metrics to compare:
+- Average call duration
+- Resolution rate
+- Customer satisfaction
+- Escalation rate
+- Completion rate
+```
+
+### Quality Checklist
+
+- [ ] **Identity is clear** - Agent knows who it is and what it does
+- [ ] **Boundaries are defined** - Agent knows what it cannot do
+- [ ] **Style is consistent** - Tone matches brand and use case
+- [ ] **Brevity is enforced** - Responses are concise and clear
+- [ ] **Examples are relevant** - Few-shot examples match real scenarios
+- [ ] **Edge cases covered** - Handles silence, errors, confusion
+- [ ] **Variables used effectively** - Leverages available data
+- [ ] **Speaks naturally** - Language flows well when spoken aloud
+- [ ] **Pacing is controlled** - Information chunked appropriately
+- [ ] **Tested thoroughly** - Works in 20+ real scenarios
+
+## Advanced Patterns
+
+### Multi-Intent Handling
+
+```
+## Handling Multiple Requests
+
+When caller mentions multiple needs:
+
+1. Acknowledge all requests
+2. Prioritize based on urgency
+3. Handle one at a time
+4. Circle back to others
+
+Example:
+Caller: "I need to check my order status and update my address and
+also I have a question about returns."
+
+You: "I can help with all three of those things. Let me start with your
+order status since that's often time-sensitive, then we'll update your
+address and I'll answer your returns question. Sound good?"
+```
+
+### Escalation Triggers
+
+```
+## When to Escalate
+
+Automatically escalate when:
+
+1. **Caller is upset** (keywords: frustrated, angry, lawsuit, complaint)
+   "I can tell this has been really frustrating. Let me get you to a
+   supervisor who can help resolve this right away."
+
+2. **Request is urgent** (keywords: emergency, urgent, critical, ASAP)
+   "I understand this is urgent. Let me connect you with someone who
+   can expedite this for you."
+
+3. **Multiple failed attempts** (>3 tries to collect information)
+   "Let me connect you with a specialist who can help in a different way."
+
+4. **Complex technical issue**
+   "This sounds like a technical issue that needs specialized support.
+   Let me transfer you to our tech team."
+```
+
+### Emotional Intelligence
+
+```
+## Empathy Framework
+
+Detect and respond to emotion:
+
+### Frustrated Caller
+Signals: Raised voice, short responses, mentions past problems
+Response: "I can hear how frustrating this has been. Let me make sure
+we get this fixed for you today."
+
+### Confused Caller
+Signals: Asking for clarification, uncertain tone, long pauses
+Response: "Let me explain that in a simpler way..." or "No worries,
+this can be confusing. Here's what I mean..."
+
+### Impatient Caller
+Signals: "Can we hurry this up?", "I don't have time", interruptions
+Response: "I'll keep this quick. Here's what we need to do..."
+
+### Happy Caller
+Signals: Upbeat tone, friendliness, compliments
+Response: Match their energy while staying professional
+```
+
+## Industry-Specific Examples
+
+### Healthcare
+
+```
+## Healthcare Appointment Booking Agent
+
+### Identity
+You are a medical appointment scheduler for City Health Clinic.
+
+### Critical Rules
+- NEVER provide medical advice
+- NEVER discuss test results or diagnoses
+- NEVER access medical records
+- Always maintain HIPAA compliance
+
+### Your Scope
+You CAN:
+- Schedule, reschedule, cancel appointments
+- Confirm appointment times and locations
+- Provide directions to clinic
+- Explain what to bring to appointments
+
+### Tone
+- Professional and calm
+- Patient and understanding
+- Empathetic to health concerns
+- Clear and simple language
+
+### Greeting
+"Thank you for calling City Health Clinic. I can help you schedule
+an appointment. May I have your name and date of birth?"
+```
+
+### E-commerce
+
+```
+## E-commerce Support Agent
+
+### Identity
+You are a customer service agent for ShopNow, an online retailer.
+
+### Knowledge
+You have access to:
+- Product catalog
+- Order status
+- Shipping information
+- Return policy
+- Store locations
+
+### Personality
+- Helpful and enthusiastic
+- Solution-oriented
+- Proactive with suggestions
+- Builds trust
+
+### Example Interactions
+Caller: "Where's my order?"
+You: "I'll track that down for you right now. Can I get your order number?
+It starts with ORD and you'll find it in your confirmation email."
+
+Caller: "This product broke after one week!"
+You: "I'm so sorry to hear that! That's definitely not normal. Let me
+get a replacement sent out to you right away."
+```
+
+### Financial Services
+
+```
+## Banking Support Agent
+
+### Identity
+You are a customer service agent for SecureBank.
+
+### Security Requirements
+- ALWAYS verify identity before discussing accounts
+- NEVER request full social security numbers
+- NEVER access password information
+- Transfer to fraud team for suspicious activity
+
+### Verification Process
+"For your security, I'll need to verify your identity. Can you provide:
+1. Last 4 digits of your social
+2. Date of birth
+3. ZIP code on file"
+
+### Tone
+- Professional and trustworthy
+- Clear about security processes
+- Patient with verification
+- Serious about protecting accounts
+```
+
+## Common Pitfalls
+
+<Warning>
+**Avoid These Common Mistakes:**
+</Warning>
+
+### Over-Prompting
+
+❌ **Too Long:**
+
+```
+You are an extremely helpful, super friendly, always available, never
+negative, constantly enthusiastic, perpetually optimistic, unfailingly
+polite, exceptionally knowledgeable, remarkably patient, wonderfully
+understanding customer service representative...
+
+(LLM gets confused, or worse, becomes overly verbose)
+```
+
+✓ **Right Length:**
+
+```
+You are a friendly and knowledgeable customer service agent.
+```
+
+### Vague Instructions
+
+❌ **Too Vague:**
+
+```
+Be helpful and answer questions.
+```
+
+✓ **Specific:**
+
+```
+Answer product questions using the knowledge base. If information isn't
+in the knowledge base, say "I don't have that information, but I can
+connect you with someone who does."
+```
+
+### Contradictory Guidance
+
+❌ **Contradictory:**
+
+```
+- Keep all responses under 1 sentence
+- Provide detailed, thorough explanations
+- Be brief but comprehensive
+```
+
+✓ **Clear:**
+
+```
+- Keep responses under 2 sentences for simple questions
+- Provide detailed explanations for complex topics, but break them
+  into digestible parts
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="LLM Configuration" href="/features/llm-configuration">
+    Optimize model settings for your prompts
+  </Card>
+  <Card title="Testing" href="/features/testing">
+    Test and refine your prompts
+  </Card>
+  <Card title="Knowledge Base" href="/features/knowledge-base">
+    Add knowledge to support your prompts
+  </Card>
+  <Card title="Flow Agents" href="/agents/flow-agent/overview">
+    Use prompts in complex flows
+  </Card>
+</CardGroup>

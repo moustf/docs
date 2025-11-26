@@ -1,0 +1,1233 @@
+---
+title: Troubleshooting Guide
+description: 'Common issues, solutions, and debugging strategies for Hamsa Telephony agents'
+---
+
+## Overview
+
+This guide covers common issues you may encounter when building and deploying Hamsa Telephony agents, along with step-by-step solutions and debugging strategies.
+
+<Tip>
+**Quick Debug Checklist:**
+1. Check the Call History logs for error messages
+2. Test your agent in the testing interface
+3. Verify all tool configurations
+4. Validate variable names and references
+5. Check transition conditions
+</Tip>
+
+---
+
+## Tool-Related Issues
+
+### Issue: Tool Not Executing
+
+**Symptoms:**
+
+- Tool node is reached but doesn't execute
+- No API call is made
+- Flow skips to next node immediately
+
+**Common Causes & Solutions:**
+
+#### 1. Tool Not Found in agentSettings.tools
+
+**Diagnosis:**
+
+```bash
+# Check if tool reference exists
+Check: agentSettings.tools array contains entry with nodeId matching your node
+```
+
+**Solution:**
+
+- Re-select the tool in the node configuration
+- Save the agent to regenerate tool references
+- Verify tool is active and not deleted
+
+#### 2. Invalid Tool Configuration
+
+**Diagnosis:**
+
+- Tool has no toolId or persistentId
+- Tool type is undefined
+- Tool was deleted from tool library
+
+**Solution:**
+
+```yaml
+# Steps to fix:
+1. Go to Tools page
+2. Verify tool exists and is active
+3. Check tool has valid configuration
+4. Re-add tool to node in flow builder
+5. Save agent
+```
+
+#### 3. Missing Required Parameters
+
+**Diagnosis:**
+
+- Required parameters not provided
+- Parameter values are empty or invalid
+
+**Solution:**
+
+```yaml
+# In node configuration:
+Parameters:
+  - name: required_param
+    value: { { valid_variable } } # Ensure variable exists
+    required: true
+```
+
+<Warning>
+Always verify that variables referenced in parameters exist before the tool node is reached.
+</Warning>
+
+---
+
+### Issue: Tool Times Out
+
+**Symptoms:**
+
+- Tool execution exceeds timeout limit
+- Call continues but tool results are missing
+- Error logged: "Tool execution timeout"
+
+**Solutions:**
+
+#### Increase Timeout
+
+```yaml
+Tool Node Configuration:
+  timeout: 30000 # Increase from default (30s) to 60s
+  onErrorBehavior: continue # Don't fail the call
+```
+
+#### Optimize API Performance
+
+- Check target API response time
+- Reduce data being requested
+- Use caching when possible
+- Consider async processing for slow operations
+
+#### Use Processing Message
+
+```yaml
+Tool Node:
+  processingMessage: 'This may take a moment, please hold...'
+  processingMessageType: static
+```
+
+---
+
+### Issue: Tool Returns Error
+
+**Symptoms:**
+
+- Tool executes but returns error response
+- Error message in logs: "Tool execution failed"
+- Flow transitions to error handling
+
+**Debugging Steps:**
+
+#### 1. Test Tool Directly
+
+```yaml
+# In Flow Builder:
+1. Click on tool node
+2. Click "Test Tool" button
+3. Provide sample parameters
+4. Review response and errors
+```
+
+#### 2. Check Tool Configuration
+
+- Verify URL is correct and accessible
+- Check authentication headers/API keys
+- Validate request method (GET, POST, etc.)
+- Ensure content-type headers are set
+
+#### 3. Review Parameter Mapping
+
+```yaml
+# Common issues:
+❌ Wrong: url: "api.example.com/users"
+✅ Right: url: "https://api.example.com/users"
+
+❌ Wrong: headers: { "Authorization": "{{api_key}}" }
+✅ Right: headers: { "Authorization": "Bearer {{api_key}}" }
+```
+
+#### 4. Check Response Format
+
+```yaml
+# If output mapping fails:
+Output Mapping:
+  user_id: $.data.id # Check JSON path is correct
+  user_name: $.data.name # Use Test Tool to see actual response structure
+```
+
+---
+
+### Issue: Tool Override Not Working
+
+**Symptoms:**
+
+- Parameter overrides not applied
+- Tool uses default values instead of overrides
+- Changes to tool configuration don't take effect
+
+**Solution:**
+
+#### For FUNCTION Tools
+
+```yaml
+# Full override support:
+Tool Reference (in agentSettings.tools):
+  toolType: 'FUNCTION'
+  overrides:
+    url: 'https://custom-api.example.com'
+    method: 'POST'
+    parameters:
+      custom_param: { { my_variable } }
+    headers:
+      Authorization: 'Bearer {{api_key}}'
+    timeout: 15000
+```
+
+#### For WEB_TOOL Tools
+
+```yaml
+# Limited override support:
+Tool Reference (in agentSettings.tools):
+  toolType: 'WEB_TOOL'
+  overrides:
+    name: 'Custom Tool Name' # Only name, description, params
+    description: 'Modified description'
+    parameters:
+      param1: { { custom_value } }
+  # Cannot override: URL, method, headers, timeout
+```
+
+#### For MCP Tools
+
+```yaml
+# No overrides allowed:
+Tool Reference (in agentSettings.tools):
+  toolType: 'MCP'
+  # MCP tools are server-managed
+  # No overrides field available
+```
+
+<Info>
+**Tool Type Override Capabilities:**
+- **FUNCTION**: Full overrides (URL, method, headers, params, auth, timeout)
+- **WEB_TOOL**: Limited overrides (name, description, params only)
+- **MCP**: No overrides (server-managed)
+</Info>
+
+---
+
+### Issue: Tool Version Mismatch
+
+**Symptoms:**
+
+- Warning: "Tool version out of sync"
+- Tool behavior changed unexpectedly
+- Parameters missing or renamed
+
+**Solution:**
+
+#### Check Version Status
+
+```yaml
+# In agentSettings.tools:
+Tool Reference:
+  persistentId: 'my-tool'
+  toolId: 'uuid-v1'
+  version: 1
+# If tool was updated in library:
+# version is now 2, causing mismatch
+```
+
+#### Sync to Latest Version
+
+```yaml
+# Steps:
+1. Go to Tools page
+2. Find the tool
+3. Check current version
+4. In Flow Builder, click "Sync Tool Version" button
+5. Review changes
+6. Test agent after syncing
+```
+
+<Warning>
+Syncing to a new tool version may require updating parameter mappings if the tool's schema changed.
+</Warning>
+
+---
+
+## Variable-Related Issues
+
+### Issue: Variable Not Extracted
+
+**Symptoms:**
+
+- Variable is undefined in subsequent nodes
+- Condition checking variable always fails
+- Output shows empty or null value
+
+**Debugging Steps:**
+
+#### 1. Check Extraction Configuration
+
+```yaml
+Conversation Node:
+  extractVariables:
+    enabled: true # Must be true
+    variables:
+      - name: customer_name
+        description: "Customer's full name"
+        dataType: string
+        extractionPrompt: "Extract the customer's full name from the conversation"
+        isRequired: true
+```
+
+#### 2. Verify Extraction Method
+
+```yaml
+Variable Configuration:
+  extractionMethod: llm_function_calling # Most reliable
+  confidenceThreshold: 0.8 # Lower if extraction fails (0.0-1.0)
+  retryAttempts: 2 # Increase if first attempt fails
+```
+
+**Extraction Method Options:**
+
+- `llm_function_calling`: Most accurate, uses LLM function calling (recommended)
+- `regex`: Pattern matching, fast but requires exact format
+- `nlp`: Natural language processing, good for unstructured data
+
+#### 3. Check Conversation Context
+
+```yaml
+# Variable extraction requires:
+1. User actually provided the information
+2. Conversation node had user interaction
+3. Extraction prompt is clear and specific
+
+# Example:
+Node Prompt: "What is your account number?"
+User says: "It's 12345"
+Extraction works: ✅
+
+Node Prompt: "Welcome!"
+User says: "Hi"
+Extraction fails: ❌ (no account number mentioned)
+```
+
+---
+
+### Issue: Variable Reference Not Working
+
+**Symptoms:**
+
+- `{{variable_name}}` appears literally in output
+- Tool parameter shows `{{variable_name}}` instead of value
+- Variable not being substituted
+
+**Solutions:**
+
+#### 1. Check Variable Name
+
+```yaml
+❌ Wrong: {{customerName}}     # camelCase
+❌ Wrong: {{customer-name}}    # hyphen
+✅ Right: {{customer_name}}    # snake_case
+
+❌ Wrong: {{ customer_name }}  # spaces
+✅ Right: {{customer_name}}    # no spaces
+```
+
+#### 2. Verify Variable Exists
+
+```yaml
+# Variables must be:
+1. Extracted in a previous node
+2. Set via output mapping from a tool
+3. A system variable
+4. Created as custom variable
+
+# Check Variables Panel:
+- Open Variables Panel in Flow Builder
+- Verify variable appears in list
+- Check variable has a value
+```
+
+#### 3. Check Variable Scope
+
+```yaml
+# Variable must be available at point of use:
+[Start Node] → extracts customer_name ✅
+  → [Node 2] → can use {{customer_name}} ✅
+  → [Node 3] → can use {{customer_name}} ✅
+
+# But:
+[Node 2] → tries to use {{order_id}} ❌
+[Node 3] → extracts order_id ✅
+# order_id not available in Node 2!
+```
+
+---
+
+### Issue: Enum Variable Validation Fails
+
+**Symptoms:**
+
+- Variable extraction succeeds but validation fails
+- Error: "Value not in enum"
+- Flow doesn't transition correctly
+
+**Solution:**
+
+```yaml
+Variable Configuration:
+  name: priority_level
+  dataType: string
+  enumValues:
+    - 'high' # Must match exactly
+    - 'medium'
+    - 'low'
+  extractionPrompt: "Extract priority as 'high', 'medium', or 'low' (lowercase)"
+# Common issue: User says "High" but enum is "high"
+# Solution: Include in extraction prompt to specify case
+```
+
+---
+
+### Issue: Context Rules Not Applied
+
+**Symptoms:**
+
+- Intelligent context rules not providing recommendations
+- Context not being used effectively
+- Variable suggestions missing
+
+**Check Context Rules:**
+
+```yaml
+# 14 Built-in Context Rules:
+1. call_duration_seconds → Elapsed time tracking
+2. conversation_turn_count → Interaction counting
+3. previous_node_id → Navigation history
+4. user_sentiment → Emotional state detection
+5. conversation_topic → Subject tracking
+6. user_intent → Goal detection
+7. information_completeness → Data collection progress
+8. customer_value_tier → Segmentation
+9. urgency_level → Priority detection
+10. technical_complexity → Issue classification
+11. authentication_status → Security state
+12. language_detected → Multilingual support
+13. business_hours_status → Time-based routing
+14. queue_position → Call center integration
+
+# Context rules are automatic
+# Ensure agent prompt references them:
+Prompt: "Consider the {{user_sentiment}} and {{urgency_level}} when responding"
+```
+
+---
+
+## DTMF Issues
+
+### Issue: DTMF Keys Not Working
+
+**Symptoms:**
+
+- User presses keys but nothing happens
+- DTMF transitions don't trigger
+- Keys not captured
+
+**Solutions:**
+
+#### 1. Check Phone Provider Support
+
+```yaml
+# DTMF Requirements:
+- Phone carrier must support DTMF tones
+- SIP trunk must pass DTMF (RFC 2833 or SIP INFO)
+- Test with different phone/provider
+```
+
+#### 2. Verify Transition Configuration
+
+```yaml
+Conversation Node:
+  transitions:
+    - type: dtmf
+      key: '1'
+      targetNodeId: sales_node
+
+    - type: dtmf
+      key: '2'
+      targetNodeId: support_node
+```
+
+#### 3. Check for DTMF Input Capture Conflict
+
+```yaml
+❌ Problem:
+Conversation Node:
+  dtmfInputCapture:
+    enabled: true  # Capturing all digits
+    variableName: account_number
+  transitions:
+    - dtmf: key=1  # Won't work! Number keys reserved for capture
+
+✅ Solution: Use non-number keys for navigation
+  transitions:
+    - dtmf: key=#  # Use # or * for navigation
+    - dtmf: key=*
+```
+
+<Warning>
+When DTMF Input Capture is enabled, number keys (0-9) are reserved for capturing the sequence and cannot be used for transitions.
+</Warning>
+
+---
+
+### Issue: DTMF Input Not Captured
+
+**Symptoms:**
+
+- Variable remains empty after DTMF input
+- Timeout occurs before capture complete
+- Wrong digits captured
+
+**Solutions:**
+
+#### 1. Configure Capture Settings
+
+```yaml
+Conversation Node:
+  message: 'Please enter your 8-digit account number followed by the pound key'
+  dtmfInputCapture:
+    enabled: true
+    variableName: account_number
+    digitLimit: 8 # Stop after 8 digits
+    terminationKey: '#' # Or stop when # is pressed
+    timeoutMs: 20000 # 20 seconds to enter
+```
+
+#### 2. Choose Right Termination Method
+
+```yaml
+# Option 1: Digit Limit (fixed length)
+digitLimit: 8        # For SSN, account numbers
+terminationKey: null # Optional
+
+# Option 2: Termination Key (variable length)
+digitLimit: null           # No fixed limit
+terminationKey: "#"        # User presses # when done
+
+# Option 3: Both (either condition stops)
+digitLimit: 16             # Maximum 16 digits
+terminationKey: "#"        # Or # to finish early
+```
+
+#### 3. Validate Captured Value
+
+```yaml
+Router Node:
+  transitions:
+    - equation: {{account_number}}.length == 8
+      targetNode: valid_account
+    - equation: {{account_number}}.length != 8
+      targetNode: retry_input
+```
+
+---
+
+### Issue: DTMF Navigation Not Working (Outbound)
+
+**Symptoms:**
+
+- Agent not navigating outbound IVR menus
+- Stuck on IVR prompts
+- Can't reach human agent
+
+**Solution:**
+
+```yaml
+# DTMF Navigation is for OUTBOUND calls only
+Global Settings:
+  dtmfNavigation:
+    enabled: true
+    instructions: |
+      Listen for IVR menu options like "Press 1 for Sales, Press 2 for Support".
+      Press the appropriate key to navigate.
+      If you hear "Press 0 for operator", press 0.
+    digitDelay: 500 # Wait 500ms between keypress
+    autoOperator: true # Automatically press 0 if menu is complex
+    maxRetries: 3 # Retry up to 3 times if navigation fails
+```
+
+<Info>
+**DTMF Navigation vs DTMF Transitions:**
+- **DTMF Navigation**: Agent navigates IVR menus on outbound calls (auto-dials keys)
+- **DTMF Transitions**: User presses keys on inbound calls (routing logic)
+- **DTMF Input Capture**: Collects digit sequences (account numbers, PINs)
+</Info>
+
+---
+
+## Transition Issues
+
+### Issue: Transition Not Triggering
+
+**Symptoms:**
+
+- Flow gets stuck on a node
+- Expected transition doesn't happen
+- Falls through to "always" transition unexpectedly
+
+**Debugging Steps:**
+
+#### 1. Check Transition Order
+
+```yaml
+# Transitions are evaluated TOP TO BOTTOM
+Transitions:
+  - Natural Language: "user wants sales" → Sales_Node        # Checked first
+  - Equation: {{budget}} > 5000 → High_Value_Node           # Checked second
+  - DTMF: key=1 → Option_1                                  # Checked third
+  - Always → Default_Node                                   # Last resort
+
+# Always put "Always" transition LAST
+```
+
+#### 2. Verify Condition Syntax
+
+```yaml
+❌ Wrong: {{customer_age}} >= 18
+✅ Right: {{customer_age}} >= 18
+
+❌ Wrong: if ({{status}} == "active") { }
+✅ Right: {{status}} == "active"
+
+❌ Wrong: {{first_name}} + " " + {{last_name}}
+✅ Right: Use tool or custom variable for concatenation
+```
+
+#### 3. Test Natural Language Conditions
+
+```yaml
+# Natural language transitions use LLM to evaluate
+# Make conditions specific:
+
+❌ Vague: "user is done"
+✅ Specific: "user confirmed they want to complete the purchase"
+
+❌ Vague: "user has question"
+✅ Specific: "user asked a question about pricing or features"
+```
+
+---
+
+### Issue: Equation Transition Failing
+
+**Symptoms:**
+
+- Equation condition should be true but doesn't trigger
+- Variables not being compared correctly
+- Unexpected type errors
+
+**Solutions:**
+
+#### 1. Check Data Types
+
+```yaml
+# Number comparison:
+✅ {{age}} >= 18                    # age is number
+❌ {{age_string}} >= 18             # age_string is "18" (string)
+
+# String comparison:
+✅ {{status}} == "active"           # Both strings
+❌ {{status}} == active             # Missing quotes
+
+# Boolean comparison:
+✅ {{is_verified}} == true
+❌ {{is_verified}} == "true"        # String, not boolean
+```
+
+#### 2. Handle Null/Undefined
+
+```yaml
+# Check existence first:
+✅ {{customer_name}} != null AND {{customer_name}} != ""
+❌ {{customer_name}}.length > 0    # Crashes if null
+
+# Use default values:
+✅ ({{score}} ?? 0) > 50            # Default to 0 if undefined
+```
+
+#### 3. Test Complex Conditions
+
+```yaml
+# Break complex conditions into multiple transitions:
+
+❌ Complex:
+{{age}} >= 18 AND {{income}} > 50000 AND ({{credit_score}} > 700 OR {{has_cosigner}} == true)
+
+✅ Better: Multiple transitions in order
+- Equation: {{age}} >= 18 AND {{income}} > 50000 AND {{credit_score}} > 700 → Approved
+- Equation: {{age}} >= 18 AND {{income}} > 50000 AND {{has_cosigner}} == true → Approved_Cosigner
+- Always → Denied
+```
+
+---
+
+## Call Quality Issues
+
+### Issue: Poor Audio Quality
+
+**Symptoms:**
+
+- Robotic or distorted voice
+- Choppy audio
+- Echo or feedback
+- Voice cuts out
+
+**Solutions:**
+
+#### 1. Adjust Voice Settings
+
+```yaml
+Voice Settings:
+  stability: 0.5      # Increase for more consistent voice (0.0-1.0)
+  similarity: 0.75    # Increase for better quality (0.0-1.0)
+  speed: 1.0          # Normal speed (0.25-4.0)
+
+# Try different voice providers:
+  provider: "elevenlabs"  # Higher quality, slower
+  provider: "deepgram"    # Lower latency, good quality
+  provider: "playht"      # Balance of quality and speed
+```
+
+#### 2. Check Network Conditions
+
+- Ensure stable internet connection
+- Test with different network
+- Check for bandwidth limitations
+- Monitor WebRTC connection stats
+
+#### 3. Optimize Transcriber Settings
+
+```yaml
+Transcriber Settings:
+  endpointing: 300 # Lower for faster response (100-5000ms)
+  vadThreshold: 0.6 # Adjust voice detection (0.0-1.0)
+  smartFormatting: true # Better text processing
+```
+
+---
+
+### Issue: High Latency / Slow Responses
+
+**Symptoms:**
+
+- Long pauses between user speech and agent response
+- Delayed reactions
+- Conversation feels sluggish
+
+**Solutions:**
+
+#### 1. Optimize Model Settings
+
+```yaml
+Model Settings:
+  provider: 'groq' # Fastest
+  model: 'mixtral-8x7b' # Fast model
+  maxTokens: 500 # Limit response length
+  temperature: 0.3 # More deterministic (faster)
+```
+
+#### 2. Reduce Tool Call Overhead
+
+```yaml
+# Minimize tool calls in conversation:
+❌ Bad: Tool call for every piece of data
+✅ Good: One tool call to fetch all needed data
+
+# Use output mapping to extract multiple variables:
+Tool Node:
+  outputMapping:
+    name: $.data.name
+    email: $.data.email
+    phone: $.data.phone
+    # Get all data in one call
+```
+
+#### 3. Optimize Prompts
+
+```yaml
+# Shorter prompts = faster response:
+❌ Long: 500-word detailed instructions
+✅ Short: 100-word focused objective
+
+# Use static messages for fixed content:
+messageType: static
+message: 'Thank you for calling Acme Corp.'
+# No LLM processing needed
+```
+
+---
+
+### Issue: Interruption Problems
+
+**Symptoms:**
+
+- User can't interrupt agent
+- Agent stops mid-sentence when not appropriate
+- Awkward conversation flow
+
+**Solution:**
+
+```yaml
+# Global interrupt setting (applies to all nodes):
+Global Settings:
+  interrupt: true   # Allow interruptions (default)
+
+# For specific nodes that need uninterrupted delivery:
+Conversation Node:
+  skipResponse: false
+  # User can interrupt by default
+
+# For announcements:
+Conversation Node:
+  skipResponse: true  # Auto-advance, no interruption possible
+  message: "Please hold while I transfer you..."
+```
+
+<Info>
+Interruption is controlled at the **global level** in agent settings, not per-node. Use `skipResponse: true` for nodes where you don't want the user to respond at all.
+</Info>
+
+---
+
+## Flow Logic Issues
+
+### Issue: Infinite Loop
+
+**Symptoms:**
+
+- Flow keeps returning to same node
+- Call never progresses
+- User gets stuck in repeat
+
+**Solutions:**
+
+#### 1. Check for Circular Transitions
+
+```yaml
+❌ Problem:
+Node A → Natural Language: "anything" → Node B
+Node B → Natural Language: "anything" → Node A
+# Creates infinite loop!
+
+✅ Solution: Add exit condition
+Node A → Natural Language: "user wants to exit" → End_Call
+Node A → Natural Language: "user needs help" → Node B
+Node B → Natural Language: "task complete" → Summary_Node
+Node B → Natural Language: "user confused" → Node A (with counter)
+```
+
+#### 2. Use Retry Counters
+
+```yaml
+# Create custom variable to track attempts:
+Router Node:
+  transitions:
+    - equation: {{retry_count}} >= 3 → Escalate_To_Human
+    - equation: {{retry_count}} < 3 → Try_Again
+
+# Increment counter in tool or conversation node
+```
+
+#### 3. Add Safety Net
+
+```yaml
+# Every flow should have:
+Global Node:
+  globalCondition: 'user says exit, quit, goodbye, or stop'
+  targetNode: End_Call_Node
+# Ensures user can always exit
+```
+
+---
+
+### Issue: Flow Skips Nodes
+
+**Symptoms:**
+
+- Expected node not reached
+- Flow jumps over nodes
+- Conversation feels incomplete
+
+**Debugging:**
+
+#### 1. Check Call History Logs
+
+```yaml
+# In Call History:
+1. Find the call
+2. Open Call Details
+3. Go to Logs tab
+4. Look for node transitions:
+   - "Entered node: Node_A"
+   - "Evaluating transitions..."
+   - "Transition matched: Node_C"  # Skipped Node_B!
+```
+
+#### 2. Verify Transition Logic
+
+```yaml
+# Ensure intended path is possible:
+Node A:
+  transitions:
+    - Natural Language: "specific condition" → Node B
+    - Always → Node C  # This catches everything else!
+
+# If condition isn't matched, goes to Node C (skipping B)
+```
+
+#### 3. Test Systematically
+
+```yaml
+# Test each transition:
+1. Use Test Agent feature
+2. Try exact phrases for each transition
+3. Verify each path is reachable
+4. Check for unreachable nodes (gray in canvas)
+```
+
+---
+
+## Global Node Issues
+
+### Issue: Global Node Not Accessible
+
+**Symptoms:**
+
+- User trigger phrase doesn't work
+- Global DTMF key doesn't respond
+- Global node never reached
+
+**Solutions:**
+
+#### 1. Verify Global Configuration
+
+```yaml
+Global Node:
+  isGlobal: true                    # Must be true
+  globalConditionType: "prompt"     # Or "dtmf"
+  globalCondition: "user wants to speak to a human operator"
+
+# For DTMF:
+  globalConditionType: "dtmf"
+  globalDtmfKey: "0"
+```
+
+#### 2. Check Condition Clarity
+
+```yaml
+❌ Vague: "user has question"
+✅ Specific: "user explicitly requests human assistance or operator"
+
+❌ Vague: "user frustrated"
+✅ Specific: "user expresses frustration, anger, or dissatisfaction and wants human help"
+```
+
+#### 3. Test Global Trigger
+
+```yaml
+# In Test Agent:
+1. Start conversation
+2. At any point say exact trigger phrase
+3. Should immediately transition to global node
+
+# If doesn't work:
+- Rephrase global condition
+- Make condition more specific
+- Test with different trigger phrases
+```
+
+---
+
+## Authentication & API Issues
+
+### Issue: API Key Invalid
+
+**Symptoms:**
+
+- Error: "Invalid API key"
+- Authentication failed
+- 401 Unauthorized responses
+
+**Solution:**
+
+```yaml
+# Check API key location:
+1. Project Settings → API Keys
+2. Verify key is active
+3. Check key hasn't expired
+4. Regenerate if necessary
+
+# For tool authentication:
+Tool Configuration:
+  headers:
+    Authorization: "Bearer {{api_key}}"  # Correct format
+
+# Ensure api_key variable is set or use direct value
+```
+
+---
+
+### Issue: Rate Limiting
+
+**Symptoms:**
+
+- Error: "Too many requests"
+- 429 Rate Limit Exceeded
+- Some calls fail during high volume
+
+**Solutions:**
+
+#### 1. Implement Retry Logic
+
+```yaml
+Tool Node:
+  onErrorBehavior: 'retry'
+  retryAttempts: 3
+  errorMessage: 'Having trouble connecting, trying again...'
+```
+
+#### 2. Use Caching
+
+```yaml
+# Cache frequent lookups:
+- Customer data: Cache for 5 minutes
+- Product catalog: Cache for 1 hour
+- System settings: Cache for 24 hours
+```
+
+#### 3. Optimize Call Volume
+
+```yaml
+# Batch operations:
+- Fetch multiple records in single API call
+- Use webhooks for notifications instead of polling
+- Implement queue for non-urgent operations
+```
+
+---
+
+## Testing Issues
+
+### Issue: Test Agent Not Working
+
+**Symptoms:**
+
+- Test button doesn't start call
+- No audio in test
+- Test fails to connect
+
+**Solutions:**
+
+#### 1. Check Browser Permissions
+
+```yaml
+# Browser must allow:
+- Microphone access
+- Audio playback
+- WebRTC connections
+# Chrome: Settings → Privacy → Site Settings → Microphone
+# Firefox: Preferences → Privacy & Security → Permissions
+```
+
+#### 2. Verify Agent Configuration
+
+```yaml
+# Agent must have:
+- At least one start node
+- Valid flow (no isolated nodes)
+- All required fields filled
+- No validation errors
+```
+
+#### 3. Check Network
+
+```yaml
+# Test requires:
+- Stable internet connection
+- WebRTC not blocked by firewall
+- No VPN interfering with WebRTC
+```
+
+---
+
+## Performance Issues
+
+### Issue: High Token Usage
+
+**Symptoms:**
+
+- Expensive calls
+- Token usage exceeds expectations
+- Billing concerns
+
+**Solutions:**
+
+#### 1. Optimize Prompts
+
+```yaml
+❌ Bloated:
+Prompt: "You are an extremely helpful, very professional, highly trained,
+world-class customer service representative with years of experience working
+at Fortune 500 companies, specializing in providing exceptional support..."
+
+✅ Concise:
+Prompt: "Professional customer service agent. Be helpful and concise."
+```
+
+#### 2. Use Appropriate Models
+
+```yaml
+# Match model to task complexity:
+Simple confirmation: GPT-3.5 Turbo
+Complex reasoning: GPT-4
+Balance: GPT-4 Turbo Mini
+```
+
+#### 3. Limit Response Length
+
+```yaml
+Model Settings:
+  maxTokens: 200 # Shorter responses
+  temperature: 0.2 # More focused (fewer tokens)
+```
+
+---
+
+## Deployment Issues
+
+### Issue: Agent Not Receiving Calls
+
+**Symptoms:**
+
+- Phone number configured but calls don't reach agent
+- Callers get busy signal or error
+- Calls go to wrong agent
+
+**Solutions:**
+
+#### 1. Check Phone Number Configuration
+
+```yaml
+# In Telephony Settings:
+1. Verify phone number is purchased and active
+2. Check phone number is assigned to this agent
+3. Confirm routing rules are correct
+4. Test with call forwarding
+```
+
+#### 2. Verify Agent Status
+
+```yaml
+# Agent must be:
+- Published (not draft)
+- Active (not paused)
+- Valid configuration
+- No critical errors
+```
+
+---
+
+## Getting Help
+
+### Debug Checklist
+
+Before reaching out for support:
+
+- [ ] Check Call History logs for specific call
+- [ ] Test agent in Test Agent interface
+- [ ] Verify all tool configurations
+- [ ] Validate variable names and references
+- [ ] Check transition conditions and order
+- [ ] Review global settings
+- [ ] Test with simple flow to isolate issue
+- [ ] Check browser console for JavaScript errors
+- [ ] Verify API keys are valid
+- [ ] Confirm phone numbers are active
+
+### Support Resources
+
+**Documentation:**
+
+- [Flow Agent Guide](/agents/flow-agent/overview)
+- [Variables System](/agents/flow-agent/variables)
+- [Tools Documentation](/features/tools)
+- [DTMF Features](/agents/flow-agent/dtmf)
+- [Debugging Guide](/agents/flow-agent/debugging)
+
+**Community:**
+
+- GitHub Issues: Report bugs and request features
+- Discord: Join community discussions
+- Email Support: support@tryhamsa.com
+
+**Best Practices:**
+
+- Start simple, add complexity gradually
+- Test each change before adding more
+- Use descriptive names for nodes and variables
+- Document complex logic with node descriptions
+- Keep prompts focused and concise
+- Monitor call history for patterns
+
+---
+
+## Quick Reference
+
+### Common Error Messages
+
+| Error Message                  | Likely Cause                        | Quick Fix                                  |
+| ------------------------------ | ----------------------------------- | ------------------------------------------ |
+| "Tool not found"               | Tool deleted or nodeId mismatch     | Re-add tool to node                        |
+| "Variable undefined"           | Variable not extracted yet          | Check extraction config or node order      |
+| "Invalid transition condition" | Syntax error in equation            | Review equation syntax                     |
+| "DTMF key conflict"            | Number keys used with input capture | Use #/\* for navigation or disable capture |
+| "Authentication failed"        | Invalid API key or expired token    | Check API key configuration                |
+| "Timeout exceeded"             | Tool taking too long                | Increase timeout or optimize API           |
+| "Rate limit exceeded"          | Too many API calls                  | Implement retry logic or caching           |
+| "Node validation failed"       | Missing required fields             | Review node configuration                  |
+
+### Status Indicators
+
+| Status     | Meaning                       | Action                       |
+| ---------- | ----------------------------- | ---------------------------- |
+| 🟢 Active  | Working correctly             | None needed                  |
+| 🟡 Warning | Minor issue, still functional | Review and fix when possible |
+| 🔴 Error   | Critical issue, not working   | Fix immediately              |
+| ⚪ Draft   | Not yet published             | Test and publish when ready  |
+| ⏸️ Paused  | Temporarily disabled          | Re-enable when ready         |
+
+---
+
+<Tip>
+**Pro Tip:** Enable detailed logging in Global Settings → Advanced → Debug Mode for more verbose error messages and execution traces.
+</Tip>

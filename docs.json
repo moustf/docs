@@ -1,0 +1,237 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Hamsa API",
+  "colors": {
+    "primary": "#1B5E3A",
+    "light": "#B4FD83",
+    "dark": "#2D7A4F"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Getting Started",
+            "pages": [
+              "introduction",
+              "quickstart",
+              "concepts"
+            ]
+          },
+          {
+            "group": "Agents",
+            "pages": [
+              "agents/introduction",
+              {
+                "group": "Single Prompt Agent",
+                "pages": [
+                  "agents/single-prompt/overview",
+                  "agents/single-prompt/write-prompt",
+                  "agents/single-prompt/call-behavior",
+                  "agents/single-prompt/voice-settings",
+                  "agents/single-prompt/intelligence-features",
+                  "agents/single-prompt/configure-settings"
+                ]
+              },
+              {
+                "group": "Flow Agent",
+                "pages": [
+                  "agents/flow-agent/overview",
+                  "agents/flow-agent/global-settings",
+                  "agents/flow-agent/global-nodes",
+                  "agents/flow-agent/variables",
+                  "agents/flow-agent/transitions",
+                  "agents/flow-agent/dtmf",
+                  "agents/flow-agent/debugging",
+                  "agents/flow-agent/best-practices",
+                  {
+                    "group": "Nodes",
+                    "pages": [
+                      "agents/flow-agent/nodes/overview",
+                      "agents/flow-agent/nodes/start-node",
+                      "agents/flow-agent/nodes/conversation-node",
+                      "agents/flow-agent/nodes/router-node",
+                      "agents/flow-agent/nodes/tool-node",
+                      "agents/flow-agent/nodes/web-tool-node",
+                      "agents/flow-agent/nodes/transfer-call-node",
+                      "agents/flow-agent/nodes/transfer-agent-node",
+                      "agents/flow-agent/nodes/end-call-node"
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/tools",
+              "features/knowledge-base",
+              "features/webhooks",
+              "features/outcomes",
+              "features/llm-configuration",
+              "features/voices",
+              "features/voice-cloning",
+              "features/telephony",
+              "features/testing",
+              "features/api-keys"
+            ]
+          },
+          {
+            "group": "Dashboard",
+            "pages": [
+              "dashboard/overview",
+              "dashboard/live-calls",
+              "dashboard/performance",
+              "dashboard/satisfaction",
+              "dashboard/call-history"
+            ]
+          },
+          {
+            "group": "Guides",
+            "pages": [
+              "guides/prompt-engineering",
+              "guides/api-integration",
+              "guides/call-routing",
+              "guides/data-collection",
+              "guides/ivr-menus"
+            ]
+          },
+          {
+            "group": "Support",
+            "pages": [
+              "troubleshooting"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "API Documentation",
+            "pages": [
+              "api-reference/introduction"
+            ]
+          },
+          {
+            "group": "SDK Documentation",
+            "pages": [
+              "api-reference/voice-agents-sdk"
+            ]
+          },
+          {
+            "group": "Voice Enablement",
+            "pages": [
+              "api-reference/voice-enablement"
+            ]
+          },
+          {
+            "group": "Transcription Routes",
+            "pages": [
+              "api-reference/openapi.json post /v1/jobs/transcribe"
+            ]
+          },
+          {
+            "group": "Text to Speech Routes",
+            "pages": [
+              "api-reference/openapi.json post /v1/jobs/text-to-speech"
+            ]
+          },
+          {
+            "group": "Real Time Routes",
+            "pages": [
+              "api-reference/openapi.json post /v1/realtime/tts",
+              "api-reference/openapi.json post /v1/realtime/tts-stream",
+              "api-reference/openapi.json post /v1/realtime/stt"
+            ]
+          },
+          {
+            "group": "Phone Numbers Routes",
+            "pages": [
+              "api-reference/openapi.json post /v1/voice-agents/phone-number",
+              "api-reference/openapi.json get /v1/voice-agents/phone-number",
+              "api-reference/openapi.json post /v1/voice-agents/assign-number",
+              "api-reference/openapi.json post /v1/voice-agents/unassign",
+              "api-reference/openapi.json get /v1/voice-agents/phone-number/list",
+              "api-reference/openapi.json post /v1/voice-agents/phone-number/call"
+            ]
+          },
+          {
+            "group": "Voice Agents Routes",
+            "pages": [
+              "api-reference/openapi.json post /v1/voice-agents",
+              "api-reference/openapi.json post /v1/voice-agents/clone",
+              "api-reference/openapi.json patch /v1/voice-agents/{voiceAgentId}",
+              "api-reference/openapi.json get /v1/voice-agents",
+              "api-reference/openapi.json get /v1/voice-agents/{voiceAgentId}",
+              "api-reference/openapi.json get /v1/voice-agents/templates"
+            ]
+          },
+          {
+            "group": "Voice Agents Conversations Routes",
+            "pages": [
+              "api-reference/openapi.json post /v1/voice-agents/call"
+            ]
+          },
+          {
+            "group": "AI Content Routes",
+            "pages": [
+              "api-reference/openapi.json post /v1/jobs/ai-content",
+              "api-reference/openapi.json get /v1/jobs/ai-content",
+              "api-reference/openapi.json post /v1/jobs/ai-content/custom",
+              "api-reference/openapi.json get /v1/jobs/ai-content/estimate"
+            ]
+          },
+          {
+            "group": "Job Routes",
+            "pages": [
+              "api-reference/openapi.json post /v1/jobs/all",
+              "api-reference/openapi.json get /v1/jobs"
+            ]
+          },
+          {
+            "group": "Project Routes",
+            "pages": [
+              "api-reference/openapi.json get /v1/projects/by-api-key"
+            ]
+          },
+          {
+            "group": "API Statistics Routes",
+            "pages": [
+              "api-reference/openapi.json get /v1/projects/statistics/numbers",
+              "api-reference/openapi.json get /v1/projects/statistics/chart"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "logo": {
+    "light": "/logo/hamsa_logo_light.svg",
+    "dark": "/logo/hamsa_logo_dark.svg"
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "Support",
+        "href": "https://tryhamsa.com/contact/"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Dashboard",
+      "href": "https://dashboard.tryhamsa.com/"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/hamsa-ai",
+      "linkedin": "https://www.linkedin.com/company/tryhamsa/",
+      "website": "https://tryhamsa.com"
+    }
+  }
+}

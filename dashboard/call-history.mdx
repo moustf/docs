@@ -1,0 +1,1027 @@
+---
+title: 'Call History & Sessions'
+description: 'Search, filter, and analyze your complete call history with advanced filtering, detailed transcripts, and comprehensive session analytics'
+---
+
+# Call History & Sessions
+
+The Call History feature provides a comprehensive searchable database of all your voice AI conversations. Search through thousands of calls, apply advanced filters, review full transcripts, and analyze individual session performance.
+
+## Overview
+
+Call History is your system's memory—every conversation is logged, transcribed, and made searchable. Whether you need to review a specific call from last week or analyze patterns across thousands of sessions, Call History gives you the tools to find exactly what you need.
+
+### Key Capabilities
+
+- **Complete call archive**: Every conversation automatically saved
+- **Advanced search**: Find calls by ID, agent, status, duration, and more
+- **Multi-level filtering**: Combine filters for precise results
+- **Sortable columns**: Sort by time, duration, or cost
+- **Detailed transcripts**: Full conversation history with timestamps
+- **Audio playback**: Listen to recorded calls
+- **Performance metrics**: Per-call analytics
+- **Bulk operations**: View and analyze multiple calls
+
+<Info>
+Call History is separate from the Live Calls feature. Live Calls shows active conversations from the last 10 minutes, while Call History contains your complete archive of all calls (active and completed).
+</Info>
+
+## Accessing Call History
+
+The Call History feature is available as a dedicated page:
+
+1. Navigate to **Call History** from the main navigation menu
+2. The call history table loads with your most recent calls
+3. Apply filters and search as needed
+
+```
+Main Menu > Call History
+```
+
+**Default view**:
+
+- Shows calls with status: IN_PROGRESS and COMPLETED
+- Sorted by time (newest first)
+- Displays 10 calls per page
+- All agents included
+
+## Understanding Call Statuses
+
+Every call in the system has one of five possible statuses:
+
+### Status Types
+
+**PENDING**
+
+- Call has been initiated but not yet started
+- Waiting for connection or agent availability
+- Color: Yellow badge
+
+```
+Example: Outbound call queued but not yet dialing
+```
+
+**IN_PROGRESS**
+
+- Call is currently active
+- Conversation is ongoing
+- Color: Blue badge with pulsing indicator
+
+```
+Example: Customer is talking to AI agent right now
+```
+
+**COMPLETED**
+
+- Call finished successfully
+- Full transcript and audio available
+- Color: Green badge
+
+```
+Example: Normal call that ended gracefully
+```
+
+**NO_ANSWER**
+
+- Call was initiated but not answered
+- No conversation took place
+- Color: Gray badge
+
+```
+Example: Outbound call rang but nobody picked up
+```
+
+**FAILED**
+
+- Call encountered an error and couldn't complete
+- May have technical issues
+- Color: Red badge
+
+```
+Example: Connection dropped, system error, invalid number
+```
+
+<Warning>
+By default, the table shows only IN_PROGRESS and COMPLETED calls. To see failed or unanswered calls, modify the status filter.
+</Warning>
+
+## Call History Table
+
+The main table displays your calls in an organized, sortable format:
+
+### Table Columns
+
+**Time**
+
+- When the call started
+- Format: "MM/DD/YYYY, HH:MM:SS AM/PM"
+- Timezone: Your browser's local timezone
+- Sortable: Click column header to sort
+
+```
+Example: 11/16/2024, 2:34:15 PM
+```
+
+**Agent**
+
+- Name of the voice AI agent that handled the call
+- Click agent name to filter table to only that agent
+- Sortable: Alphabetically
+
+```
+Example: Customer Support Agent
+```
+
+**Status**
+
+- Current call status (see statuses above)
+- Color-coded badges for quick recognition
+- Filterable: Use status filter dropdown
+
+**Duration**
+
+- How long the call lasted
+- Format: "Xm Ys" (minutes and seconds)
+- Sortable: Click column header to sort by duration
+
+```
+Examples:
+- 2m 34s (2 minutes, 34 seconds)
+- 45s (45 seconds)
+- 12m 8s (12 minutes, 8 seconds)
+```
+
+**Channel**
+
+- Communication channel used for the call
+- Options: Phone, Web, WhatsApp
+- Icon + text label
+
+**Cost**
+
+- Total cost of the call (if applicable)
+- Currency and amount
+- Sortable: Click column header to sort by cost
+
+```
+Example: $0.12
+```
+
+**Actions**
+
+- View details button (eye icon)
+- Opens call details drawer
+
+<Tip>
+Click any column header to sort by that column. Click again to reverse the sort order (ascending/descending).
+</Tip>
+
+## Filtering and Search
+
+Powerful filtering capabilities help you narrow down thousands of calls to find exactly what you need.
+
+### Available Filters
+
+The toolbar at the top of the table provides multiple filter options:
+
+#### Status Filter
+
+Filter calls by their current status:
+
+**How to use**:
+
+1. Click the **Status** dropdown button
+2. Check/uncheck status options:
+   - ✅ In Progress
+   - ✅ Completed
+   - ☐ Pending
+   - ☐ Failed
+   - ☐ No Answer
+3. Click outside to apply filter
+
+**Example use cases**:
+
+```
+Find failed calls only:
+- Uncheck all except "Failed"
+- Review error patterns
+
+Find completed calls only:
+- Uncheck all except "Completed"
+- Analyze successful conversations
+
+Find active calls:
+- Uncheck all except "In Progress"
+- Similar to Live Calls tab
+```
+
+<Note>
+By default, only "In Progress" and "Completed" are checked. This hides failed and unanswered calls from the initial view.
+</Note>
+
+#### Channel Type Filter
+
+Filter by communication channel:
+
+**Options**:
+
+- 📞 Phone (Telephone)
+- 🌐 Web
+- 📱 WhatsApp
+
+**How to use**:
+
+1. Click the **Channel** dropdown
+2. Select one or more channels
+3. Click outside to apply
+
+```
+Example: Phone support analysis
+- Select only "Phone"
+- Review phone-specific patterns
+- Compare to Web channel performance
+```
+
+#### Agent Filter
+
+Filter by specific voice AI agents:
+
+**How to use**:
+
+1. Click the **Agent** dropdown or agent name filter field
+2. Type agent name or select from list
+3. Press Enter or click outside to apply
+
+```
+Example: Compare two agents
+1. Filter to "Agent A"
+2. Note average duration and success rate
+3. Clear filter
+4. Filter to "Agent B"
+5. Compare metrics
+```
+
+<Info>
+Agent filtering in Call History works the same as the dashboard agent filter—it's synchronized across the application for consistency.
+</Info>
+
+#### Call ID Search
+
+Search for a specific call by its unique identifier:
+
+**How to use**:
+
+1. Locate the search box (typically in the filter toolbar)
+2. Enter the full or partial call ID
+3. Press Enter or click search
+
+```
+Example session ID: abc-123-def-456
+
+Search: "abc-123" → Finds the matching call
+```
+
+**When to use**:
+
+- Customer reports an issue and provides their session ID
+- Following up on a specific call from logs
+- Debugging a particular session
+
+#### Duration Filter
+
+Filter calls by how long they lasted:
+
+**Conditions available**:
+
+- Is between (range)
+- Is greater than (minimum)
+- Is less than (maximum)
+- Is equal to (exact)
+
+**How to use**:
+
+1. Click the **Duration** filter button
+2. Select condition type
+3. Enter value(s) in seconds
+4. Click Apply
+
+**Examples**:
+
+```
+Find very short calls (< 30 seconds):
+- Condition: Is less than
+- Value: 30
+- Use case: Identify connection issues
+
+Find long calls (> 5 minutes):
+- Condition: Is greater than
+- Value: 300
+- Use case: Find complex conversations
+
+Find calls in specific range:
+- Condition: Is between
+- First value: 60
+- Second value: 180
+- Use case: Standard call length (1-3 minutes)
+```
+
+<Tip>
+Combine duration filtering with status filtering to find patterns like "short completed calls" (successful quick resolutions) vs "short failed calls" (connection issues).
+</Tip>
+
+### Combining Filters
+
+Apply multiple filters simultaneously for precise results:
+
+**Example: Troubleshooting scenario**
+
+```
+Objective: Find all failed phone calls from a specific agent yesterday
+
+Filters to apply:
+1. Status: ☑ Failed
+2. Channel: ☑ Phone
+3. Agent: "Sales Agent"
+4. Date range: Yesterday
+
+Result: Targeted list showing exactly what went wrong
+```
+
+**Example: Quality analysis**
+
+```
+Objective: Review successful calls over 3 minutes this week
+
+Filters:
+1. Status: ☑ Completed
+2. Duration: Is greater than 180
+3. Date range: This week
+
+Result: In-depth conversations for quality review
+```
+
+### Clear Filters
+
+Reset all filters to default:
+
+1. Look for the **Reset** or **Clear Filters** button in the toolbar
+2. Click to remove all active filters
+3. Table returns to default view (IN_PROGRESS + COMPLETED, newest first)
+
+## Pagination and Navigation
+
+Efficiently navigate through large call volumes:
+
+### Pagination Controls
+
+Located at the bottom of the table:
+
+**Elements**:
+
+- **Page indicator**: "Page X of Y"
+- **Previous/Next buttons**: Navigate one page at a time
+- **First/Last buttons**: Jump to beginning or end
+- **Page size selector**: Choose how many calls per page
+
+**Page size options**:
+
+- 10 calls per page (default)
+- 25 calls per page
+- 50 calls per page
+- 100 calls per page
+
+```
+Example: Reviewing many calls
+1. Change page size to 50
+2. Scroll through entire page
+3. Click Next for next 50 calls
+
+Benefits:
+- Fewer page loads
+- Faster review process
+- Better for pattern recognition
+```
+
+<Info>
+Pagination settings persist in the URL, so you can bookmark or share specific pages with filtered results.
+</Info>
+
+### Keyboard Navigation
+
+Use keyboard shortcuts for faster navigation:
+
+- **Arrow keys**: Navigate table rows (if implemented)
+- **Enter**: Open selected call details
+- **Esc**: Close call details drawer
+- **Tab**: Move between filters and controls
+
+## Call Details Drawer
+
+Click any call's "View Details" button to open the call details drawer on the right side of the screen.
+
+### Drawer Overview
+
+The drawer provides deep dive into a single call with three main tabs:
+
+**Overview Tab**:
+
+- Session metadata
+- Performance metrics
+- Call statistics
+
+**Conversation Tab**:
+
+- Full transcript
+- Audio player
+- Message-by-message breakdown
+
+**Outcome Tab**:
+
+- AI-generated summary
+- Resolution details
+- Customer satisfaction data
+
+### Overview Tab Details
+
+**Session Information**:
+
+```
+Session ID: abc-123-def-456
+Status: Completed
+Start Time: Nov 16, 2024 2:34:15 PM
+Duration: 2m 34s
+Agent: Customer Support Agent
+Channel: Phone
+Cost: $0.12
+```
+
+**Performance Metrics**:
+
+```
+ASR Processing: 245ms
+  → Speech-to-text conversion speed
+
+LLM Response: 1,234ms
+  → AI thinking/generation time
+
+TTS Generation: 567ms
+  → Text-to-speech synthesis time
+
+Latency: 2,046ms
+  → Total round-trip time
+```
+
+**What good metrics look like**:
+
+- ASR Processing: < 500ms
+- LLM Response: < 2000ms
+- TTS Generation: < 800ms
+- Latency: < 3000ms
+
+<Warning>
+If you see latency consistently above 4000ms (4 seconds), users may experience the AI as slow or unresponsive. Investigate system performance or consider upgrading infrastructure.
+</Warning>
+
+### Conversation Tab Details
+
+**Full Transcript**:
+
+The transcript shows the complete conversation with:
+
+- Speaker labels (User / Agent)
+- Timestamps for each message
+- Message content
+- Searchable text
+
+**Example transcript**:
+
+```
+🟢 User (2:34:15 PM)
+"Hi, I need help with my order"
+
+🤖 Agent (2:34:17 PM)
+"I'd be happy to help you with your order. Could you
+please provide your order number?"
+
+🟢 User (2:34:24 PM)
+"It's order number 12345"
+
+🤖 Agent (2:34:27 PM)
+"Thank you. I've found your order. It was shipped
+yesterday and should arrive by Friday. Is there
+anything else I can help you with?"
+
+🟢 User (2:34:35 PM)
+"No, that's all. Thanks!"
+
+🤖 Agent (2:34:36 PM)
+"You're welcome! Have a great day!"
+```
+
+**Features**:
+
+- **Time sync**: Click a message to jump to that point in audio
+- **Copy text**: Select and copy parts of the transcript
+- **Search**: Find keywords within the conversation
+- **Export**: Download transcript as text file
+
+<Tip>
+Use the search function in the Conversation tab to quickly find specific topics or keywords mentioned during the call.
+</Tip>
+
+**Audio Player**:
+
+For completed calls with recordings:
+
+```
+┌─────────────────────────────────────────┐
+│ ▶ [====•==========] 1:23 / 2:34        │
+│                                         │
+│ [1x ▼] [⬇ Download]                    │
+└─────────────────────────────────────────┘
+```
+
+**Player controls**:
+
+- **Play/Pause**: Start or stop playback
+- **Seek bar**: Click or drag to jump to any point
+- **Time display**: Current time / Total duration
+- **Speed control**: 0.5x, 1x, 1.5x, 2x playback speed
+- **Download button**: Save audio file locally
+
+**Use cases**:
+
+- Quality assurance review
+- Training new team members
+- Investigating customer complaints
+- Legal/compliance requirements
+
+### Outcome Tab Details
+
+Available for completed calls, this tab shows:
+
+**AI Summary**:
+
+Automatically generated summary of the call including:
+
+- Main topic or reason for call
+- Key information exchanged
+- Resolution provided
+- Follow-up actions
+
+```
+Example:
+"Customer inquired about order status for order #12345.
+Agent confirmed order was shipped on Nov 15 and provided
+estimated delivery date of Nov 18. Customer satisfied
+with response. No escalation required."
+```
+
+**Sentiment Analysis**:
+
+```
+Overall Sentiment: Positive 😊
+Confidence: 87%
+
+User sentiment throughout call:
+- Start: Neutral
+- Middle: Slightly Negative (impatient)
+- End: Positive (satisfied)
+```
+
+**Call Outcome**:
+
+```
+Resolution Type: Self-Service
+Status: Resolved
+Escalation: No
+Next Steps: None required
+```
+
+**Resolution Types**:
+
+- **Self-Service**: AI agent handled completely
+- **Human Agent**: Escalated to human
+- **Technical Support**: Routed to tech support
+- **Pending**: Requires follow-up
+
+<CardGroup cols={2}>
+  <Card title="High Self-Service Rate" icon="check">
+    Most calls resolved without escalation indicates well-trained agent
+  </Card>
+  <Card title="High Escalation Rate" icon="warning">
+    Many escalations may indicate need for agent improvement or training
+  </Card>
+</CardGroup>
+
+**Customer Satisfaction**:
+
+If CSAT survey was completed:
+
+```
+CSAT Score: 4/5 ⭐⭐⭐⭐
+NPS Score: 8 (Promoter)
+Comments: "Quick and helpful response"
+```
+
+## Sorting Capabilities
+
+Sort the call table by different columns for various analyses:
+
+### Sort by Time (Default)
+
+**Descending (newest first)**:
+
+- See most recent calls at the top
+- Monitor today's activity
+- Default view
+
+**Ascending (oldest first)**:
+
+- Review historical data chronologically
+- Find earliest calls in a date range
+
+```
+Use case: Quarterly review
+- Set date range to Q3 2024
+- Sort by time ascending
+- Review calls from July to September in order
+```
+
+### Sort by Duration
+
+**Descending (longest first)**:
+
+- Find complex calls requiring detailed review
+- Identify calls that may need process improvements
+- Locate training opportunities
+
+**Ascending (shortest first)**:
+
+- Find quick disconnections
+- Identify potential technical issues
+- Review simple inquiries
+
+```
+Example: Finding efficiency opportunities
+- Sort by duration descending
+- Review top 20 longest calls
+- Look for common patterns
+- Optimize agent responses for those scenarios
+```
+
+### Sort by Cost
+
+**Descending (most expensive first)**:
+
+- Identify high-cost calls for optimization
+- Review expensive calls for quality
+- Budget analysis
+
+**Ascending (least expensive first)**:
+
+- Find quick, low-cost interactions
+- Identify cost-efficient patterns
+
+```
+Example: Cost optimization
+- Sort by cost descending
+- Review top 10 most expensive calls
+- Determine if cost was justified
+- Look for ways to reduce without sacrificing quality
+```
+
+<Note>
+You can combine sorting with filtering. For example, filter to "Completed" status, then sort by duration to find your longest successful calls.
+</Note>
+
+## Advanced Search Techniques
+
+### Multi-Criteria Search
+
+Combine filters for powerful queries:
+
+**Example 1: Failed call investigation**
+
+```
+Goal: Find why calls are failing for a specific agent
+
+Filters:
+- Status: Failed
+- Agent: "Sales Agent Beta"
+- Date range: Last 7 days
+- Sort: Time descending
+
+Analysis:
+1. Review all failed calls
+2. Look for patterns in transcripts
+3. Check performance metrics
+4. Identify common failure points
+```
+
+**Example 2: Channel comparison**
+
+```
+Goal: Compare Web vs Phone performance
+
+Process:
+1. Filter: Channel = Web, Status = Completed
+2. Note average duration and outcomes
+3. Filter: Channel = Phone, Status = Completed
+4. Compare metrics
+5. Identify which channel performs better
+```
+
+**Example 3: Quality spot check**
+
+```
+Goal: Random quality review
+
+Setup:
+- Status: Completed
+- Duration: Is between 60 and 300 (1-5 minutes)
+- Date: This week
+- Sort: Random (use page navigation)
+
+Method:
+1. Apply filters
+2. Review calls from different pages
+3. Ensure good distribution
+```
+
+### Saved Filters (Future Enhancement)
+
+While not currently implemented, you might want to manually track useful filter combinations:
+
+**Recommended filter sets**:
+
+```
+"Failed Calls Today"
+- Status: Failed
+- Date: Today
+- Sort: Time descending
+
+"Long Calls This Week"
+- Status: Completed
+- Duration: > 300
+- Date: This week
+- Sort: Duration descending
+
+"High Cost Review"
+- Status: Completed
+- Sort: Cost descending
+- Limit: Top 50
+```
+
+<Tip>
+Bookmark URLs with your common filter combinations applied. The filters persist in the URL query string, making them shareable and reusable.
+</Tip>
+
+## Best Practices
+
+### Daily Review Routine
+
+**Morning check (5-10 minutes)**:
+
+1. **View yesterday's calls**:
+
+   - Date filter: Yesterday
+   - Status: All
+   - Quick scan for failed calls
+
+2. **Review failed calls**:
+
+   - Status filter: Failed
+   - Investigate causes
+   - Note patterns for system improvements
+
+3. **Check high-cost calls**:
+   - Sort by: Cost descending
+   - Review top 5-10 calls
+   - Verify cost aligns with value delivered
+
+**End of day (5 minutes)**:
+
+1. **Today's summary**:
+
+   - Date: Today
+   - Note total call volume
+   - Check completion rate
+
+2. **Active calls**:
+   - Status: In Progress
+   - Verify no calls stuck in progress
+   - Follow up on unusually long calls
+
+### Weekly Analysis
+
+**Set aside 30-60 minutes weekly for**:
+
+1. **Volume trends**:
+
+   - Compare this week to last week
+   - Identify growth or decline
+   - Plan capacity accordingly
+
+2. **Quality sampling**:
+
+   - Filter: Completed, This week
+   - Review 20-30 random calls
+   - Score agent performance
+   - Document improvement opportunities
+
+3. **Error analysis**:
+
+   - Filter: Failed or No Answer
+   - Group by common failure reasons
+   - Create tickets for technical issues
+   - Update documentation
+
+4. **Agent comparison**:
+   - Review each agent separately
+   - Compare metrics:
+     - Average duration
+     - Completion rate
+     - Escalation rate
+     - Customer satisfaction
+   - Identify top performer and areas for improvement
+
+### Monthly Reporting
+
+**End of month comprehensive review**:
+
+1. **Export data** (if available):
+
+   - All calls for the month
+   - Import into spreadsheet for analysis
+
+2. **Key metrics to track**:
+
+   - Total calls: Month over month growth
+   - Average duration: Trending up or down?
+   - Cost per call: Optimizations working?
+   - Completion rate: Quality improving?
+   - Top failure causes: Being addressed?
+
+3. **Share findings**:
+   - Create summary report
+   - Highlight wins and concerns
+   - Propose optimizations for next month
+
+<CardGroup cols={2}>
+  <Card title="Proactive Review" icon="calendar">
+    Schedule regular review sessions to catch issues before they become problems
+  </Card>
+  <Card title="Data-Driven Decisions" icon="chart-bar">
+    Use call history data to inform agent training and system improvements
+  </Card>
+</CardGroup>
+
+## Troubleshooting
+
+### Calls Not Appearing
+
+**Problem**: Expected calls don't show in the table
+
+**Check**:
+
+1. **Status filter**: Ensure the call's status is checked
+
+   - Example: Looking for a failed call but only "Completed" is checked
+
+2. **Date range**: Verify date range includes when the call occurred
+
+   - Expand to "This Month" or "Custom" with wider range
+
+3. **Agent filter**: Confirm correct agent is selected or use "All agents"
+
+4. **Pagination**: Call may be on a different page
+
+   - Check total count at bottom
+   - Navigate through pages
+
+5. **Search/filters**: Clear all filters and try again
+   - Click "Reset" or "Clear Filters"
+
+### Can't Play Audio Recording
+
+**Problem**: Audio player shows error or doesn't load
+
+**Solutions**:
+
+1. **Call still in progress**: Audio only available for completed calls
+
+   - Wait for call to complete
+
+2. **Browser compatibility**: Use Chrome, Firefox, or Edge
+
+   - Some browsers have limited audio codec support
+
+3. **Recording not available**: Some calls may not have recordings
+
+   - Check call status and metadata
+   - Verify recording was enabled for this session
+
+4. **Network issue**: Slow connection may timeout
+   - Refresh page and try again
+   - Check internet connection
+
+### Transcript Missing or Incomplete
+
+**Problem**: Conversation tab shows no transcript or partial transcript
+
+**Possible causes**:
+
+1. **Call in progress**: Transcript builds as call proceeds
+
+   - Refresh to see latest messages
+
+2. **ASR failure**: Speech recognition failed for some segments
+
+   - Check Overview tab for ASR errors
+   - May see gaps in transcript
+
+3. **Data not synced**: Brief delay in transcript availability
+
+   - Wait 30-60 seconds after call ends
+   - Refresh drawer
+
+4. **Audio quality issues**: Poor connection led to transcription failure
+   - Review audio quality in recording
+   - Check ASR processing times in Overview
+
+### Slow Table Loading
+
+**Problem**: Call history table takes long time to load
+
+**Solutions**:
+
+1. **Reduce date range**: Narrow from "This Month" to "This Week"
+2. **Apply filters**: Load fewer calls by filtering
+3. **Reduce page size**: Use 10 or 25 instead of 100 per page
+4. **Check network**: Slow connection affects load time
+5. **Clear browser cache**: Old cached data may cause issues
+
+<Tip>
+For best performance, avoid loading hundreds of calls at once. Use filters to narrow results, then paginate through as needed.
+</Tip>
+
+### Column Sorting Not Working
+
+**Problem**: Clicking column headers doesn't sort
+
+**Check**:
+
+1. **Look for sort indicator**: Arrow icon should appear in column header
+2. **Ensure column is sortable**: Not all columns may support sorting
+3. **Refresh page**: Browser state may be stale
+4. **Try different column**: Verify sorting works at all
+
+## Data Export (Future Enhancement)
+
+While direct CSV export may not be currently available, here are workarounds:
+
+### Manual Export Methods
+
+**Option 1: Browser copy-paste**
+
+1. Select all visible rows in table
+2. Copy (Cmd+C or Ctrl+C)
+3. Paste into spreadsheet application
+4. Repeat for additional pages if needed
+
+**Option 2: Transcript export**
+
+1. Open call details drawer
+2. Select and copy transcript text
+3. Save to text file
+4. Repeat for multiple calls as needed
+
+**Option 3: Use browser developer tools**
+
+1. Open browser console (F12)
+2. Network tab → Find API call to call-history endpoint
+3. Copy JSON response
+4. Parse JSON with script or converter
+5. Import to spreadsheet
+
+<Note>
+Check with your administrator about API access for programmatic call history export if you need bulk data regularly.
+</Note>
+
+## Related Documentation
+
+<CardGroup cols={2}>
+  <Card title="Dashboard Overview" icon="chart-line" href="/dashboard/overview">
+    View aggregated metrics across all calls
+  </Card>
+  <Card title="Live Calls" icon="phone" href="/dashboard/live-calls">
+    Monitor active calls in real-time
+  </Card>
+  <Card title="Performance Metrics" icon="gauge" href="/dashboard/performance">
+    Analyze system performance and latency
+  </Card>
+  <Card title="Satisfaction Metrics" icon="heart" href="/dashboard/satisfaction">
+    Track customer satisfaction and sentiment
+  </Card>
+</CardGroup>

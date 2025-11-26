@@ -1,0 +1,822 @@
+---
+title: 'LLM Configuration'
+description: 'Configure language models, temperature, tokens, and AI behavior'
+---
+
+## Overview
+
+The Language Model (LLM) is the brain of your voice agent, powering conversation understanding, response generation, and decision-making. Hamsa supports multiple LLM providers and models, each with configurable parameters to optimize performance for your use case.
+
+<Info>
+**Supported LLM Providers:**
+- **OpenAI** - GPT-5, GPT-4.1, GPT-4o (and Mini/Nano variants)
+- **Gemini** - Gemini 2.5 Pro, Gemini 2.5 Flash
+- **DeepMyst** - Voice-optimized GPT-4.1 models
+- **Custom** - Self-hosted or third-party models via OpenAI-compatible API
+</Info>
+
+## Model Selection
+
+### Choosing the Right Model
+
+Different models excel at different tasks. Consider these factors:
+
+**Conversational Quality**
+
+- **Best:** GPT-5, GPT-5 thinking, Gemini 2.5 Pro
+- **Excellent:** GPT-4.1, GPT-4o
+- **Fast & Good:** GPT-5 Mini, GPT-4.1 Mini, Gemini 2.5 Flash
+- **Ultra-Fast:** GPT-5 Nano, GPT-4.1 Nano
+
+**Response Speed (Latency)**
+
+- **Fastest:** GPT-5 Nano, GPT-4.1 Nano, Gemini 2.5 Flash
+- **Balanced:** GPT-5 Mini, GPT-4.1 Mini, GPT-4o
+- **Thinking Models:** GPT-5 (reasoning), Gemini 2.5 Pro (slower but better reasoning)
+
+**Cost Efficiency**
+
+- **Most Affordable:** GPT-4.1 Nano ($0.10/$0.40 per 1M tokens), Gemini 2.5 Flash ($0.15/$0.60 per 1M)
+- **Balanced:** GPT-4.1 Mini ($0.40/$1.60), GPT-4o Mini
+- **Premium:** GPT-5 ($1.25/$10), GPT-4.1 ($2/$8), Gemini 2.5 Pro ($1.25/$10)
+
+**Context Window**
+
+- **Largest:** GPT-4.1 family (1M tokens), Gemini 2.5 (1M tokens)
+- **Large:** GPT-5 (400K tokens), GPT-4o (128K tokens)
+
+### Model Comparison Table
+
+| Model                | Provider | Speed      | Quality    | Cost | Context | Best For                     |
+| -------------------- | -------- | ---------- | ---------- | ---- | ------- | ---------------------------- |
+| **GPT-5**            | OpenAI   | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ | $$$  | 400K    | Advanced reasoning, coding   |
+| **GPT-5 Mini**       | OpenAI   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | $$   | 400K    | Balanced cost/performance    |
+| **GPT-5 Nano**       | OpenAI   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     | $    | 400K    | High volume, fast response   |
+| **GPT-4.1**          | OpenAI   | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ | $$$  | 1M      | Massive context, coding      |
+| **GPT-4.1 Mini**     | OpenAI   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | $$   | 1M      | Long context, cost-efficient |
+| **GPT-4.1 Nano**     | OpenAI   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐     | $    | 1M      | Ultra-cheap, fast            |
+| **GPT-4o**           | OpenAI   | ⭐⭐⭐⭐   | ⭐⭐⭐⭐⭐ | $$$  | 128K    | Multimodal, balanced         |
+| **GPT-4o Mini**      | OpenAI   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | $$   | 128K    | Fast, affordable             |
+| **Gemini 2.5 Pro**   | Gemini   | ⭐⭐⭐     | ⭐⭐⭐⭐⭐ | $$$  | 1M      | Thinking, long context       |
+| **Gemini 2.5 Flash** | Gemini   | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐   | $    | 1M      | Speed + quality + value      |
+| **DeepMyst GPT-4.1** | DeepMyst | ⭐⭐⭐⭐   | ⭐⭐⭐⭐   | $$   | 1M      | Voice-optimized              |
+
+### Configuring Model Selection
+
+<Steps>
+  <Step title="Navigate to Agent Settings">
+    Open your agent configuration page
+  </Step>
+  <Step title="Find LLM Configuration Section">
+    Scroll to "Language Model Settings" or "LLM Configuration"
+  </Step>
+  <Step title="Select Provider">
+    Choose your LLM provider from the dropdown:
+    - OpenAI
+    - Gemini
+    - DeepMyst
+    - Custom
+  </Step>
+  <Step title="Select Model">
+    Choose specific model from available options for that provider
+  </Step>
+  <Step title="Save Configuration">
+    Click Save to apply changes
+  </Step>
+</Steps>
+
+**Example Configuration:**
+
+```json
+{
+  "llmProvider": "openai",
+  "llmModel": "gpt-4-turbo",
+  "temperature": 0.7,
+  "maxTokens": 150,
+  "topP": 0.9
+}
+```
+
+## Temperature Settings
+
+Temperature controls the randomness and creativity of LLM responses.
+
+### Understanding Temperature
+
+**Temperature Range:** 0.0 - 2.0
+
+**Low Temperature (0.0 - 0.3)**
+
+- More deterministic and focused
+- Consistent, predictable responses
+- Less creative variation
+- Better for factual, structured tasks
+
+**Medium Temperature (0.4 - 0.8)**
+
+- Balanced creativity and consistency
+- Natural conversation flow
+- Moderate variation in responses
+- Best for most voice agent use cases
+
+**High Temperature (0.9 - 2.0)**
+
+- More random and creative
+- Greater response diversity
+- Can be less predictable
+- Good for creative or exploratory tasks
+
+### Recommended Temperature by Use Case
+
+<AccordionGroup>
+  <Accordion title="Customer Support (0.3 - 0.5)">
+    **Why:** Consistency and accuracy are critical
+
+    ```json
+    {
+      "temperature": 0.4,
+      "reasoning": "Customers need reliable, consistent information"
+    }
+    ```
+
+    **Benefits:**
+    - Same question gets same answer
+    - Factual information delivered accurately
+    - Reduces hallucinations
+    - Professional, predictable tone
+
+  </Accordion>
+
+  <Accordion title="Sales & Lead Qualification (0.6 - 0.8)">
+    **Why:** Natural conversation with personality
+
+    ```json
+    {
+      "temperature": 0.7,
+      "reasoning": "Engaging conversations that feel human"
+    }
+    ```
+
+    **Benefits:**
+    - More natural, varied responses
+    - Engaging personality
+    - Adaptive to caller mood
+    - Creative problem-solving
+
+  </Accordion>
+
+  <Accordion title="Appointment Scheduling (0.3 - 0.5)">
+    **Why:** Accuracy in dates, times, and details
+
+    ```json
+    {
+      "temperature": 0.4,
+      "reasoning": "Cannot afford mistakes in scheduling"
+    }
+    ```
+
+    **Benefits:**
+    - Precise date/time handling
+    - Consistent confirmation process
+    - Minimal errors
+    - Clear, unambiguous language
+
+  </Accordion>
+
+  <Accordion title="Survey & Data Collection (0.2 - 0.4)">
+    **Why:** Structured, consistent questioning
+
+    ```json
+    {
+      "temperature": 0.3,
+      "reasoning": "Standardized survey administration"
+    }
+    ```
+
+    **Benefits:**
+    - Questions asked consistently
+    - Unbiased data collection
+    - Predictable flow
+    - Easy to analyze results
+
+  </Accordion>
+
+  <Accordion title="Creative Interactions (0.8 - 1.2)">
+    **Why:** Engaging, varied conversations
+
+    ```json
+    {
+      "temperature": 1.0,
+      "reasoning": "Entertainment or exploratory conversations"
+    }
+    ```
+
+    **Benefits:**
+    - Unique, creative responses
+    - Entertaining interactions
+    - Surprising insights
+    - Engaging storytelling
+
+  </Accordion>
+</AccordionGroup>
+
+### Temperature Testing
+
+Test different temperatures to find your sweet spot:
+
+```yaml
+Test Scenario: Customer Service Agent
+Questions:
+  - 'What are your business hours?'
+  - 'How do I reset my password?'
+  - "What's your return policy?"
+
+Temperature 0.2:
+  - Very consistent responses
+  - Same phrasing each time
+  - Robotic feel
+  - 100% accurate information
+
+Temperature 0.7:
+  - Varied but relevant responses
+  - Natural phrasing
+  - Human-like feel
+  - Accurate with personality
+
+Temperature 1.5:
+  - Highly varied responses
+  - Creative but sometimes off-topic
+  - Can drift from intent
+  - May include tangents
+```
+
+## Token Limits
+
+### Understanding Tokens
+
+**What are tokens?**
+
+- Words, word fragments, or punctuation
+- Roughly 1 token ≈ 4 characters in English
+- "Hello, how are you?" ≈ 6 tokens
+- Context window includes prompt + conversation history + response
+
+**Token types:**
+
+- **Input tokens** - Your prompt + conversation history
+- **Output tokens** - Agent's generated response
+- **Total tokens** - Sum of input and output
+
+### Max Tokens Configuration
+
+Control the maximum length of agent responses.
+
+**Max Tokens Range:** 50 - 4096
+
+**Short Responses (50 - 150 tokens)**
+
+- Concise, direct answers
+- Faster generation
+- Lower cost
+- Best for: Quick confirmations, simple Q&A
+
+```json
+{
+  "maxTokens": 100,
+  "example": "Your appointment is confirmed for January 15th at 2pm. You'll receive a reminder 24 hours before."
+}
+```
+
+**Medium Responses (150 - 500 tokens)**
+
+- Balanced detail and conciseness
+- Natural conversation length
+- Moderate cost
+- Best for: General support, explanations
+
+```json
+{
+  "maxTokens": 300,
+  "example": "I can help you reset your password. First, I'll send a verification code to your email. Once you receive it, you can create a new password. The code expires in 10 minutes. Would you like me to send it now?"
+}
+```
+
+**Long Responses (500 - 2000 tokens)**
+
+- Detailed explanations
+- Slower generation
+- Higher cost
+- Best for: Complex instructions, storytelling
+
+```json
+{
+  "maxTokens": 1000,
+  "example": "Let me walk you through the entire setup process step by step. First, you'll need to..."
+}
+```
+
+### Optimizing Token Usage
+
+<Tip>
+**Best Practices for Token Efficiency:**
+- Set appropriate max tokens for your use case
+- Use shorter prompts when possible
+- Implement smart context pruning
+- Monitor token usage in analytics
+- Balance between quality and cost
+</Tip>
+
+**Token optimization strategies:**
+
+1. **Prompt Engineering**
+
+   - Remove unnecessary verbosity
+   - Use clear, concise instructions
+   - Eliminate redundant examples
+
+2. **Context Management**
+
+   - Summarize old conversation history
+   - Keep only relevant recent messages
+   - Clear context for new topics
+
+3. **Response Length Guidance**
+   - Include length instructions in prompt
+   - "Keep responses under 2 sentences"
+   - "Provide brief, concise answers"
+
+## Advanced LLM Parameters
+
+### Top P (Nucleus Sampling)
+
+Controls diversity via cumulative probability.
+
+**Range:** 0.0 - 1.0
+
+**How it works:**
+
+- Model considers tokens until cumulative probability reaches Top P
+- Lower values = more focused, predictable
+- Higher values = more diverse, creative
+
+**Recommended settings:**
+
+- **0.9** - Default, good balance
+- **0.95** - Slightly more diverse
+- **0.8** - More focused responses
+
+```json
+{
+  "topP": 0.9,
+  "temperature": 0.7,
+  "note": "Top P and temperature work together to control randomness"
+}
+```
+
+<Note>
+**Temperature vs Top P:**
+Use one or the other, not both at high values. If using high temperature (>0.8), keep Top P at default (0.9) or lower.
+</Note>
+
+### Frequency Penalty
+
+Reduces repetition of tokens based on how often they appear.
+
+**Range:** -2.0 - 2.0
+
+**Positive values (0.0 - 2.0):**
+
+- Discourage repetition
+- More varied vocabulary
+- Less likely to repeat phrases
+- Recommended: 0.3 - 0.8
+
+**Negative values (-2.0 - 0.0):**
+
+- Encourage repetition
+- More consistent terminology
+- Rarely used
+
+```json
+{
+  "frequencyPenalty": 0.5,
+  "example": "Prevents agent from saying 'absolutely' or 'certainly' in every response"
+}
+```
+
+### Presence Penalty
+
+Reduces repetition of topics/concepts regardless of frequency.
+
+**Range:** -2.0 - 2.0
+
+**Positive values (0.0 - 2.0):**
+
+- Encourage new topics
+- Avoid rehashing same points
+- More exploratory conversation
+- Recommended: 0.3 - 0.8
+
+**Negative values (-2.0 - 0.0):**
+
+- Stay on topic
+- Rarely used
+
+```json
+{
+  "presencePenalty": 0.6,
+  "example": "Encourages agent to move conversation forward instead of circling back"
+}
+```
+
+### Stop Sequences
+
+Tokens that cause generation to stop immediately.
+
+**Use cases:**
+
+- Prevent unwanted content
+- Control response format
+- End at specific markers
+
+```json
+{
+  "stopSequences": ["\n\n", "User:", "Human:", "###"],
+  "explanation": "Stops generation at double newline or conversation markers"
+}
+```
+
+## Provider-Specific Features
+
+### OpenAI GPT Models
+
+**Unique Features:**
+
+- Function calling (native tool integration)
+- JSON mode (structured outputs)
+- Vision capabilities (GPT-4V)
+- Fine-tuning support
+
+**Configuration:**
+
+```json
+{
+  "provider": "openai",
+  "model": "gpt-4-turbo",
+  "temperature": 0.7,
+  "maxTokens": 300,
+  "topP": 0.9,
+  "frequencyPenalty": 0.5,
+  "presencePenalty": 0.6,
+  "responseFormat": "text"
+}
+```
+
+**Best for:**
+
+- General purpose conversations
+- Tool/function calling
+- Structured data extraction
+- Broad knowledge base
+
+### DeepMyst Models
+
+**Unique Features:**
+
+- Optimized for voice AI applications
+- Low-latency response generation
+- Cost-effective pricing
+- Voice-specific fine-tuning
+
+**Configuration:**
+
+```json
+{
+  "provider": "deepmyst",
+  "model": "deepmyst-optimized",
+  "temperature": 0.7,
+  "maxTokens": 300,
+  "topP": 0.9
+}
+```
+
+**Best for:**
+
+- Voice conversation optimization
+- Real-time telephony applications
+- Balanced performance and cost
+- Production voice AI deployments
+
+### Google Gemini Models
+
+**Unique Features:**
+
+- 1M+ token context window
+- Multimodal capabilities
+- Fast processing
+- Cost-effective
+
+**Configuration:**
+
+```json
+{
+  "provider": "google",
+  "model": "gemini-1.5-pro",
+  "temperature": 0.7,
+  "maxTokens": 300,
+  "topP": 0.9
+}
+```
+
+**Best for:**
+
+- Very long context needs
+- Multimodal applications
+- High-volume deployments
+- Cost optimization
+
+## Custom LLM Integration
+
+### Bring Your Own Model
+
+Connect self-hosted or third-party models via OpenAI-compatible API.
+
+<Steps>
+  <Step title="Prepare Model Endpoint">
+    Ensure your model exposes OpenAI-compatible API:
+    - `/v1/chat/completions` endpoint
+    - Accepts standard OpenAI request format
+    - Returns standard response format
+  </Step>
+  <Step title="Configure in Hamsa">
+    Navigate to LLM settings and select "Custom"
+  </Step>
+  <Step title="Enter API Details">
+    - API Base URL: `https://your-model.com/v1`
+    - API Key: Your authentication token
+    - Model Name: Custom model identifier
+  </Step>
+  <Step title="Test Integration">
+    Run test calls to verify compatibility
+  </Step>
+</Steps>
+
+**Example Configuration:**
+
+```json
+{
+  "provider": "custom",
+  "apiBaseUrl": "https://api.your-llm.com/v1",
+  "apiKey": "sk_your_custom_key",
+  "modelName": "your-model-v1",
+  "temperature": 0.7,
+  "maxTokens": 300
+}
+```
+
+**Compatible platforms:**
+
+- Hugging Face Inference Endpoints
+- Together.ai
+- Replicate
+- Self-hosted models (llama.cpp, vLLM, etc.)
+- Custom enterprise deployments
+
+## Configuration Examples
+
+### Example 1: Customer Support Bot
+
+```json
+{
+  "provider": "openai",
+  "model": "gpt-4-turbo",
+  "temperature": 0.4,
+  "maxTokens": 200,
+  "topP": 0.9,
+  "frequencyPenalty": 0.3,
+  "presencePenalty": 0.3,
+  "reasoning": "Consistent, accurate support with moderate response length"
+}
+```
+
+### Example 2: Sales Engagement Agent
+
+```json
+{
+  "provider": "anthropic",
+  "model": "claude-3-sonnet-20240229",
+  "temperature": 0.75,
+  "maxTokens": 400,
+  "topP": 0.9,
+  "frequencyPenalty": 0.6,
+  "presencePenalty": 0.7,
+  "reasoning": "Engaging conversations with personality and variety"
+}
+```
+
+### Example 3: High-Volume Survey Bot
+
+```json
+{
+  "provider": "openai",
+  "model": "gpt-3.5-turbo",
+  "temperature": 0.3,
+  "maxTokens": 100,
+  "topP": 0.85,
+  "frequencyPenalty": 0.2,
+  "presencePenalty": 0.2,
+  "reasoning": "Fast, cost-efficient, consistent survey administration"
+}
+```
+
+### Example 4: Technical Support with Long Context
+
+```json
+{
+  "provider": "anthropic",
+  "model": "claude-3-opus-20240229",
+  "temperature": 0.5,
+  "maxTokens": 600,
+  "topP": 0.9,
+  "frequencyPenalty": 0.4,
+  "presencePenalty": 0.5,
+  "reasoning": "Complex troubleshooting with large context window"
+}
+```
+
+## Performance Optimization
+
+### Latency Optimization
+
+Reduce response times for faster conversations:
+
+**Model Selection:**
+
+- Use faster models (GPT-3.5 Turbo, Gemini 2.0 Flash)
+- Avoid largest models unless necessary
+- Consider cost/speed tradeoff
+
+**Token Management:**
+
+- Lower max tokens (100-200 for quick responses)
+- Prune conversation history aggressively
+- Keep prompts concise
+
+**Streaming Responses:**
+
+- Enable streaming for perceived speed
+- Start speaking while generating
+- Better user experience
+
+### Cost Optimization
+
+Reduce LLM costs without sacrificing quality:
+
+**Model Selection:**
+
+- Use appropriate model for task complexity
+- Don't use GPT-4 where GPT-3.5 suffices
+- Consider Gemini 2.0 Flash or DeepMyst for high volume
+
+**Token Efficiency:**
+
+- Optimize prompt length
+- Implement context summarization
+- Set appropriate max tokens
+- Monitor token usage analytics
+
+**Smart Routing:**
+
+- Use simpler models for simple queries
+- Route complex queries to powerful models
+- Implement intent classification
+
+### Quality Optimization
+
+Maximize output quality:
+
+**Model Selection:**
+
+- Use best models for critical interactions
+- GPT-4 or GPT-4o for complex reasoning
+- Gemini 1.5 Pro for long context
+
+**Parameter Tuning:**
+
+- Test different temperatures
+- Adjust penalties for desired behavior
+- Fine-tune max tokens
+
+**Prompt Engineering:**
+
+- Clear, detailed instructions
+- Relevant examples
+- Proper formatting
+- Strong guardrails
+
+## Monitoring & Analytics
+
+### Key Metrics to Track
+
+**Performance Metrics:**
+
+- Average tokens per call
+- Response generation time
+- Model error rate
+- Token cost per call
+
+**Quality Metrics:**
+
+- User satisfaction scores
+- Conversation completion rate
+- Escalation rate
+- Accuracy of responses
+
+**Cost Metrics:**
+
+- Total token usage
+- Cost per conversation
+- Cost per successful outcome
+- Model distribution (which models used when)
+
+### Setting Up Monitoring
+
+```yaml
+Monitoring Dashboard:
+  Metrics:
+    - Total LLM calls
+    - Average tokens/call
+    - P95 latency
+    - Error rate
+    - Daily cost
+
+  Alerts:
+    - Error rate > 5%
+    - Latency > 3 seconds
+    - Daily cost > budget
+    - Token usage spike
+```
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Responses Too Slow">
+    **Solutions:**
+    - Switch to faster model (GPT-3.5 Turbo, Gemini 2.0 Flash)
+    - Reduce max tokens
+    - Shorten system prompt
+    - Enable streaming responses
+    - Check network latency to LLM provider
+  </Accordion>
+
+  <Accordion title="Inconsistent Responses">
+    **Solutions:**
+    - Lower temperature (0.3-0.5)
+    - Reduce Top P to 0.8
+    - Add specific examples in prompt
+    - Use more explicit instructions
+    - Test with same input multiple times
+  </Accordion>
+
+  <Accordion title="Costs Too High">
+    **Solutions:**
+    - Switch to cheaper model
+    - Reduce max tokens
+    - Optimize prompt length
+    - Implement conversation history pruning
+    - Use caching where possible
+  </Accordion>
+
+  <Accordion title="Hallucinations or Errors">
+    **Solutions:**
+    - Lower temperature to 0.3-0.4
+    - Add explicit factual constraints
+    - Implement fact-checking layer
+    - Use knowledge base for facts
+    - Add "I don't know" instructions
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Start Conservative" icon="gauge-simple">
+    Begin with lower temperature (0.4) and increase if needed
+  </Card>
+  <Card title="Test Extensively" icon="flask">
+    Test different configurations with real scenarios
+  </Card>
+  <Card title="Monitor Usage" icon="chart-line">
+    Track token usage and costs continuously
+  </Card>
+  <Card title="Optimize Iteratively" icon="rotate">
+    Make incremental changes and measure impact
+  </Card>
+</CardGroup>
+
+## Next Steps
+
+- **[Prompt Engineering](/guides/prompt-engineering)** - Write effective prompts
+- **[Testing](/features/testing)** - Test different LLM configurations
+- **[Performance Monitoring](/dashboard/performance)** - Track LLM metrics
+- **[Performance Monitoring](/dashboard/performance)** - Track LLM performance

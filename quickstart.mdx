@@ -1,86 +1,221 @@
 ---
-title: 'Quickstart'
-description: 'Start building awesome documentation in under 5 minutes'
+title: Quick Start
+description: 'Build your first voice agent in 10 minutes'
 ---
 
-## Setup your development
+# Build Your First Voice Agent
 
-Learn how to update your docs locally and deploy them to the public.
+Get started with Hamsa by creating a simple customer support agent. This guide will have you up and running in about 10 minutes.
 
-### Edit and preview
+<Steps>
+  <Step title="Choose Agent Type">
+    For this quickstart, we'll create a **Single Prompt Agent** - the fastest way to get started.
 
-<AccordionGroup>
-  <Accordion icon="github" title="Clone your docs locally">
-    During the onboarding process, we created a repository on your Github with
-    your docs content. You can find this repository on our
-    [dashboard](https://dashboard.mintlify.com). To clone the repository
-    locally, follow these
-    [instructions](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    in your terminal.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Preview changes">
-    Previewing helps you make sure your changes look as intended. We built a
-    command line interface to render these changes locally. 1. Install the
-    [Mintlify CLI](https://www.npmjs.com/package/mintlify) to preview the
-    documentation changes locally with this command: ``` npm i -g mintlify ```
-    2. Run the following command at the root of your documentation (where
-    `mint.json` is): ``` mintlify dev ```
-  </Accordion>
-</AccordionGroup>
+    Navigate to **Agents** → **Create New Agent** → **Single Prompt**
 
-### Deploy your changes
+  </Step>
 
-<AccordionGroup>
+  <Step title="Name Your Agent">
+    Give your agent a descriptive name:
 
-<Accordion icon="message-bot" title="Install our Github app">
-  Our Github app automatically deploys your changes to your docs site, so you
-  don't need to manage deployments yourself. You can find the link to install on
-  your [dashboard](https://dashboard.mintlify.com). Once the bot has been
-  successfully installed, there should be a check mark next to the commit hash
-  of the repo.
-</Accordion>
-<Accordion icon="rocket" title="Push your changes">
-  [Commit and push your changes to
-  Git](https://docs.github.com/en/get-started/using-git/pushing-commits-to-a-remote-repository#about-git-push)
-  for your changes to update in your docs site. If you push and don't see that
-  the Github app successfully deployed your changes, you can also manually
-  update your docs through our [dashboard](https://dashboard.mintlify.com).
-</Accordion>
+    ```
+    Agent Name: Customer Support Bot
+    ```
 
-</AccordionGroup>
+  </Step>
 
-## Update your docs
+  <Step title="Write the Greeting">
+    Set the first message callers will hear:
 
-Add content directly in your files with MDX syntax and React components. You can use any of our components, or even build your own.
+    ```
+    Greeting: "Thank you for calling! I'm here to help. How can I assist you today?"
+    ```
 
-<CardGroup>
+    Choose **Static** for greeting type.
 
-<Card title="Style Your Docs" icon="paintbrush" href="/settings/global">
-  Add flair to your docs with personalized branding.
-</Card>
+  </Step>
 
-<Card
-  title="Add API Endpoints"
-  icon="square-code"
-  href="/api-playground/configuration"
->
-  Implement your OpenAPI spec and enable API user interaction.
-</Card>
+  <Step title="Write the Preamble">
+    This is your agent's core instructions. Copy and paste this template:
 
-<Card
-  title="Integrate Analytics"
-  icon="chart-mixed"
-  href="/analytics/supported-integrations"
->
-  Draw insights from user interactions with your documentation.
-</Card>
+    ```
+    ## Identity
+    You are a helpful customer support assistant for Acme Corporation.
 
-<Card
-  title="Host on a Custom Domain"
-  icon="browser"
-  href="/settings/custom-domain/subdomain"
->
-  Keep your docs on your own website's subdomain.
-</Card>
+    ## Style Guardrails
+    - Be concise (keep responses under 2 sentences unless explaining complex topics)
+    - Be conversational and friendly
+    - Use natural language and contractions
+    - Be empathetic and patient
 
+    ## Response Guidelines
+    - Ask only one question at a time
+    - Confirm understanding by paraphrasing
+    - If you don't know something, be honest
+
+    ## Task
+    Your goal is to help customers with:
+    1. General product questions
+    2. Account inquiries
+    3. Technical support issues
+
+    If the issue requires human assistance, politely inform the caller
+    that you'll connect them with a specialist.
+    ```
+
+  </Step>
+
+  <Step title="Select Voice & Language">
+    - **Language**: English (US)
+    - **Voice**: Choose any voice - try `aura-asteria-en` for a friendly female voice
+
+    <Tip>
+    Preview voices before selecting to find the perfect match for your brand
+    </Tip>
+
+  </Step>
+
+  <Step title="Configure Call Settings">
+    Use these recommended settings for natural conversation:
+
+    - **Response Delay**: 400ms (default)
+    - **Allow Interruptions**: ON
+    - **User Inactivity Timeout**: 15 seconds
+    - **Max Call Duration**: 300 seconds (5 minutes)
+
+  </Step>
+
+  <Step title="Test Your Agent">
+    Click **Test Agent** in the top right.
+
+    **Browser Test:**
+    1. Click "Start Test" in browser
+    2. Allow microphone access
+    3. Have a conversation with your agent
+    4. Check real-time logs in the sidebar
+
+    **Phone Test (Optional):**
+    1. Click "Test via Phone"
+    2. Enter your phone number
+    3. Receive a call from your agent
+
+  </Step>
+
+  <Step title="Deploy (Optional)">
+    To make your agent live:
+
+    1. Go to **Phone Numbers** tab
+    2. Purchase or connect a phone number
+    3. Assign it to your agent
+    4. Save changes
+
+    Your agent is now live and ready to take calls!
+
+  </Step>
+</Steps>
+
+## What You Built
+
+Congratulations! You just created a functional voice agent that can:
+
+- Greet callers professionally
+- Handle general inquiries
+- Maintain natural conversation flow
+- Handle interruptions and silence appropriately
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Add Knowledge Base" icon="book" href="/features/knowledge-base">
+    Upload company FAQs and documentation
+  </Card>
+  <Card title="Add Custom Tools" icon="wrench" href="/features/tools">
+    Integrate with your APIs and systems
+  </Card>
+  <Card title="Advanced Settings" icon="sliders" href="/agents/single-prompt/configure-settings">
+    Fine-tune voice, timing, and behavior
+  </Card>
+  <Card title="Build Flow Agent" icon="diagram-nodes" href="/agents/flow-agent/overview">
+    Create complex conversation workflows
+  </Card>
 </CardGroup>
+
+## Common Next Steps
+
+### Add a Knowledge Base
+
+Give your agent access to company information:
+
+1. Navigate to **Knowledge Bases** → **Create New**
+2. Upload documents (PDF, DOC, TXT) or add web URLs
+3. Return to your agent settings
+4. Select the knowledge base in **Knowledge Base** tab
+5. Test with questions about your content
+
+### Add Custom Tools
+
+Integrate with your systems:
+
+1. Go to **Tools** → **Create New Tool**
+2. Configure your API endpoint
+3. Define parameters
+4. Add the tool to your agent
+5. Update the preamble to mention when to use the tool
+
+### Enable Smart Features
+
+Enhance your agent's capabilities:
+
+- **Smart Call End**: Automatically end when conversation concludes
+- **Gender Detection**: Personalize responses based on caller gender
+- **Agentic RAG**: Advanced knowledge retrieval with reasoning
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="Agent not responding">
+    - Check microphone permissions
+    - Verify voice is selected
+    - Ensure preamble is not empty
+    - Try refreshing the page
+  </Accordion>
+
+  <Accordion title="Voice sounds robotic">
+    - Try different voice providers (ElevenLabs, PlayHT)
+    - Adjust response delay (lower = more responsive)
+    - Enable "Thinking Voice" for natural pauses
+  </Accordion>
+
+  <Accordion title="Agent interrupts too quickly">
+    - Increase response delay to 600-800ms
+    - This gives users more time to complete thoughts
+  </Accordion>
+
+  <Accordion title="Test call not connecting">
+    - Verify phone number format (+1XXXXXXXXXX)
+    - Check your workspace has calling credits
+    - Try browser test first to verify agent works
+  </Accordion>
+</AccordionGroup>
+
+## Video Tutorial
+
+<iframe
+  width="560"
+  height="315"
+  src="https://www.youtube.com/embed/YOUR_VIDEO_ID"
+  title="Quick Start Tutorial"
+  frameborder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+  allowfullscreen
+></iframe>
+
+## Need Help?
+
+<Card title="Join Our Community" icon="users" href="https://community.hamsa.ai">
+  Ask questions, share experiences, and get help from the Hamsa community
+</Card>
+
+---
+
+**Ready to build something more complex?** Check out our **[Flow Agent Guide](/agents/flow-agent/overview)** to learn about visual conversation design.

@@ -10,7 +10,7 @@
   },
   "servers": [
     {
-      "url": "https://api-dev.tryhamsa.com"
+      "url": "https://api.tryhamsa.com"
     }
   ],
   "paths": {
@@ -91,7 +91,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get Usage Statistics Numbers"
+          },
+          "href": "/api-reference/endpoint/statistics-numbers"
+        }
       }
     },
     "/v1/projects/statistics/chart": {
@@ -171,7 +177,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get Usage Statistics Chart"
+          },
+          "href": "/api-reference/endpoint/statistics-chart"
+        }
       }
     },
     "/v1/jobs/transcribe": {
@@ -232,7 +244,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Transcribe Route"
+          },
+          "href": "/api-reference/endpoint/transcribe"
+        }
       }
     },
     "/v1/jobs/ai-content": {
@@ -303,7 +321,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Create AI Content Route"
+          },
+          "href": "/api-reference/endpoint/post-ai-content"
+        }
       },
       "get": {
         "summary": "Get AI-generated content",
@@ -338,8 +362,8 @@
               }
             }
           },
-          "500": {
-            "description": "Internal Server Error",
+          "401": {
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -348,8 +372,8 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized",
+          "500": {
+            "description": "Internal Server Error",
             "content": {
               "application/json": {
                 "schema": {
@@ -363,7 +387,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get AI Content Route"
+          },
+          "href": "/api-reference/endpoint/get-ai-content"
+        }
       }
     },
     "/v1/jobs/all": {
@@ -424,7 +454,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get Jobs List"
+          },
+          "href": "/api-reference/endpoint/get-jobs-list"
+        }
       }
     },
     "/v1/jobs": {
@@ -512,7 +548,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get Job Details By Id"
+          },
+          "href": "/api-reference/endpoint/get-job-by-id"
+        }
       }
     },
     "/v1/projects/by-api-key": {
@@ -545,7 +587,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get Project By API Key"
+          },
+          "href": "/api-reference/endpoint/get-project-by-api-key"
+        }
       }
     },
     "/v1/jobs/ai-content/custom": {
@@ -678,7 +726,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Create Customized AI Content Route"
+          },
+          "href": "/api-reference/endpoint/custom-ai-content"
+        }
       }
     },
     "/v1/jobs/ai-content/estimate": {
@@ -751,7 +805,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get AI Content Cost Estimate Route"
+          },
+          "href": "/api-reference/endpoint/ai-content-estimate"
+        }
       }
     },
     "/v1/voice-agents": {
@@ -824,7 +884,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Create Voice Agent Route"
+          },
+          "href": "/api-reference/endpoint/create-voice-agent"
+        }
       },
       "get": {
         "summary": "Retrieve a list of voice agents",
@@ -904,7 +970,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get Voice Agents List Route"
+          },
+          "href": "/api-reference/endpoint/get-all-voice-agents"
+        }
       }
     },
     "/v1/voice-agents/{voiceAgentId}": {
@@ -996,7 +1068,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Update Voice Agent Route"
+          },
+          "href": "/api-reference/endpoint/update-voice-agent"
+        }
       },
       "get": {
         "summary": "Retrieve a specific voice agent by ID",
@@ -1066,7 +1144,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get A Voice Agent By Id Route"
+          },
+          "href": "/api-reference/endpoint/get-voice-agent-by-id"
+        }
       }
     },
     "/v1/voice-agents/templates": {
@@ -1120,7 +1204,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get Voice Agent Templates Route"
+          },
+          "href": "/api-reference/endpoint/get-voice-agent-templates"
+        }
       }
     },
     "/v1/voice-agents/call": {
@@ -1192,7 +1282,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Start a Call for a Conversation Route"
+          },
+          "href": "/api-reference/endpoint/start-a-call"
+        }
       }
     },
     "/v1/voice-agents/clone": {
@@ -1290,7 +1386,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Clone Voice Agent Route"
+          },
+          "href": "/api-reference/endpoint/clone-voice-agent"
+        }
       }
     },
     "/v1/jobs/text-to-speech": {
@@ -1351,7 +1453,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Generate Text to Speech Route"
+          },
+          "href": "/api-reference/endpoint/generate-tts"
+        }
       }
     },
     "/v1/realtime/tts": {
@@ -1413,7 +1521,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Generate Text to Speech File Data"
+          },
+          "href": "/api-reference/endpoint/rt-generate-tts"
+        }
       }
     },
     "/v1/realtime/tts-stream": {
@@ -1498,10 +1612,21 @@
         "x-codeSamples": [
           {
             "lang": "JavaScript",
-            "label": "Stream and play audio chunks",
-            "source": "fetch('https://api-dev.tryhamsa.com/v1/realtime/tts-stream', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    'Authorization': 'Token YOUR_API_KEY'\n  },\n  body: JSON.stringify({ speaker: 'Ali', dialect: 'pls', text: 'Hello, world!', mulaw: false })\n})\n.then(response => {\n  const reader = response.body.getReader();\n  const audioContext = new (window.AudioContext || window.webkitAudioContext)();\n  const chunks = [];\n\n  function read() {\n    reader.read().then(({ done, value }) => {\n      if (done) {\n        // Optionally concatenate chunks and play entire stream\n        const blob = new Blob(chunks, { type: 'audio/wav' });\n        const url = URL.createObjectURL(blob);\n        const audio = new Audio(url);\n        audio.play();\n        return;\n      }\n\n      chunks.push(value);\n      read();\n    });\n  }\n\n  read();\n})\n.catch(console.error);"
+            "label": "Stream and play audio chunks (Browser)",
+            "source": "fetch('https://api.tryhamsa.com/v1/realtime/tts-stream', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    'Authorization': 'Token YOUR_API_KEY'\n  },\n  body: JSON.stringify({ speaker: 'Ali', dialect: 'pls', text: 'Hello, world!', mulaw: false })\n})\n.then(response => {\n  const reader = response.body.getReader();\n  const chunks = [];\n\n  function read() {\n    reader.read().then(({ done, value }) => {\n      if (done) {\n        // Concatenate chunks and play entire stream\n        const blob = new Blob(chunks, { type: 'audio/wav' });\n        const url = URL.createObjectURL(blob);\n        const audio = new Audio(url);\n        audio.play();\n        return;\n      }\n\n      chunks.push(value);\n      read();\n    });\n  }\n\n  read();\n})\n.catch(console.error);"
+          },
+          {
+            "lang": "JavaScript",
+            "label": "Stream and save audio (Node.js)",
+            "source": "// For Node.js environments\n// npm install node-fetch\nimport fetch from 'node-fetch';\nimport * as fs from 'fs';\n\nfetch('https://api.tryhamsa.com/v1/realtime/tts-stream', {\n  method: 'POST',\n  headers: {\n    'Content-Type': 'application/json',\n    'Authorization': 'Token YOUR_API_KEY'\n  },\n  body: JSON.stringify({ speaker: 'Ali', dialect: 'pls', text: 'Hello, world!', mulaw: false })\n})\n.then(response => {\n  if (!response.ok) {\n    throw new Error(`HTTP error! Status: ${response.status}`);\n  }\n  \n  // Create a write stream for the output file\n  const fileStream = fs.createWriteStream('hamsa-output.wav');\n  \n  // Pipe the response body directly to the file\n  response.body.pipe(fileStream);\n  \n  return new Promise((resolve, reject) => {\n    response.body.on('error', reject);\n    fileStream.on('finish', resolve);\n  });\n})\n.then(() => {\n  console.log('Audio saved to hamsa-output.wav');\n})\n.catch(console.error);"
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Generate Streamed Text to Speech File Data"
+          },
+          "href": "/api-reference/endpoint/rt-generate-tts-stream"
+        }
       }
     },
     "/v1/realtime/stt": {
@@ -1568,7 +1693,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Generate Speech to Text Transcription"
+          },
+          "href": "/api-reference/endpoint/rt-generate-stt"
+        }
       }
     },
     "/v1/voice-agents/phone-number": {
@@ -1629,7 +1760,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Add Phone Number to a User Route"
+          },
+          "href": "/api-reference/endpoint/add-phone-number"
+        }
       },
       "get": {
         "summary": "Get a phone number by its ID.",
@@ -1691,7 +1828,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Get Phone Number by its ID Route"
+          },
+          "href": "/api-reference/endpoint/get-phone-number"
+        }
       }
     },
     "/v1/voice-agents/assign-number": {
@@ -1752,7 +1895,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Assign Phone Number to a Voice Agent Route"
+          },
+          "href": "/api-reference/endpoint/assign-phone-number"
+        }
       }
     },
     "/v1/voice-agents/unassign": {
@@ -1813,7 +1962,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "Unassign Phone Number to a Voice Agent Route"
+          },
+          "href": "/api-reference/endpoint/unassign-phone-number"
+        }
       }
     },
     "/v1/voice-agents/phone-number/list": {
@@ -1856,7 +2011,10 @@
             "schema": {
               "type": "string",
               "description": "The type of the phone numbers provider to filter upon.",
-              "enum": ["TWILIO", "SIP"],
+              "enum": [
+                "TWILIO",
+                "SIP"
+              ],
               "example": "TWILIO"
             },
             "required": false
@@ -1908,7 +2066,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
+        ],
+        "x-mint": {
+          "metadata": {
+            "title": "List User Phone Numbers Route"
+          },
+          "href": "/api-reference/endpoint/list-phone-numbers"
+        }
       }
     },
     "/v1/voice-agents/phone-number/call": {
@@ -1969,1003 +2133,13 @@
           {
             "ApiKeyAuth": []
           }
-        ]
-      }
-    },
-    "/v1/voice-agents/knowledge-base": {
-      "post": {
-        "summary": "Create new knowledge base items.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateKnowledgeBaseRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/KnowledgeBaseItemResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Side Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      }
-    },
-    "/v1/voice-agents/knowledge-base/{id}": {
-      "patch": {
-        "summary": "Update a knowledge base item by Id.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateKnowledgeBaseItemRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateKnowledgeBaseItemResponse"
-                }
-              }
-            }
+        "x-mint": {
+          "metadata": {
+            "title": "Create an Outbound Call"
           },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      },
-      "delete": {
-        "summary": "Delete a knowledge base item by Id.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeleteKnowledgeBaseItemResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      }
-    },
-    "/v1/voice-agents/knowledge-base/list": {
-      "get": {
-        "summary": "Return a list of Knowledge Base Items.",
-        "parameters": [
-          {
-            "name": "voiceAgentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Optional UUID of the voice agent to filter associated knowledge bases items.",
-              "example": "d949f13f-40d2-4e48-ac86-b66633070603"
-            },
-            "required": false
-          },
-          {
-            "name": "isActive",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Optional boolean-like string indicating whether to fetch active knowledge base items.",
-              "example": "true"
-            },
-            "required": false
-          },
-          {
-            "name": "used",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Optional boolean-like string indicating whether to fetch used knowledge base items in any voice agent.",
-              "example": "true"
-            },
-            "required": false
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Page number for pagination. Defaults to '1'.",
-              "example": "1"
-            },
-            "required": false
-          },
-          {
-            "name": "take",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Number of items to take for pagination. Defaults to '10'.",
-              "example": "10"
-            },
-            "required": false
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "A search query to filter knowledge base items' names.",
-              "example": "Product Catalog"
-            },
-            "required": false
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "TEXT",
-                  "URL",
-                  "FILE"
-                ]
-              },
-              "description": "An array of knowledge base item type to filter by.",
-              "example": ["TEXT", "URL"]
-            },
-            "required": false
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "PROCESSED",
-                  "UPLOAD_FAILURE",
-                  "READING_FAILURE",
-                  "INGESTION_FAILURE"
-                ]
-              },
-              "description": "An array of knowledge base item status to filter by.",
-              "example": ["INGESTION_FAILURE", "PROCESSED"]
-            },
-            "required": false
-          },
-          {
-            "name": "extensions",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "pdf",
-                  "docx",
-                  "txt",
-                  "html",
-                  "epub"
-                ]
-              },
-              "description": "An array of knowledge base item extensions to filter by when the type is FILE.",
-              "example": ["pdf", "txt", "html"]
-            },
-            "required": false
-          },
-          {
-            "name": "sortField",
-            "in": "query",
-            "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "words",
-                  "createdAt",
-                  "fileSize"
-                ]
-              },
-              "description": "An array of filed names that you can sort the results by them",
-              "example": ["words", "fileSize"]
-            },
-            "required": false
-          },
-          {
-            "name": "sortOrder",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "asc",
-                "desc"
-              ],
-              "description": "Sort order. Can be 'asc' or 'desc'.",
-              "example": "asc"
-            },
-            "required": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ListKnowledgeBaseItemsResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Side Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      }
-    },
-    "/v1/voice-agents/knowledge-base/toggle-activation": {
-      "post": {
-        "summary": "Toggle activation of a knowledge base item for a voice agent.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ToggleKBItemActivationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "default": false
-                    },
-                    "message": {
-                      "type": "string",
-                      "default": "success",
-                      "example": "Item activated successfully!"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Side Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      }
-    },
-    "/v1/voice-agents/web-tool": {
-      "post": {
-        "summary": "Create a new web tool.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateWebToolRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateWebToolResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Side Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      }
-    },
-    "/v1/voice-agents/web-tool/{id}": {
-      "patch": {
-        "summary": "Update a web tool by Id.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "example": "8e8e9b4b-4d4b-4b4b-4b4b-4b4b4b4b4b4b"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateWebToolRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/UpdateWebToolResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      },
-      "delete": {
-        "summary": "Delete a web tool by Id.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "example": "8e8e9b4b-4d4b-4b4b-4b4b-4b4b4b4b4b4b"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeleteWebToolResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      },
-      "get": {
-        "summary": "Get a web tool by ID.",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "example": "d949f13f-40d2-4e48-ac86-b66633070603"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetWebToolResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Side Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      }
-    },
-    "/v1/voice-agents/web-tool/list": {
-      "get": {
-        "summary": "Return a list of Web Tools.",
-        "parameters": [
-          {
-            "name": "voiceAgentId",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Optional UUID of the voice agent to filter associated web tools.",
-              "example": "d949f13f-40d2-4e48-ac86-b66633070603"
-            },
-            "required": false
-          },
-          {
-            "name": "isActive",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Optional boolean-like string indicating whether to fetch active web tools or not.",
-              "enum": ["true", "false"],
-              "example": "true"
-            },
-            "required": false
-          },
-          {
-            "name": "skip",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Page number for pagination. Defaults to '1'.",
-              "example": "1"
-            },
-            "required": false
-          },
-          {
-            "name": "take",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "Number of items to take for pagination. Defaults to '10'.",
-              "example": "10"
-            },
-            "required": false
-          },
-          {
-            "name": "type",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "The type of the web tool to filter.",
-              "enum": ["MCP", "FUNCTION"],
-              "example": "MCP"
-            },
-            "required": false
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "description": "A search query to filter web tools.",
-              "example": "Get callee info"
-            },
-            "required": false
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ListWebToolsResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Side Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
-      }
-    },
-    "/v1/voice-agents/web-tool/toggle-activation": {
-      "post": {
-        "summary": "Toggle activation of a web tool for a voice agent.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ToggleWebToolActivationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "success": {
-                      "type": "boolean",
-                      "default": false
-                    },
-                    "message": {
-                      "type": "string",
-                      "default": "success",
-                      "enum": ["Web tool activated successfully!", "Web tool deactivated successfully!"],
-                      "example": "Web tool activated successfully!"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server Side Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorSchema"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "ApiKeyAuth": []
-          }
-        ]
+          "href": "/api-reference/endpoint/call-phone-number"
+        }
       }
     }
   },
@@ -3298,8 +2472,8 @@
           "model": {
             "type": "string",
             "enum": [
-              "hamsa-v1-general",
-              "Hamsa-V1.5-alpha"
+              "Hamsa-General-V2.0",
+              "Hamsa-Conversational-V1.0"
             ]
           },
           "language": {
@@ -3903,7 +3077,7 @@
           },
           "interrupt": {
             "type": "boolean",
-            "default": true
+            "default": false
           },
           "outcome": {
             "description": "A prompt to take the conversation and transform it to anything you like, like creating an article out of the conversation!",
@@ -3922,7 +3096,7 @@
           "outcomeResponseShape": {
             "type": "object",
             "title": "Outcome Response Schema",
-            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the [OpenAPI specification](https://swagger.io/specification/) for more information.",
+            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information.",
             "example": {
               "type": "object",
               "properties": {
@@ -3937,18 +3111,23 @@
             }
           },
           "voiceId": {
-            "description": "You can find predefined voices in the voice agents dashboard, under the language tab",
+            "description": "For trying voices and choosing one by yourself, or event cloning a voice, please visit Hamsa Agents platform voices tab [here](https://agents.tryhamsa.com/app/voices).",
             "type": "string",
             "enum": [
-              "1f3396aa-24e3-4523-b4ef-7dd4adb8fab9",
-              "29709a36-7703-497f-b6e5-0d39b873f77d",
-              "37665327-bfc7-4edf-a362-596a379865dc",
-              "60ef35b1-056a-47d9-8f8f-6571f2106560",
-              "8f14b3ee-beb6-4f9a-9819-02b45f7d48ff",
-              "a2404aca-2c6d-47c7-ae9c-5ea317a30e60",
-              "b1d24f8c-6d60-4fb5-8d06-708ba1bc89c2",
-              "d23c0832-a642-4a59-8e93-fd0924abc46e",
-              "d981c03a-2868-4de2-b097-e11ec231413c"
+              "ab55c68b-091b-43b4-a55a-0be82093cd23",
+              "79f81a3b-10f7-4eea-b0aa-5bd0b887d8cd",
+              "f87b58a6-dd88-4f77-86e4-10099e8412c8",
+              "35189a1c-afbd-4ab7-9aa2-1af88c70ac63",
+              "88d45604-12e9-4f7a-93bf-e16cf04c9214",
+              "2ef6405e-7313-4b5e-b738-b0536ed0a36a",
+              "9bead147-7ae5-47aa-80d3-f54668568a69",
+              "e2803890-f4dd-46f7-bfc6-1d3dc761c8ae",
+              "ac5ca565-175c-48d8-98dc-2fccc906cf4b",
+              "fb4d10c0-295d-43a9-9d8e-8775144b4b23",
+              "3c249172-a61a-4a72-9375-1591b73d7ef6",
+              "21f9d3fc-ae8b-41a2-9165-a3186433ae3c",
+              "8e9f526c-eb30-417d-9e7a-65f704917fcc",
+              "8a97dfe8-fe9d-40c5-8f94-7bf9b142e254"
             ]
           },
           "tools": {
@@ -4125,7 +3304,7 @@
           "outcomeResponseShape": {
             "type": "object",
             "title": "Outcome Response Schema",
-            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the [OpenAPI specification](https://swagger.io/specification/) for more information.",
+            "description": "Recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the `OpenAPI Outcome Response Instructions` above for more information.",
             "example": {
               "type": "object",
               "properties": {
@@ -4150,18 +3329,23 @@
             "$ref": "#/components/schemas/ExternalWebhookAuthScheme"
           },
           "voiceId": {
-            "description": "You can find predefined voices in the voice agents dashboard, under the language tab",
+            "description": "For trying voices and choosing one by yourself, or event cloning a voice, please visit Hamsa Agents platform voices tab [here](https://agents.tryhamsa.com/app/voices).",
             "type": "string",
             "enum": [
-              "1f3396aa-24e3-4523-b4ef-7dd4adb8fab9",
-              "29709a36-7703-497f-b6e5-0d39b873f77d",
-              "37665327-bfc7-4edf-a362-596a379865dc",
-              "60ef35b1-056a-47d9-8f8f-6571f2106560",
-              "8f14b3ee-beb6-4f9a-9819-02b45f7d48ff",
-              "a2404aca-2c6d-47c7-ae9c-5ea317a30e60",
-              "b1d24f8c-6d60-4fb5-8d06-708ba1bc89c2",
-              "d23c0832-a642-4a59-8e93-fd0924abc46e",
-              "d981c03a-2868-4de2-b097-e11ec231413c"
+              "ab55c68b-091b-43b4-a55a-0be82093cd23",
+              "79f81a3b-10f7-4eea-b0aa-5bd0b887d8cd",
+              "f87b58a6-dd88-4f77-86e4-10099e8412c8",
+              "35189a1c-afbd-4ab7-9aa2-1af88c70ac63",
+              "88d45604-12e9-4f7a-93bf-e16cf04c9214",
+              "2ef6405e-7313-4b5e-b738-b0536ed0a36a",
+              "9bead147-7ae5-47aa-80d3-f54668568a69",
+              "e2803890-f4dd-46f7-bfc6-1d3dc761c8ae",
+              "ac5ca565-175c-48d8-98dc-2fccc906cf4b",
+              "fb4d10c0-295d-43a9-9d8e-8775144b4b23",
+              "3c249172-a61a-4a72-9375-1591b73d7ef6",
+              "21f9d3fc-ae8b-41a2-9165-a3186433ae3c",
+              "8e9f526c-eb30-417d-9e7a-65f704917fcc",
+              "8a97dfe8-fe9d-40c5-8f94-7bf9b142e254"
             ]
           },
           "tools": {
@@ -4179,8 +3363,7 @@
           },
           "params": {
             "description": "Set the params you define in the greeting message or preamble fields here, the key is the same as the param and the value is the param value. Press 'Add new property' below to set the param name then press enter, after that add the value.",
-            "type": "object",
-            "additionalProperties": true
+            "type": "object"
           }
         }
       },
@@ -4242,6 +3425,15 @@
             "description": "Params set in the voice agent's greeting message or preamble. Send when using voiceAgentId only.",
             "additionalProperties": true,
             "default": {}
+          },
+          "webhookUrl": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "https://example.com/webhook"
+          },
+          "webhookAuth": {
+            "$ref": "#/components/schemas/ExternalWebhookAuthScheme"
           }
         },
         "anyOf": [
@@ -4302,6 +3494,10 @@
               },
               "processingType": {
                 "type": "string"
+              },
+              "webhookUrl": {
+                "type": "string",
+                "nullable": true
               },
               "totalCost": {
                 "type": "number"
@@ -4631,6 +3827,7 @@
               "Rema",
               "Fahd",
               "Rami",
+              "Sarah",
               "Faiza",
               "Hamdan",
               "Alia",
@@ -4643,7 +3840,6 @@
               "Safa",
               "Somaya",
               "Sayed",
-              "Sarah",
               "Ruba"
             ],
             "example": "Majd"
@@ -4731,7 +3927,10 @@
           },
           "type": {
             "type": "string",
-            "enum": ["TWILIO", "SIP"],
+            "enum": [
+              "TWILIO",
+              "SIP"
+            ],
             "example": "TWILIO"
           },
           "userId": {
@@ -4743,8 +3942,10 @@
             "properties": {
               "originationUri": {
                 "type": "string",
-                "enum": ["sip:sip.tryhamsa.com:5060;transport=tcp"],
-                "example": "sip:sip.tryhamsa.com:5060;transport=tcp"
+                "enum": [
+                  "sip:sip.eu.tryhamsa.com:5060;transport=tcp"
+                ],
+                "example": "sip:sip.eu.tryhamsa.com:5060;transport=tcp"
               }
             }
           },
@@ -4758,7 +3959,10 @@
               },
               "transportType": {
                 "type": "string",
-                "enum": ["TCP", "UDP"],
+                "enum": [
+                  "TCP",
+                  "UDP"
+                ],
                 "example": "TCP"
               },
               "customHeaders": {
@@ -4766,7 +3970,7 @@
                 "additionalProperties": true
               }
             }
-          }, 
+          },
           "voiceAgentId": {
             "type": "string",
             "nullable": true,
@@ -4874,8 +4078,10 @@
                   "originationUri": {
                     "type": "string",
                     "minLength": 1,
-                    "enum": ["sip:sip.tryhamsa.com:5060;transport=tcp"],
-                    "example": "sip:sip.tryhamsa.com:5060;transport=tcp"
+                    "enum": [
+                      "sip:sip.eu.tryhamsa.com:5060;transport=tcp"
+                    ],
+                    "example": "sip:sip.eu.tryhamsa.com:5060;transport=tcp"
                   }
                 }
               },
@@ -4895,7 +4101,10 @@
                   "transportType": {
                     "type": "string",
                     "minLength": 1,
-                    "enum": ["UDP", "TCP"],
+                    "enum": [
+                      "UDP",
+                      "TCP"
+                    ],
                     "example": "TCP"
                   },
                   "customHeaders": {
@@ -5113,838 +4322,6 @@
             }
           }
         }
-      },
-      "CreateKnowledgeBaseRequest": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "description": "Array of knowledge base items to be created.",
-            "minItems": 1,
-            "items": {
-              "type": "object",
-              "properties": {
-                "itemName": {
-                  "type": "string",
-                  "description": "The name of the knowledge base item.",
-                  "minLength": 1,
-                  "maxLength": 100,
-                  "example": "Product Documentation"
-                },
-                "itemUrl": {
-                  "type": "string",
-                  "description": "The URL of the item (required when type is URL or FILE).",
-                  "example": "https://example.com/document.pdf"
-                },
-                "content": {
-                  "type": "string",
-                  "description": "The text content of the item (required when type is TEXT).",
-                  "minLength": 1,
-                  "maxLength": 5000,
-                  "example": "This is the content of the knowledge base item..."
-                },
-                "type": {
-                  "type": "string",
-                  "description": "The type of the knowledge base item.",
-                  "enum": [
-                    "TEXT",
-                    "URL",
-                    "FILE"
-                  ],
-                  "example": "TEXT"
-                }
-              },
-              "oneOf": [
-                {
-                  "required": [
-                    "itemName",
-                    "itemUrl",
-                    "type"
-                  ]
-                },
-                {
-                  "required": [
-                    "itemName",
-                    "content",
-                    "type"
-                  ]
-                }
-              ]
-            }
-          }
-        },
-        "required": [
-          "items"
-        ]
-      },
-      "KnowledgeBaseItem": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique identifier of the knowledge base item.",
-            "example": "550e8400-e29b-41d4-a716-446655440000"
-          },
-          "userId": {
-            "type": "string",
-            "description": "The user ID associated with the knowledge base item.",
-            "example": "550e8400-e29b-41d4-a716-446655440000"
-          },
-          "projectId": {
-            "type": "string",
-            "description": "The project ID associated with the knowledge base item.",
-            "example": "550e8400-e29b-41d4-a716-446655440000"
-          },
-          "itemName": {
-            "type": "string",
-            "description": "The name of the knowledge base item.",
-            "example": "Product Documentation"
-          },
-          "fileSize": {
-            "type": "string",
-            "description": "The size of the file.",
-            "example": "2.5MB"
-          },
-          "type": {
-            "type": "string",
-            "description": "The type of the knowledge base item.",
-            "enum": [
-              "TEXT",
-              "URL",
-              "FILE"
-            ],
-            "example": "TEXT"
-          },
-          "status": {
-            "type": "string",
-            "description": "The current status of the knowledge base item.",
-            "example": "PROCESSED"
-          },
-          "failureReason": {
-            "type": "string",
-            "description": "The reason for failure if the item processing failed.",
-            "example": "File format not supported"
-          },
-          "content": {
-            "type": "string",
-            "description": "The text content of the knowledge base item.",
-            "example": "This is the content of the knowledge base item..."
-          },
-          "itemUrl": {
-            "type": "string",
-            "description": "The URL of the knowledge base item.",
-            "example": "https://example.com/document.pdf"
-          },
-          "wordsCount": {
-            "type": "number",
-            "description": "The words count in the knowledge base item.",
-            "example": 1298
-          },
-          "extension": {
-            "type": "string",
-            "description": "The extension of the knowledge base item in case it was a file.",
-            "example": 1298
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "description": "The timestamp when the knowledge base item was created.",
-            "example": "2024-01-15T10:30:00Z"
-          },
-          "isActive": {
-            "type": "boolean",
-            "description": "Indicates whether the knowledge base item is currently active in any voice agent.",
-            "example": true
-          },
-          "used": {
-            "type": "boolean",
-            "description": "Indicates whether the knowledge base item is currently used in any voice agent. Can be used in filtering.",
-            "example": true
-          }
-        }
-      },
-      "KnowledgeBaseItemResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
-            "type": "string",
-            "default": "success"
-          },
-          "data": {
-            "$ref": "#/components/schemas/KnowledgeBaseItem"
-          }
-        }
-      },
-      "UpdateKnowledgeBaseItemRequest": {
-        "type": "object",
-        "properties": {
-          "itemName": {
-            "type": "string",
-            "description": "The name of the knowledge base item to update.",
-            "minLength": 1,
-            "maxLength": 250,
-            "example": "Updated Product Documentation"
-          }
-        },
-        "required": [
-          "itemName"
-        ]
-      },
-      "UpdateKnowledgeBaseItemResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
-            "type": "string",
-            "default": "success"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "id": {
-                "type": "string",
-                "description": "The unique identifier of the knowledge base item.",
-                "example": "550e8400-e29b-41d4-a716-446655440000"
-              },
-              "userId": {
-                "type": "string",
-                "description": "The user ID associated with the knowledge base item.",
-                "example": "550e8400-e29b-41d4-a716-446655440000"
-              },
-              "projectId": {
-                "type": "string",
-                "description": "The project ID associated with the knowledge base item.",
-                "example": "550e8400-e29b-41d4-a716-446655440000"
-              },
-              "itemName": {
-                "type": "string",
-                "description": "The name of the knowledge base item.",
-                "example": "Updated Product Documentation"
-              },
-              "fileSize": {
-                "type": "string",
-                "description": "The size of the file.",
-                "example": "2.5MB"
-              },
-              "type": {
-                "type": "string",
-                "description": "The type of the knowledge base item.",
-                "enum": [
-                  "TEXT",
-                  "URL",
-                  "FILE"
-                ],
-                "example": "TEXT"
-              },
-              "content": {
-                "type": "string",
-                "description": "The text content of the knowledge base item.",
-                "example": "This is the updated content of the knowledge base item..."
-              },
-              "itemUrl": {
-                "type": "string",
-                "description": "The URL of the knowledge base item.",
-                "example": "https://example.com/updated-document.pdf"
-              },
-              "wordsCount": {
-                "type": "number",
-                "description": "The words count in the knowledge base item.",
-                "example": 1298
-              },
-              "extension": {
-                "type": "string",
-                "description": "The extension of the knowledge base item in case it was a file.",
-                "example": 1298
-              },
-              "createdAt": {
-                "type": "string",
-                "format": "date-time",
-                "description": "The timestamp when the knowledge base item was created.",
-                "example": "2024-01-15T10:30:00Z"
-              },
-              "updatedAt": {
-                "type": "string",
-                "format": "date-time",
-                "description": "The timestamp when the knowledge base item was last updated.",
-                "example": "2024-01-20T14:45:00Z"
-              }
-            }
-          }
-        }
-      },
-      "DeleteKnowledgeBaseItemResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
-            "type": "string",
-            "default": "item deleted successfully"
-          }
-        }
-      },
-      "ListKnowledgeBaseItemsResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
-            "type": "string",
-            "default": "success"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "total": {
-                "type": "number",
-                "description": "The total number of knowledge base items over all pages.",
-                "example": 100
-              },
-              "filtered": {
-                "type": "number",
-                "description": "The filtered/returned number of knowledge base items.",
-                "example": 100
-              },
-              "items": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/KnowledgeBaseItem"
-                }
-              }
-            }
-          }
-        }
-      },
-      "ToggleKBItemActivationRequest": {
-        "type": "object",
-        "properties": {
-          "voiceAgentId": {
-            "type": "string",
-            "description": "The voice agent ID to toggle the activation of the knowledge base item on.",
-            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
-          },
-          "knowledgeBaseItemId": {
-            "type": "string",
-            "description": "The knowledge base item ID to toggle the activation of.",
-            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
-          },
-          "isActive": {
-            "type": "boolean",
-            "description": "The value of isActive to toggle the activation of the knowledge base item. True to activate, false to deactivate. Defaults to true.",
-            "example": true
-          }
-        },
-        "required": ["voiceAgentId", "knowledgeBaseItemId"]
-      },
-      "CreateWebToolRequest": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "The type of the web tool.",
-            "enum": [
-              "FUNCTION",
-              "MCP"
-            ],
-            "example": "FUNCTION"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the web tool.",
-            "minLength": 1,
-            "maxLength": 250,
-            "example": "Weather API Tool"
-          },
-          "description": {
-            "type": "string",
-            "description": "A description of what the web tool does.",
-            "minLength": 1,
-            "maxLength": 1000,
-            "example": "A tool that fetches current weather information for a given location."
-          },
-          "async": {
-            "type": "boolean",
-            "description": "Whether the tool should run asynchronously. Required when type is FUNCTION, not allowed when type is MCP.",
-            "example": true
-          },
-          "toolSettings": {
-            "type": "object",
-            "description": "Server configuration settings for the web tool.",
-            "properties": {
-              "serverUrl": {
-                "type": "string",
-                "format": "uri",
-                "description": "The server URL for the web tool. You can define path parameters using a colon, example: /users/:userId/profile",
-                "example": "https://api.example.com/webhook"
-              },
-              "authToken": {
-                "type": "string",
-                "description": "Authentication token for the server.",
-                "minLength": 1,
-                "example": "bearer_token_12345"
-              },
-              "timeOut": {
-                "type": "number",
-                "description": "Request timeout in milliseconds.",
-                "minimum": 1,
-                "example": 30000
-              },
-              "methodType": {
-                "type": "string",
-                "description": "HTTP method type for the request.",
-                "example": "POST"
-              },
-              "httpHeaders": {
-                "type": "object",
-                "description": "HTTP headers to include in the request.",
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "example": {
-                  "Content-Type": "application/json",
-                  "Authorization": "Bearer token"
-                }
-              },
-              "pathParameters": {
-                "type": "object",
-                "description": "Path parameters you want to include in the request's URL.",
-                "additionalProperties": {
-                  "type": "string"
-                },
-                "example": {
-                  "userId": "12345"
-                }
-              }
-            },
-            "required": [
-              "serverUrl",
-              "methodType"
-            ]
-          },
-          "messages": {
-            "type": "array",
-            "description": "Array of message configurations for the web tool. Each message type must be unique.",
-            "items": {
-              "type": "object",
-              "description": "Message configuration object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "description": "The type of the message.",
-                  "example": "system"
-                },
-                "content": {
-                  "type": "string",
-                  "description": "The content of the message.",
-                  "example": "system"
-                }
-              }
-            },
-            "example": [
-              {
-                "type": "system",
-                "content": "You are a helpful weather assistant."
-              }
-            ]
-          },
-          "params": {
-            "type": "object",
-            "description": "Parameter schema definition for the web tool. Not allowed when type is MCP. This field is a recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the [OpenAPI specification](https://swagger.io/specification/) for more information.",
-            "example": {
-              "type": "object",
-              "properties": {
-                "test": {
-                  "type": "number",
-                  "description": "Hello world from Hamsa AI!"
-                }
-              },
-              "required": [
-                "test"
-              ]
-            }
-          }
-        },
-        "required": [
-          "type",
-          "name",
-          "toolSettings"
-        ]
-      },
-      "WebToolSchema": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "The unique identifier of the web tool.",
-            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the web tool.",
-            "example": "Weather API Tool"
-          },
-          "type": {
-            "type": "string",
-            "description": "The type of the web tool.",
-            "enum": [
-              "FUNCTION",
-              "MCP"
-            ],
-            "example": "FUNCTION"
-          },
-          "userId": {
-            "type": "string",
-            "description": "The user ID associated with the web tool.",
-            "example": "550e8400-e29b-41d4-a716-446655440000"
-          },
-          "projectId": {
-            "type": "string",
-            "description": "The project ID associated with the web tool.",
-            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
-          },
-          "isActive": {
-            "type": "boolean",
-            "description": "Indicates whether the web tool is currently active in any voice agent.",
-            "example": true
-          },
-          "async": {
-            "type": "boolean",
-            "description": "Whether the tool runs asynchronously.",
-            "example": true
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "description": "A description of what the web tool does.",
-            "example": "A tool that fetches current weather information for a given location."
-          },
-          "toolSettings": {
-            "type": "object",
-            "description": "Server configuration settings for the web tool.",
-            "properties": {
-              "httpHeaders": {
-                "type": "object",
-                "nullable": true,
-                "description": "HTTP headers to include in the request.",
-                "example": {
-                  "Content-Type": "application/json",
-                  "Authorization": "Bearer token"
-                }
-              },
-              "pathParameters": {
-                "type": "object",
-                "nullable": true,
-                "description": "Path parameters you've included in the request's URL.",
-                "example": {
-                  "userId": "12345"
-                }
-              },
-              "serverUrl": {
-                "type": "string",
-                "description": "The server URL for the web tool.",
-                "example": "https://api.example.com/webhook"
-              },
-              "timeout": {
-                "type": "number",
-                "nullable": true,
-                "description": "Request timeout in milliseconds.",
-                "example": 5000
-              },
-              "authToken": {
-                "type": "string",
-                "nullable": true,
-                "description": "Authentication token for the server.",
-                "example": "bearer_token_12345"
-              },
-              "methodType": {
-                "type": "string",
-                "nullable": true,
-                "description": "HTTP method type for the request.",
-                "example": "POST"
-              }
-            },
-            "required": [
-              "serverUrl"
-            ]
-          },
-          "params": {
-            "type": "object",
-            "description": "Parameter schema definition for the web tool.",
-            "nullable": true,
-            "example": {
-              "location": {
-                "type": "string",
-                "description": "The location to get weather for"
-              }
-            }
-          },
-          "messages": {
-            "type": "array",
-            "description": "Array of message configurations for the web tool.",
-            "items": {
-              "type": "object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "description": "The type of the message.",
-                  "example": "system"
-                },
-                "content": {
-                  "type": "string",
-                  "description": "The content of the message.",
-                  "example": "You are a helpful weather assistant."
-                }
-              },
-              "required": [
-                "type",
-                "content"
-              ]
-            },
-            "example": [
-              {
-                "type": "system",
-                "content": "You are a helpful weather assistant."
-              }
-            ]
-          }
-        },
-        "required": [
-          "id",
-          "name",
-          "type",
-          "userId",
-          "projectId",
-          "isActive",
-          "async",
-          "toolSettings",
-          "messages"
-        ]
-      },
-      "CreateWebToolResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
-            "type": "string",
-            "default": "success"
-          },
-          "data": {
-            "$ref": "#/components/schemas/WebToolSchema"
-          }
-        }
-      },
-      "GetWebToolResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
-            "type": "string",
-            "default": "success"
-          },
-          "data": {
-            "$ref": "#/components/schemas/WebToolSchema"
-          }
-        }
-      },
-      "UpdateWebToolRequest": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "description": "The type of the web tool.",
-            "enum": [
-              "FUNCTION",
-              "MCP"
-            ]
-          },
-          "name": {
-            "type": "string",
-            "description": "The name of the web tool.",
-            "minLength": 1,
-            "maxLength": 250
-          },
-          "description": {
-            "type": "string",
-            "description": "A description of what the web tool does.",
-            "minLength": 1,
-            "maxLength": 1000
-          },
-          "async": {
-            "type": "boolean",
-            "description": "Whether the tool should run asynchronously. Required when type is FUNCTION, not allowed when type is MCP."
-          },
-          "toolSettings": {
-            "type": "object",
-            "description": "Server configuration settings for the web tool.",
-            "properties": {
-              "serverUrl": {
-                "type": "string",
-                "format": "uri",
-                "description": "The server URL for the web tool."
-              },
-              "authToken": {
-                "type": "string",
-                "description": "Authentication token for the server.",
-                "minLength": 1
-              },
-              "timeOut": {
-                "type": "number",
-                "description": "Request timeout in milliseconds.",
-                "minimum": 1
-              },
-              "methodType": {
-                "type": "string",
-                "description": "HTTP method type for the request."
-              },
-              "httpHeaders": {
-                "type": "object",
-                "description": "HTTP headers to include in the request.",
-                "additionalProperties": {
-                  "type": "string"
-                }
-              },
-              "pathParameters": {
-                "type": "object",
-                "description": "The path parameters you've included in the request's URL.",
-                "additionalProperties": {
-                  "type": "string"
-                }
-              }
-            },
-            "required": [
-              "serverUrl",
-              "methodType"
-            ]
-          },
-          "messages": {
-            "type": "array",
-            "description": "Array of message configurations for the web tool. Each message type must be unique.",
-            "items": {
-              "type": "object",
-              "description": "Message configuration object",
-              "properties": {
-                "type": {
-                  "type": "string",
-                  "description": "The type of the message.",
-                  "example": "system"
-                },
-                "content": {
-                  "type": "string",
-                  "description": "The content of the message.",
-                  "example": "system"
-                }
-              }
-            }
-          },
-          "params": {
-            "type": "object",
-            "description": "Parameter schema definition for the web tool. Not allowed when type is MCP. This field is a recursive OpenAPI-style shape with 'type', 'properties', 'required', 'items', ...etc. Please refer to the [OpenAPI specification](https://swagger.io/specification/) for more information.",
-            "additionalProperties": true
-          }
-        }
-      },
-      "UpdateWebToolResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
-            "type": "string",
-            "default": "success"
-          },
-          "data": {
-            "$ref": "#/components/schemas/WebToolSchema"
-          }
-        }
-      },
-      "DeleteWebToolResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
-            "type": "string",
-            "default": "success",
-            "example": "Web tool deleted successfully"
-          }
-        }
-      },
-      "ListWebToolsResponse": {
-        "type": "object",
-        "properties": {
-          "success": {
-            "type": "boolean",
-            "default": false
-          },
-          "message": {
-            "type": "string",
-            "default": "success"
-          },
-          "data": {
-            "type": "object",
-            "properties": {
-              "total": {
-                "type": "number",
-                "description": "The total number of web tools over all pages.",
-                "example": 100
-              },
-              "filtered": {
-                "type": "number",
-                "description": "The filtered/returned number of web tools.",
-                "example": 100
-              },
-              "items": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/WebToolSchema"
-                }
-              }
-            }
-          }
-        }
-      },
-      "ToggleWebToolActivationRequest": {
-        "type": "object",
-        "properties": {
-          "voiceAgentId": {
-            "type": "string",
-            "description": "The voice agent ID to toggle the activation of the web tool on.",
-            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
-          },
-          "webToolId": {
-            "type": "string",
-            "description": "The web tool ID to toggle the activation of.",
-            "example": "d949f13f-40d2-4e48-ac86-b66633070603"
-          },
-          "isActive": {
-            "type": "boolean",
-            "description": "The value of isActive to toggle the activation of the web tool. True to activate, false to deactivate. Defaults to true.",
-            "example": true,
-            "default": true
-          }
-        },
-        "required": ["voiceAgentId", "webToolId"]
       }
     },
     "securitySchemes": {

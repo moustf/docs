@@ -1,0 +1,898 @@
+---
+title: 'Webhooks'
+description: 'Receive real-time call events and conversation data from your AI agents'
+---
+
+## Overview
+
+Webhooks allow your applications to receive real-time notifications about call events, transcriptions, and conversation outcomes. Configure a webhook endpoint to get instant updates when calls start, end, or when your agent completes specific actions.
+
+<Info>
+**Key Features:**
+- **Real-time Events** - Instant notifications as calls progress
+- **Call Transcriptions** - Full conversation text sent to your endpoint
+- **Outcome Data** - Structured data extracted from conversations
+- **Secure Authentication** - Bearer token support for secure webhooks
+- **HTTPS Only** - All webhooks must use encrypted connections
+</Info>
+
+## How It Works
+
+Webhook integration follows this flow:
+
+1. **Configure** - Add webhook URL to your agent settings
+2. **Authentication** - Set up Bearer token (optional but recommended)
+3. **Call Event** - User calls your agent or agent makes outbound call
+4. **Real-time Push** - Hamsa sends POST requests to your webhook
+5. **Process** - Your server receives and processes event data
+
+<Note>
+Webhooks are configured per agent. Each agent can have its own webhook URL and authentication settings.
+</Note>
+
+## Setting Up Webhooks
+
+### Agent Configuration
+
+Add a webhook to your agent:
+
+1. Navigate to your agent's configuration page
+2. Scroll to **Call Webhook** section
+3. Click to expand the webhook settings
+4. Enter your webhook URL
+5. Configure authentication (recommended)
+6. Save your agent configuration
+
+### Webhook URL Requirements
+
+Your webhook endpoint must meet these requirements:
+
+<Warning>
+**HTTPS Required:**
+- All webhook URLs must use HTTPS protocol
+- HTTP endpoints will be rejected
+- Self-signed certificates are not supported
+- Certificate must be valid and not expired
+</Warning>
+
+**Valid Examples:**
+
+```
+✅ https://api.yourcompany.com/webhook
+✅ https://webhook.example.com/hamsa/events
+✅ https://your-app.herokuapp.com/webhooks/calls
+
+❌ http://api.yourcompany.com/webhook (HTTP not allowed)
+❌ https://192.168.1.100/webhook (local IPs not recommended)
+❌ https://localhost:3000/webhook (localhost not accessible)
+```
+
+### Authentication Options
+
+Protect your webhook endpoints with authentication:
+
+#### No Authentication
+
+Use for development or public endpoints:
+
+```json Configuration
+{
+  "webhookUrl": "https://api.yourcompany.com/webhook",
+  "webhookAuth": {
+    "authKey": "noAuth"
+  }
+}
+```
+
+<Warning>
+Not recommended for production. Anyone who discovers your webhook URL can send requests to it.
+</Warning>
+
+#### Bearer Token Authentication
+
+Recommended for production environments:
+
+```json Configuration
+{
+  "webhookUrl": "https://api.yourcompany.com/webhook",
+  "webhookAuth": {
+    "authKey": "bearer",
+    "authSecret": "Bearer your_secret_token_here"
+  }
+}
+```
+
+**Token Format:**
+
+- Must include the word "Bearer" followed by your token
+- Example: `Bearer sk_live_abc123xyz789`
+- Token should be long and randomly generated
+- Never commit tokens to source control
+
+**Generating Secure Tokens:**
+
+```bash
+# Generate a random token (Linux/Mac)
+openssl rand -base64 32
+
+# Or use Node.js
+node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"
+
+# Or use Python
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+### Configuring Your Endpoint
+
+**Express.js Example:**
+
+```javascript
+const express = require('express');
+const app = express();
+
+// Middleware to verify Bearer token
+function verifyToken(req, res, next) {
+  const authHeader = req.headers.authorization;
+  const expectedToken = process.env.WEBHOOK_SECRET; // Bearer your_secret_token
+
+  if (authHeader !== expectedToken) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  next();
+}
+
+// Webhook endpoint
+app.post('/webhook', express.json(), verifyToken, (req, res) => {
+  const event = req.body;
+
+  console.log('Received event:', event.eventType);
+  console.log('Call ID:', event.callId);
+
+  // Process the event
+  processCallEvent(event);
+
+  // Respond quickly to acknowledge receipt
+  res.status(200).json({ received: true });
+});
+
+app.listen(3000);
+```
+
+**Python/Flask Example:**
+
+```python
+from flask import Flask, request, jsonify
+import os
+
+app = Flask(__name__)
+
+def verify_token():
+    auth_header = request.headers.get('Authorization')
+    expected_token = os.environ.get('WEBHOOK_SECRET')
+
+    if auth_header != expected_token:
+        return False
+    return True
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    # Verify authentication
+    if not verify_token():
+        return jsonify({'error': 'Unauthorized'}), 401
+
+    # Parse event data
+    event = request.get_json()
+
+    print(f"Event Type: {event.get('eventType')}")
+    print(f"Call ID: {event.get('callId')}")
+
+    # Process the event
+    process_call_event(event)
+
+    # Acknowledge receipt
+    return jsonify({'received': True}), 200
+
+if __name__ == '__main__':
+    app.run(port=3000)
+```
+
+## Webhook Events
+
+### Event Types
+
+Your webhook receives various events throughout a call's lifecycle:
+
+| Event                    | When It Fires     | Contains               |
+| ------------------------ | ----------------- | ---------------------- |
+| **call.started**         | Call begins       | Caller info, timestamp |
+| **call.answered**        | Call connected    | Connection details     |
+| **transcription.update** | User/agent speaks | Real-time text         |
+| **tool.executed**        | Agent uses a tool | Tool name, results     |
+| **call.ended**           | Call completes    | Duration, outcome      |
+
+### Event Payload Structure
+
+All webhook events follow this structure:
+
+```json Standard Event
+{
+  "eventType": "call.ended",
+  "callId": "call_uuid_12345",
+  "timestamp": "2024-01-15T14:30:00.000Z",
+  "projectId": "proj_abc123",
+  "agentId": "agent_xyz789",
+  "agentName": "Customer Support Agent",
+  "data": {
+    // Event-specific data
+  }
+}
+```
+
+### Call Started Event
+
+Sent when a call begins:
+
+```json call.started
+{
+  "eventType": "call.started",
+  "callId": "call_uuid_12345",
+  "timestamp": "2024-01-15T14:30:00.000Z",
+  "projectId": "proj_abc123",
+  "agentId": "agent_xyz789",
+  "agentName": "Customer Support Agent",
+  "data": {
+    "callDirection": "inbound",
+    "fromNumber": "+19175551234",
+    "toNumber": "+14155552671",
+    "callStartedAt": "2024-01-15T14:30:00.000Z",
+    "params": {
+      "customer_id": "CUST-123",
+      "custom_field": "value"
+    }
+  }
+}
+```
+
+**Fields:**
+
+- `callDirection` - `inbound` or `outbound`
+- `fromNumber` - Caller's phone number
+- `toNumber` - Recipient's phone number
+- `params` - Custom parameters passed to the call
+
+### Call Answered Event
+
+Sent when the call is connected:
+
+```json call.answered
+{
+  "eventType": "call.answered",
+  "callId": "call_uuid_12345",
+  "timestamp": "2024-01-15T14:30:05.000Z",
+  "data": {
+    "answeredAt": "2024-01-15T14:30:05.000Z",
+    "ringDuration": 5000
+  }
+}
+```
+
+### Transcription Updates
+
+Real-time transcription as the conversation progresses:
+
+```json transcription.update
+{
+  "eventType": "transcription.update",
+  "callId": "call_uuid_12345",
+  "timestamp": "2024-01-15T14:30:15.000Z",
+  "data": {
+    "speaker": "user",
+    "text": "I need help with my account",
+    "language": "en",
+    "confidence": 0.95
+  }
+}
+```
+
+```json Agent Response
+{
+  "eventType": "transcription.update",
+  "callId": "call_uuid_12345",
+  "timestamp": "2024-01-15T14:30:18.000Z",
+  "data": {
+    "speaker": "agent",
+    "text": "I'd be happy to help you with your account. Can you provide your account number?",
+    "language": "en",
+    "confidence": 0.98
+  }
+}
+```
+
+### Tool Execution Event
+
+When your agent uses a tool (API call, knowledge base query, etc.):
+
+```json tool.executed
+{
+  "eventType": "tool.executed",
+  "callId": "call_uuid_12345",
+  "timestamp": "2024-01-15T14:30:20.000Z",
+  "data": {
+    "toolName": "check_account_balance",
+    "toolId": "tool_uuid_456",
+    "input": {
+      "account_number": "ACC-12345"
+    },
+    "output": {
+      "balance": "$1,234.56",
+      "status": "active"
+    },
+    "duration": 450
+  }
+}
+```
+
+### Call Ended Event
+
+Comprehensive data when the call completes:
+
+```json call.ended
+{
+  "eventType": "call.ended",
+  "callId": "call_uuid_12345",
+  "timestamp": "2024-01-15T14:35:00.000Z",
+  "projectId": "proj_abc123",
+  "agentId": "agent_xyz789",
+  "agentName": "Customer Support Agent",
+  "data": {
+    "callStartedAt": "2024-01-15T14:30:00.000Z",
+    "callEndedAt": "2024-01-15T14:35:00.000Z",
+    "callDuration": 300,
+    "endReason": "completed",
+    "transcription": [
+      {
+        "user": "I need help with my account"
+      },
+      {
+        "agent": "I'd be happy to help you with your account. Can you provide your account number?"
+      },
+      {
+        "user": "Yes, it's ACC-12345"
+      },
+      {
+        "agent": "Thank you. I can see your account balance is $1,234.56 and your account is active."
+      }
+    ],
+    "outcomeResult": {
+      "intent": "account_inquiry",
+      "resolved": true,
+      "account_number": "ACC-12345",
+      "balance": "$1,234.56",
+      "sentiment": "positive"
+    }
+  }
+}
+```
+
+**Fields:**
+
+- `callDuration` - Total call time in seconds
+- `endReason` - Why the call ended: `completed`, `user_hangup`, `agent_hangup`, `timeout`, `error`
+- `transcription` - Full conversation transcript
+- `outcomeResult` - Structured data extracted based on your outcome schema
+
+## Processing Webhooks
+
+### Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Respond Quickly" icon="bolt">
+    Always return a 200 status within 5 seconds to avoid timeouts
+  </Card>
+  <Card title="Process Async" icon="clock">
+    Queue events for background processing instead of blocking the response
+  </Card>
+  <Card title="Verify Tokens" icon="shield">
+    Always validate the Bearer token before processing
+  </Card>
+  <Card title="Handle Retries" icon="rotate">
+    Implement idempotency using the callId to handle duplicate events
+  </Card>
+</CardGroup>
+
+### Async Processing Pattern
+
+**Queue-Based Processing:**
+
+```javascript
+const Queue = require('bull');
+const eventQueue = new Queue('call-events');
+
+// Webhook endpoint - respond immediately
+app.post('/webhook', verifyToken, async (req, res) => {
+  const event = req.body;
+
+  // Add to queue for processing
+  await eventQueue.add('process-event', event);
+
+  // Respond immediately
+  res.status(200).json({ received: true });
+});
+
+// Process events in background
+eventQueue.process('process-event', async (job) => {
+  const event = job.data;
+
+  // Now do time-consuming work
+  if (event.eventType === 'call.ended') {
+    await saveToDatabase(event);
+    await sendNotifications(event);
+    await updateAnalytics(event);
+  }
+});
+```
+
+### Idempotency Implementation
+
+Prevent duplicate processing:
+
+```javascript
+const processedCalls = new Set();
+
+app.post('/webhook', verifyToken, async (req, res) => {
+  const event = req.body;
+  const callId = event.callId;
+  const eventKey = `${callId}-${event.eventType}-${event.timestamp}`;
+
+  // Check if already processed
+  if (processedCalls.has(eventKey)) {
+    console.log('Duplicate event, skipping');
+    return res.status(200).json({ received: true, duplicate: true });
+  }
+
+  // Mark as processed
+  processedCalls.add(eventKey);
+
+  // Process event
+  await processEvent(event);
+
+  res.status(200).json({ received: true });
+});
+```
+
+### Error Handling
+
+Handle various failure scenarios:
+
+```javascript
+app.post('/webhook', async (req, res) => {
+  try {
+    // Verify authentication
+    if (!verifyToken(req)) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    // Validate payload
+    const event = req.body;
+    if (!event.callId || !event.eventType) {
+      return res.status(400).json({ error: 'Invalid payload' });
+    }
+
+    // Queue for processing
+    await eventQueue.add('process-event', event, {
+      attempts: 3,
+      backoff: {
+        type: 'exponential',
+        delay: 2000,
+      },
+    });
+
+    res.status(200).json({ received: true });
+  } catch (error) {
+    console.error('Webhook error:', error);
+
+    // Still return 200 to prevent retries for processing errors
+    // Log the error for investigation
+    res.status(200).json({
+      received: true,
+      processing_error: true,
+    });
+  }
+});
+```
+
+## Use Cases
+
+### Call Analytics
+
+Track call metrics and build dashboards:
+
+```javascript
+async function processCallEnded(event) {
+  const { data } = event;
+
+  await analytics.track({
+    event: 'Call Completed',
+    callId: event.callId,
+    duration: data.callDuration,
+    direction: data.callDirection,
+    outcome: data.outcomeResult,
+    timestamp: data.callEndedAt,
+  });
+
+  // Update real-time dashboard
+  await dashboard.update({
+    totalCalls: increment(1),
+    averageDuration: average(data.callDuration),
+    resolvedCalls: data.outcomeResult?.resolved ? increment(1) : 0,
+  });
+}
+```
+
+### CRM Integration
+
+Automatically update customer records:
+
+```javascript
+async function syncToCRM(event) {
+  if (event.eventType !== 'call.ended') return;
+
+  const { outcomeResult, transcription } = event.data;
+
+  // Update customer record
+  await crm.contacts.update({
+    phone: event.data.fromNumber,
+    lastCallDate: event.data.callEndedAt,
+    lastCallDuration: event.data.callDuration,
+    lastCallNotes: transcription.map((t) => Object.values(t)[0]).join('\n'),
+    customFields: {
+      intent: outcomeResult.intent,
+      sentiment: outcomeResult.sentiment,
+      resolved: outcomeResult.resolved,
+    },
+  });
+
+  // Create activity record
+  await crm.activities.create({
+    type: 'phone_call',
+    contact: event.data.fromNumber,
+    subject: `AI Agent Call - ${outcomeResult.intent}`,
+    description: `Call duration: ${event.data.callDuration}s\nResolved: ${outcomeResult.resolved}`,
+    date: event.data.callEndedAt,
+  });
+}
+```
+
+### Notification System
+
+Alert teams about important calls:
+
+```javascript
+async function sendNotifications(event) {
+  if (event.eventType !== 'call.ended') return;
+
+  const { outcomeResult } = event.data;
+
+  // High-priority calls
+  if (outcomeResult.priority === 'urgent' || !outcomeResult.resolved) {
+    await slack.sendMessage({
+      channel: '#support-team',
+      text: `🚨 Urgent call requires attention`,
+      attachments: [
+        {
+          title: `Call ID: ${event.callId}`,
+          fields: [
+            { title: 'Customer', value: event.data.fromNumber },
+            { title: 'Intent', value: outcomeResult.intent },
+            { title: 'Resolved', value: outcomeResult.resolved ? 'Yes' : 'No' },
+            { title: 'Duration', value: `${event.data.callDuration}s` },
+          ],
+          color: outcomeResult.resolved ? 'good' : 'danger',
+        },
+      ],
+    });
+  }
+
+  // Email digest for all calls
+  await emailService.send({
+    to: 'team@company.com',
+    subject: `Call Summary - ${event.callId}`,
+    template: 'call-summary',
+    data: {
+      callId: event.callId,
+      customer: event.data.fromNumber,
+      transcript: event.data.transcription,
+      outcome: outcomeResult,
+    },
+  });
+}
+```
+
+### Data Warehouse
+
+Stream events to your data warehouse:
+
+```javascript
+async function streamToWarehouse(event) {
+  // Transform to warehouse schema
+  const record = {
+    event_id: `${event.callId}-${event.eventType}`,
+    event_type: event.eventType,
+    call_id: event.callId,
+    timestamp: event.timestamp,
+    project_id: event.projectId,
+    agent_id: event.agentId,
+    agent_name: event.agentName,
+    ...flattenData(event.data),
+  };
+
+  // Insert into BigQuery
+  await bigquery.dataset('call_events').table('events').insert([record]);
+}
+
+function flattenData(data, prefix = '') {
+  const flattened = {};
+
+  for (const [key, value] of Object.entries(data)) {
+    const newKey = prefix ? `${prefix}_${key}` : key;
+
+    if (typeof value === 'object' && value !== null) {
+      Object.assign(flattened, flattenData(value, newKey));
+    } else {
+      flattened[newKey] = value;
+    }
+  }
+
+  return flattened;
+}
+```
+
+## Troubleshooting
+
+### Webhook URL Not Reachable
+
+**Error:** "Webhook URL is not reachable"
+
+Your webhook endpoint must be publicly accessible and respond to POST requests.
+
+**Common Causes:**
+
+- URL is not publicly accessible (localhost, private IP)
+- Firewall blocking incoming requests
+- Server not running or crashed
+- SSL certificate invalid
+
+**Solution:**
+
+```bash
+# Test your webhook endpoint
+curl -X POST https://your-webhook-url.com/webhook \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer your_token" \
+  -d '{"test": true}'
+
+# Should return 200 OK
+# If not, check:
+# 1. Is your server running?
+# 2. Is the URL correct?
+# 3. Is HTTPS configured properly?
+# 4. Are firewall rules allowing traffic?
+```
+
+**Development Workaround:**
+
+Use a tunneling service to expose localhost:
+
+```bash
+# Using ngrok
+ngrok http 3000
+
+# Use the ngrok HTTPS URL in your webhook configuration
+# Example: https://abc123.ngrok.io/webhook
+```
+
+---
+
+### Authentication Failures
+
+**Error:** 401 Unauthorized responses
+
+**Causes:**
+
+- Bearer token mismatch
+- Token format incorrect
+- Missing "Bearer" prefix
+
+**Solution:**
+
+```javascript
+// Correct format
+{
+  "webhookAuth": {
+    "authKey": "bearer",
+    "authSecret": "Bearer sk_live_abc123xyz789"
+  }
+}
+
+// Common mistakes to avoid:
+❌ "authSecret": "sk_live_abc123xyz789"  // Missing "Bearer"
+❌ "authSecret": "bearer sk_live_abc123xyz789"  // Lowercase "bearer"
+❌ "authKey": "noAuth" with authSecret set  // Conflicting settings
+```
+
+**Debugging:**
+
+```javascript
+app.post('/webhook', (req, res) => {
+  // Log received authorization header
+  console.log('Received auth:', req.headers.authorization);
+  console.log('Expected auth:', process.env.WEBHOOK_SECRET);
+
+  // Compare exactly
+  if (req.headers.authorization !== process.env.WEBHOOK_SECRET) {
+    console.log('Auth mismatch!');
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
+  // Continue processing...
+});
+```
+
+---
+
+### Missing Events
+
+**Problem:** Not receiving all webhook events
+
+**Possible Causes:**
+
+1. Webhook endpoint returning errors
+2. Timeout (not responding within 5 seconds)
+3. Network connectivity issues
+
+**Solution:**
+
+```javascript
+// Always respond quickly
+app.post('/webhook', async (req, res) => {
+  const event = req.body;
+
+  // Acknowledge immediately
+  res.status(200).json({ received: true });
+
+  // Process asynchronously
+  setImmediate(() => {
+    processEvent(event).catch((err) => {
+      console.error('Processing error:', err);
+    });
+  });
+});
+```
+
+**Monitoring:**
+
+```javascript
+// Add logging to track all events
+const eventCounts = {};
+
+app.post('/webhook', (req, res) => {
+  const eventType = req.body.eventType;
+  eventCounts[eventType] = (eventCounts[eventType] || 0) + 1;
+
+  console.log('Event counts:', eventCounts);
+
+  res.status(200).json({ received: true });
+});
+
+// Should see: { 'call.started': 1, 'transcription.update': 15, 'call.ended': 1 }
+```
+
+---
+
+### Duplicate Events
+
+**Problem:** Receiving the same event multiple times
+
+**Cause:** Webhook retries due to slow responses or network issues
+
+**Solution:** Implement idempotency
+
+```javascript
+// Using Redis for distributed systems
+const redis = require('redis').createClient();
+
+app.post('/webhook', async (req, res) => {
+  const event = req.body;
+  const eventKey = `webhook:${event.callId}:${event.eventType}:${event.timestamp}`;
+
+  // Check if already processed
+  const exists = await redis.exists(eventKey);
+  if (exists) {
+    return res.status(200).json({ received: true, duplicate: true });
+  }
+
+  // Mark as processed (expire after 24 hours)
+  await redis.setex(eventKey, 86400, 'processed');
+
+  // Process event
+  await processEvent(event);
+
+  res.status(200).json({ received: true });
+});
+```
+
+## Security Best Practices
+
+<Warning>
+**Security Checklist:**
+- ✅ Always use HTTPS endpoints
+- ✅ Implement Bearer token authentication
+- ✅ Validate all incoming data
+- ✅ Use strong, randomly generated tokens
+- ✅ Rotate tokens periodically
+- ✅ Log authentication failures
+- ✅ Rate limit webhook endpoint
+- ✅ Monitor for suspicious patterns
+</Warning>
+
+### Token Management
+
+```javascript
+// Store tokens securely
+require('dotenv').config();
+
+const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
+
+// Never hardcode tokens
+❌ const WEBHOOK_SECRET = 'Bearer abc123';  // Bad!
+✅ const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;  // Good!
+```
+
+### Input Validation
+
+Always validate webhook payloads:
+
+```javascript
+const Joi = require('joi');
+
+const eventSchema = Joi.object({
+  eventType: Joi.string().required(),
+  callId: Joi.string().uuid().required(),
+  timestamp: Joi.string().isoDate().required(),
+  projectId: Joi.string().required(),
+  data: Joi.object().required(),
+});
+
+app.post('/webhook', (req, res) => {
+  // Validate payload
+  const { error, value } = eventSchema.validate(req.body);
+
+  if (error) {
+    console.log('Invalid payload:', error.details);
+    return res.status(400).json({ error: 'Invalid payload' });
+  }
+
+  // Process validated data
+  processEvent(value);
+  res.status(200).json({ received: true });
+});
+```
+
+## Related Features
+
+- [Outcomes](/features/outcomes) - Define what data to extract from calls
+- [Phone Numbers](/features/telephony) - Configure phone numbers to use webhooks
+- [Agents](/agents/introduction) - Set up agents with webhook configurations
+- [API Keys](/features/api-keys) - Secure your API and webhook endpoints
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Webhook Examples" icon="code" href="https://github.com/hamsa/webhook-examples">
+    Sample implementations
+  </Card>
+  <Card title="Contact Support" icon="headset" href="mailto:support@tryhamsa.com">
+    Get technical assistance
+  </Card>
+</CardGroup>
