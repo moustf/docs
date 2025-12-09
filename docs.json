@@ -95,6 +95,7 @@
             "pages": [
               "guides/prompt-engineering",
               "guides/api-integration",
+              "guides/webhook-integration-guide",
               "guides/call-routing",
               "guides/data-collection",
               "guides/ivr-menus"
