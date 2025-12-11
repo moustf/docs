@@ -22,7 +22,7 @@ This comprehensive guide walks you through integrating with Hamsa Voice Agent we
 
 ### What Are Webhooks?
 
-Webhooks allow your applications to receive real-time notifications about call events, transcriptions, and conversation outcomes. When a voice interview completes or specific events occur, Hamsa sends HTTP POST requests to your configured endpoint with relevant data.
+Webhooks allow your applications to receive real-time notifications about call events, transcriptions, and conversation outcomes. When a voice call completes or specific events occur, Hamsa sends HTTP POST requests to your configured endpoint with relevant data.
 
 <CardGroup cols={2}>
   <Card title="Real-time Events" icon="bolt">
@@ -52,7 +52,7 @@ graph TB
     F --> G[Your Webhook Endpoint]
     G --> H[Webhook Payload]
     H --> I[Transcript and Recording]
-    H --> J[Extracted Data]
+    H --> J[Outcome Data]
     H --> K[Echoed Params]
     K --> L[Your Database]
     I --> L
@@ -68,9 +68,9 @@ graph TB
 
 **Initiation**: Your application sends configuration with `agentId` and custom `params` (identifiers, context data).
 
-**Interview**: User interacts with AI agent, which collects information through conversation.
+**Call**: User interacts with AI agent, which collects information through conversation.
 
-**Webhook**: Hamsa POSTs results to your endpoint with transcript, recording, extracted data, and your original params echoed back.
+**Webhook**: Hamsa POSTs results to your endpoint with transcript, recording, outcome data, and your original params echoed back.
 
 ### Key Concepts
 
@@ -111,7 +111,7 @@ graph TB
     **How it works:**
 
     1. You send: `{ params: { application_id: "12345" } }`
-    2. Agent conducts interview
+    2. Agent conducts call
     3. You receive: `{ outcomeResult: { application_id: "12345", ... } }`
 
     This pattern allows you to match webhook responses to your database records without maintaining state.
@@ -122,7 +122,7 @@ graph TB
 
     The `outcomeResult` object in webhook responses contains:
     - **Echoed data** - All your custom params (unchanged)
-    - **Extracted data** - Information collected by the agent
+    - **Outcome data** - Information collected by the agent
 
     This combination lets you identify the record AND get the collected information in one payload.
   </Accordion>
@@ -483,7 +483,7 @@ The `call.ended` event contains the complete conversation data:
 | `conversationId` | string | Hamsa's unique identifier for this conversation |
 | `conversationRecording` | string | Full URL to audio recording file<br />Format: `.mp3` or `.wav`<br />Accessible for download |
 | `transcription` | Array&lt;object&gt; | Ordered array of conversation turns |
-| `outcomeResult` | object | Contains echoed params + extracted data |
+| `outcomeResult` | object | Contains echoed params + outcome data |
 
 #### Transcription Array Format
 
@@ -498,7 +498,7 @@ Each element represents one turn in the conversation:
 
 ### Understanding `outcomeResult`
 
-The `outcomeResult` object is where the magic happens - it contains both your echoed parameters AND newly extracted data.
+The `outcomeResult` object is where the magic happens - it contains both your echoed parameters AND newly collected outcome data.
 
 #### Echoed Parameters (What You Sent)
 
@@ -521,7 +521,7 @@ These are the exact same parameters you included in the `params` object when ini
 }
 ```
 
-#### Extracted Data (New from Call)
+#### Outcome Data (New from Call)
 
 These fields are generated during the voice call based on the conversation between the agent and the user. They come from the agent's analysis of the call and are defined in your agent's outcome configuration.
 
@@ -684,7 +684,7 @@ These are fields commonly extracted by Hamsa agents (depending on your agent's c
     async function updateDatabase(data) {
       // TODO: Implement your database update logic
       // Example using Prisma:
-      // await prisma.interview.update({
+      // await prisma.call.update({
       //   where: { applicationId: data.applicationId },
       //   data: {
       //     conversationId: data.conversationId,
@@ -1694,7 +1694,7 @@ async function sendNotifications(event) {
   <Accordion title="Missing or Null Fields in outcomeResult">
     **Symptoms:**
     - Expected fields are `null` or `undefined`
-    - Extracted data not present
+    - Outcome data not present
 
     **Causes:**
     - Agent didn't collect that information during call
@@ -1869,7 +1869,7 @@ app.post('/webhook', async (req, res) => {
 
 <Steps>
   <Step title="Data Structure Planning">
-    Define what custom params you'll send in `params` (identifiers, context). Document your `params` structure for your team. Plan how you'll use echoed data to match records. Decide what extracted data you expect from agent. Ensure identifiers are unique and persistent.
+    Define what custom params you'll send in `params` (identifiers, context). Document your `params` structure for your team. Plan how you'll use echoed data to match records. Decide what outcome data you expect from agent. Ensure identifiers are unique and persistent.
   </Step>
 
   <Step title="Webhook Setup">
@@ -1949,7 +1949,7 @@ app.post('/webhook', async (req, res) => {
 YOU SEND (Initiation):
 params: { application_id: "12345", user_name: "John", ... }
 
-         ↓ [ Interview Happens ] ↓
+         ↓ [ Call Happens ] ↓
 
 YOU RECEIVE (Webhook):
 outcomeResult: {
@@ -1965,7 +1965,7 @@ outcomeResult: {
 | Phase | What You Send/Receive | Purpose |
 |-------|----------------------|---------|
 | **Initiation** | Configuration with `params` | Send identifiers + context to agent |
-| **Interview** | N/A (agent conducts call) | Agent collects information from user |
+| **Call** | N/A (agent conducts call) | Agent collects information from user |
 | **Webhook** | POST with echoed params + new data | Receive results and match to your records |
 
 ---
